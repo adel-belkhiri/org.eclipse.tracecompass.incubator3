@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.linuxtools.tmf.core.analysis">
+      <output
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput">
+         <analysisId
+               id="org.eclipse.tracecompass.incubator.dpdk.vhost.analysis">
+         </analysisId>
+      </output>
+      <output
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput">
+         <analysisId
+               id="org.eclipse.tracecompass.incubator.dpdk.lpm.analysis">
+         </analysisId>
+      </output>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk" 
+            name="%category.dpdk">
+      </category>
+      <view
+            category="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk"
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.DpdkVhostUserAvailDescrView"
+            icon="icons/eview16/scatter.png"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.avail.descr.view"
+            name="Queue Rings Status"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk"
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.packet.rate.DpdkVhostUserPacketRateView"
+            icon="icons/eview16/scatter.png"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.packet.rate.view"
+            name="Packet Rate"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.tracecompass.tmf.core.dataprovider">
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.DpdkVhostUserAvailDescrDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.dpdk.vhost.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.packet.rate.DpdkVhostUserPacketRateDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.dpdk.vhost.packet.rate.data.provider">
+      </dataProviderFactory>
+   </extension>
+
+</plugin>
