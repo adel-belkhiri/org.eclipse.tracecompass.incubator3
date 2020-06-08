@@ -40,5 +40,12 @@
          </tracetype>
       </module>
    </extension>
+   <extension
+         point="org.eclipse.tracecompass.tmf.core.dataprovider">
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmHitRateDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.dpdk.lpm.lookup.success.rate.data.provider">
+      </dataProviderFactory>
+   </extension>
 
 </plugin>

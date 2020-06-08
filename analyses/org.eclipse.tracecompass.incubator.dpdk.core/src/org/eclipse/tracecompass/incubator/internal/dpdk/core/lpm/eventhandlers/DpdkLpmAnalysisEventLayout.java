@@ -81,6 +81,16 @@ public class DpdkLpmAnalysisEventLayout {
     }
 
     /**
+     * This event Indicates
+     *
+     * @return The name of the event
+     * @since 3.0
+     */
+    public @NonNull String eventRteLpmLookupBulk() {
+        return new String("librte_lpm:rte_lpm_lookup_bulk");
+    }
+
+    /**
     *
     * @return available index
     * @since 3.0
@@ -145,6 +155,24 @@ public class DpdkLpmAnalysisEventLayout {
     */
     public @NonNull String fieldNextHops() {
         return new String("next_hops");
+    }
+
+    /**
+    *
+    * @return available index
+    * @since 3.0
+    */
+    public @NonNull String fieldTblEntries() {
+        return new String("tbl_entries");
+    }
+
+    /**
+    *
+    * @return available index
+    * @since 3.0
+    */
+    public @NonNull String fieldNumberOfIpAddresses() {
+        return new String("n");
     }
 
     /**

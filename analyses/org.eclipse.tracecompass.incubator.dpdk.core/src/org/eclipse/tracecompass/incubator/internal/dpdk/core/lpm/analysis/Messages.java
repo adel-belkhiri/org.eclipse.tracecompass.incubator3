@@ -22,7 +22,9 @@ public class Messages extends NLS {
     public static @Nullable String IDpdkModel_RULE_NEXT_HOP;
     public static @Nullable String IDpdkModel_NB_HIT;
 
-    public static @Nullable String IDpdkModel_DATA_PROVIDER_TITLE;
+    public static @Nullable String IDpdkModel_LPM_LOOKUP_DATA_PROVIDER_TITLE;
+    public static String IDpdkModel_HIT_PERCENT_METRIC_LABEL;
+    public static String IDpdkModel_MISS_PERCENT_METRIC_LABEL;
 
     static {
         // initialize resource bundle

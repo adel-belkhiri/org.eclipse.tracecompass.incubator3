@@ -15,6 +15,12 @@
                id="org.eclipse.tracecompass.incubator.dpdk.lpm.analysis">
          </analysisId>
       </output>
+      <output
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput">
+         <analysisId
+               id="org.eclipse.tracecompass.incubator.dpdk.lpm.analysis">
+         </analysisId>
+      </output>
    </extension>
    <extension
          point="org.eclipse.ui.views">
@@ -36,6 +42,13 @@
             icon="icons/eview16/scatter.png"
             id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.packet.rate.view"
             name="Packet Rate"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk"
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.rate.DpdkLpmHitRateView"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.rate.view"
+            name="LPM Lookup Success Rate"
             restorable="true">
       </view>
    </extension>

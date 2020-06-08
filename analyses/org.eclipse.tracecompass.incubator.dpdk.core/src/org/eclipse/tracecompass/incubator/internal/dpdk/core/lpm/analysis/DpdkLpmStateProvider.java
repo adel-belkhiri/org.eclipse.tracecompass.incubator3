@@ -11,6 +11,7 @@ import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers.R
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers.RteLpmCreateEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers.RteLpmDeleteAllEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers.RteLpmDeleteEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers.RteLpmLookupBulkEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers.RteLpmLookupEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers.RteLpmLookupX4EventHandler;
 import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
@@ -99,6 +100,7 @@ public class DpdkLpmStateProvider extends AbstractTmfStateProvider {
          builder.put(layout.eventRteLpmDeleteAll(),  new RteLpmDeleteAllEventHandler(layout, this));
          builder.put(layout.eventRteLpmLookup(), new RteLpmLookupEventHandler(layout, this));
          builder.put(layout.eventRteLpmLookupx4(), new RteLpmLookupX4EventHandler(layout, this));
+         builder.put(layout.eventRteLpmLookupBulk(), new RteLpmLookupBulkEventHandler(layout, this));
 
          return (builder.build());
     }
