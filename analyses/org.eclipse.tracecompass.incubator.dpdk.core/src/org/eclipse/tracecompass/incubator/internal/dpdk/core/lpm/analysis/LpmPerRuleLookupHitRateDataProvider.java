@@ -3,9 +3,12 @@ package org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.annotation.NonNull;
@@ -32,11 +35,11 @@ import com.google.common.collect.Maps;
  * based on a query filter. The model is used afterwards by any viewer to draw
  * charts. Model returned is for Network I/O views
  *
- * @author adel
+ * @author  Adel Belkhiri
  */
 
 @SuppressWarnings("restriction")
-public class LpmLookupSuccessRateDataProvider extends AbstractTreeCommonXDataProvider<@NonNull DpdkLpmAnalysisModule, @NonNull TmfTreeDataModel> {
+public class LpmPerRuleLookupHitRateDataProvider extends AbstractTreeCommonXDataProvider<@NonNull DpdkLpmAnalysisModule, @NonNull TmfTreeDataModel> {
 
     /**
      * Title used to create XY models for the {@link VhostPacketRateDataProvider}.
@@ -46,7 +49,10 @@ public class LpmLookupSuccessRateDataProvider extends AbstractTreeCommonXDataPro
     /**
      * Extension point ID.
      */
-    public static final String ID = "org.eclipse.tracecompass.incubator.dpdk.lpm.lookup.success.rate.data.provider"; //$NON-NLS-1$
+    public static final String ID = "org.eclipse.tracecompass.incubator.dpdk.lpm.per.rule.lookup.hit.rate.data.provider"; //$NON-NLS-1$
+
+
+    private static final long INVALID_COUNT_VALUE = -1;
 
     /**
      * Inline class to encapsulate all the values required to build a series. Allows
@@ -54,20 +60,16 @@ public class LpmLookupSuccessRateDataProvider extends AbstractTreeCommonXDataPro
      */
     private static final class LpmTablesBuilder {
 
-        //private static final double SECONDS_PER_NANOSECOND = 1E-9;
-        //private static final double RATIO = 1 / SECONDS_PER_NANOSECOND;
-
-        private static final double CENT = 100;
+        private static final double SECONDS_PER_NANOSECOND = 1E-9;
+        private static final double RATIO = 1 / SECONDS_PER_NANOSECOND;
 
         private final long fId;
 
         public final int fMeasuredQuark;
-        public final int fSecondMeasuredQuark;
 
         private final String fName;
         private final double[] fValues;
-        private double fFirstPrevCount;
-        private double fSeconfPrevCount;
+        private long fPrevCount;
 
         /**
          * Constructor
@@ -79,17 +81,15 @@ public class LpmLookupSuccessRateDataProvider extends AbstractTreeCommonXDataPro
          * @param length
          *            desired length of the series
          */
-        private LpmTablesBuilder(long id, int firstQuark, int secondQuark, String name, int length) {
+        private LpmTablesBuilder(long id, int firstQuark, String name, int length) {
             fId = id;
             fMeasuredQuark = firstQuark;
-            fSecondMeasuredQuark = secondQuark;
             fName = name;
             fValues = new double[length];
         }
 
-        private void setPrevCount(double firstPrevCount, double secondPrevCount) {
-            fFirstPrevCount = firstPrevCount;
-            fSeconfPrevCount = secondPrevCount;
+        private void setPrevCount(long prevCount) {
+            this.fPrevCount = prevCount;
         }
 
         /**
@@ -103,20 +103,19 @@ public class LpmLookupSuccessRateDataProvider extends AbstractTreeCommonXDataPro
          * @param deltaT
          *            time difference to the previous value for interpolation
          */
-        private void updateValue(int pos, double firstNewCount, double secondNewCount, long deltaT) {
+        private void updateValue(int pos, long newCount, long deltaT) {
             /**
              * Linear interpolation to compute the disk throughput between time and the
              * previous time, from the number of sectors at each time.
              */
-
-            double firstValue = firstNewCount - fFirstPrevCount;
-            double secondValue = secondNewCount - fSeconfPrevCount;
-            double sumValues = firstValue + secondValue;
-
-            fValues[pos] = (sumValues == 0) ? 0 : (firstValue) * CENT / sumValues;
-
-            fFirstPrevCount = firstNewCount;
-            fSeconfPrevCount = secondNewCount;
+            if(newCount != INVALID_COUNT_VALUE) {
+                fValues[pos] = (newCount - fPrevCount)  * RATIO / deltaT ;
+                this.fPrevCount = newCount;
+            }
+            else {
+                fValues[pos] = 0;
+                this.fPrevCount = 0;
+            }
         }
 
         public IYModel build() {
@@ -127,24 +126,24 @@ public class LpmLookupSuccessRateDataProvider extends AbstractTreeCommonXDataPro
     /**
      * Constructor
      */
-    private LpmLookupSuccessRateDataProvider(@NonNull ITmfTrace trace, @NonNull DpdkLpmAnalysisModule module) {
+    private LpmPerRuleLookupHitRateDataProvider(@NonNull ITmfTrace trace, @NonNull DpdkLpmAnalysisModule module) {
         super(trace, module);
     }
 
     /**
-     * Create an instance of {@link LpmLookupSuccessRateDataProvider}. Returns a null instance if
+     * Create an instance of {@link LpmPerRuleLookupHitRateDataProvider}. Returns a null instance if
      * the analysis module is not found.
      *
      * @param trace
      *            A trace on which we are interested to fetch a model
-     * @return A {@link LpmLookupSuccessRateDataProvider} instance. If analysis module is not
+     * @return A {@link LpmPerRuleLookupHitRateDataProvider} instance. If analysis module is not
      *         found, it returns null
      */
-    public static LpmLookupSuccessRateDataProvider create(ITmfTrace trace) {
+    public static LpmPerRuleLookupHitRateDataProvider create(ITmfTrace trace) {
         DpdkLpmAnalysisModule module = TmfTraceUtils.getAnalysisModuleOfClass(trace, DpdkLpmAnalysisModule.class, DpdkLpmAnalysisModule.ID);
         if (module != null) {
             module.schedule();
-            return new LpmLookupSuccessRateDataProvider(trace, module);
+            return new LpmPerRuleLookupHitRateDataProvider(trace, module);
         }
         return null;
     }
@@ -164,28 +163,74 @@ public class LpmLookupSuccessRateDataProvider extends AbstractTreeCommonXDataPro
     @SuppressWarnings("nls")
     @Override
     protected TmfTreeModel<@NonNull TmfTreeDataModel> getTree(ITmfStateSystem ss, Map<String, Object> parameters,
-            @Nullable IProgressMonitor monitor) {
+            @Nullable IProgressMonitor monitor) throws StateSystemDisposedException {
         List<TmfTreeDataModel> nodes = new ArrayList<>();
 
         long rootId = getId(ITmfStateSystem.ROOT_ATTRIBUTE);
         nodes.add(new TmfTreeDataModel(rootId, -1, getTrace().getName()));
 
-        /* browse the device set : net_vhost0, etc. */
+        /* browse the lpm tables */
         for (Integer tabQuark : ss.getQuarks(IDpdkLpmModelAttributes.LPM_TABS, "*")) {
             String tabName = getQuarkValue(ss, tabQuark);
             long tabId = getId(tabQuark);
             nodes.add(new TmfTreeDataModel(tabId, rootId, tabName));
 
-            int totNbHitQuark = ss.optQuarkRelative(tabQuark, IDpdkLpmModelAttributes.TOT_NB_HIT);
-            if (totNbHitQuark != ITmfStateSystem.INVALID_ATTRIBUTE) {
-                long firstMetricId = getId(totNbHitQuark);
-                nodes.add(new TmfTreeDataModel(firstMetricId, tabId, IDpdkLpmModelAttributes.HIT_PERCENT_METRIC_LABEL ));
-            }
+            int rulesQuark = ss.optQuarkRelative(tabQuark, IDpdkLpmModelAttributes.LPM_RULES);
 
-            int totNbMissQuark = ss.optQuarkRelative(tabQuark, IDpdkLpmModelAttributes.TOT_NB_MISS);
-            if (totNbMissQuark != ITmfStateSystem.INVALID_ATTRIBUTE) {
-                long secondMetricId = getId(totNbMissQuark);
-                nodes.add(new TmfTreeDataModel(secondMetricId, tabId, IDpdkLpmModelAttributes.MISS_PERCENT_METRIC_LABEL));
+            if (rulesQuark != ITmfStateSystem.INVALID_ATTRIBUTE) {
+
+                /* browse the rules */
+                final Map<Integer, Long> wordCounts = new HashMap<>();
+                for (Integer ruleQuark : ss.getQuarks(rulesQuark, "*")) {
+
+                    int nbHitQuark = ss.optQuarkRelative(ruleQuark, IDpdkLpmModelAttributes.NB_HIT);
+                    if (nbHitQuark != ITmfStateSystem.INVALID_ATTRIBUTE) {
+
+                        @Nullable Object stateValue = null;
+
+                        long endTime = ss.getCurrentEndTime();
+                        long startTime = ss.getStartTime();
+
+                        while (startTime < endTime) {
+                            ITmfStateInterval currentInterval = ss.querySingleState(endTime, nbHitQuark);
+                            stateValue = currentInterval.getValue();
+
+                            if (stateValue != null) {
+                                break;
+                            }
+                            endTime = currentInterval.getStartTime() - 1;
+                        }
+
+                        if((stateValue != null) && (stateValue instanceof Number)) {
+                                long countValue = ((Number) stateValue).longValue();
+                                wordCounts.put(ruleQuark, countValue);
+                         }
+
+                    }
+                }
+
+                final Map<Integer, Long> sortedByCount = wordCounts.entrySet()
+                        .stream()
+                        .sorted((Map.Entry.<Integer, Long> comparingByValue().reversed()))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
+                                LinkedHashMap::new));
+
+                int entriesCount = 0;
+                for(Entry<Integer, Long> entry : sortedByCount.entrySet()) {
+
+                    int ruleQuark = entry.getKey();
+                    long ruleId = getId(ruleQuark);
+                    String ruleName = getQuarkValue(ss, ruleQuark);
+                    nodes.add(new TmfTreeDataModel(ruleId, tabId, ruleName));
+
+                    entriesCount ++;
+                    if(entriesCount >= 100) {
+                        break;
+                    }
+
+
+                }
+
             }
         }
 
@@ -215,6 +260,7 @@ public class LpmLookupSuccessRateDataProvider extends AbstractTreeCommonXDataPro
     /**
      *
      */
+    @SuppressWarnings("null")
     @Override
     protected Collection<IYModel> getYSeriesModels(ITmfStateSystem ss, Map<String, Object> fetchParameters, @Nullable IProgressMonitor monitor)
             throws StateSystemDisposedException {
@@ -237,8 +283,7 @@ public class LpmLookupSuccessRateDataProvider extends AbstractTreeCommonXDataPro
             List<ITmfStateInterval> states = ss.queryFullState(prevTime);
 
             for (LpmTablesBuilder entry : builders) {
-                entry.setPrevCount(extractCount(entry.fMeasuredQuark, states),
-                        extractCount(entry.fSecondMeasuredQuark, states));
+                entry.setPrevCount(extractCount(entry.fMeasuredQuark, states, ss));
             }
         }
 
@@ -256,13 +301,12 @@ public class LpmLookupSuccessRateDataProvider extends AbstractTreeCommonXDataPro
                 List<ITmfStateInterval> states = ss.queryFullState(time);
 
                 for (LpmTablesBuilder entry : builders) {
-                    double count1 = extractCount(entry.fMeasuredQuark, states);
-                    double count2 = extractCount(entry.fSecondMeasuredQuark, states);
-
+                    long count = extractCount(entry.fMeasuredQuark, states, ss);
                     long observationPeriod = time - prevTime;
-                    entry.updateValue(i, count1, count2, observationPeriod);
+                    entry.updateValue(i, count, observationPeriod);
                 }
             }
+
             prevTime = time;
         }
         return Maps.uniqueIndex(Iterables.transform(builders, LpmTablesBuilder::build) , IYModel::getName).values();
@@ -281,33 +325,20 @@ public class LpmLookupSuccessRateDataProvider extends AbstractTreeCommonXDataPro
 
         for (Entry<Long, Integer> entry : getSelectedEntries(filter).entrySet()) {
 
-            long id = entry.getKey();
-            int metricQuark = entry.getValue();
-            String metricName = ss.getAttributeName(metricQuark);
+            int ruleQuark = entry.getValue();
+            String ruleName = ss.getAttributeName(ruleQuark);
 
-            if(metricName.equals(IDpdkLpmModelAttributes.TOT_NB_HIT) ||
-                    metricName.equals(IDpdkLpmModelAttributes.TOT_NB_MISS)) {
-                String secondMetricName, tabName;
-                int secondMetricQuark, tabQuark;
+            int setRulesQuark = ss.getParentAttributeQuark(ruleQuark);
+            String setRulesMetricName = ss.getAttributeName(setRulesQuark);
 
-                tabQuark = ss.getParentAttributeQuark(metricQuark);
-                tabName = getQuarkValue(ss, tabQuark);
+            if(setRulesMetricName.equals(IDpdkLpmModelAttributes.LPM_RULES)) {
+                long id = entry.getKey();
 
-                if(metricName.equals(IDpdkLpmModelAttributes.TOT_NB_HIT)) {
-                    secondMetricName = IDpdkLpmModelAttributes.TOT_NB_MISS;
-                } else {
-                    secondMetricName = IDpdkLpmModelAttributes.TOT_NB_HIT;
-                }
+                int tabQuark = ss.getParentAttributeQuark(setRulesQuark);
+                String tabName = getQuarkValue(ss, tabQuark);
 
-                try {
-                    secondMetricQuark = ss.getQuarkRelative(tabQuark, secondMetricName);
-                } catch (AttributeNotFoundException e) {
-                    e.printStackTrace();
-                    return builders;
-                }
-
-                String name = getTrace().getName() + '/' + tabName + '/' + metricName;
-                builders.add(new LpmTablesBuilder(id, metricQuark, secondMetricQuark, name, length));
+                String name = getTrace().getName() + '/' + tabName + '/' + ruleName;
+                builders.add(new LpmTablesBuilder(id, ruleQuark, name, length));
             }
         }
         return builders;
@@ -318,17 +349,25 @@ public class LpmLookupSuccessRateDataProvider extends AbstractTreeCommonXDataPro
      * @param states Sates
      * @return xx
      */
-    public static long extractCount(int metricQuark, List<ITmfStateInterval> states) {
+    public static long extractCount(int ruleQuark, List<ITmfStateInterval> states, ITmfStateSystem ss) {
 
-        if (metricQuark != ITmfStateSystem.INVALID_ATTRIBUTE) {
-            Object stateValue = states.get(metricQuark).getValue();
+        if (ruleQuark != ITmfStateSystem.INVALID_ATTRIBUTE) {
+
+            Object stateValue;
+            try {
+                int metricQuark = ss.getQuarkRelative(ruleQuark, IDpdkLpmModelAttributes.NB_HIT);
+                stateValue = states.get(metricQuark).getValue();
+            } catch (AttributeNotFoundException | IndexOutOfBoundsException e) {
+                e.printStackTrace();
+                return -1;
+            }
 
             if(stateValue instanceof Number) {
                 return ((Number) stateValue).longValue();
             }
         }
 
-        return 0L;
+        return INVALID_COUNT_VALUE;
     }
 
     @Override

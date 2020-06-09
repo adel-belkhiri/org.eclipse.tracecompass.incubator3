@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.rate;
+package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.rule.hit.rate;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;

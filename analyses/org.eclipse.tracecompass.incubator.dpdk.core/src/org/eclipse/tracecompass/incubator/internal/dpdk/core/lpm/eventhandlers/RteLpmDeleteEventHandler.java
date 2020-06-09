@@ -18,7 +18,9 @@ public class RteLpmDeleteEventHandler extends DpdkEventHandler {
 
     /**
      * @param layout
+     *      DpdkLpmAnalysisEventLayout
      * @param stateProvider
+     *      DpdkLpmStateProvider
      */
     public RteLpmDeleteEventHandler(@NonNull DpdkLpmAnalysisEventLayout layout, DpdkLpmStateProvider stateProvider) {
         super(layout, stateProvider);
@@ -28,7 +30,6 @@ public class RteLpmDeleteEventHandler extends DpdkEventHandler {
     public void handleEvent(ITmfStateSystemBuilder ss, ITmfEvent event) throws AttributeNotFoundException {
         DpdkLpmAnalysisEventLayout layout = getLayout();
 
-        // name=test_lpm_perf, ipv4=[0, 0, 0, 0], depth=3, next_hop=170
         /* unpack the event */
         ITmfEventField content = event.getContent();
         long ts = event.getTimestamp().getValue();

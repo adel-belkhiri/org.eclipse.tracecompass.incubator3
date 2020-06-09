@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.rate;
+package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.rule.hit.rate;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Comparator;
@@ -15,7 +15,7 @@ import java.util.Comparator;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.LpmLookupSuccessRateDataProvider;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.LpmPerRuleLookupHitRateDataProvider;
 import org.eclipse.tracecompass.tmf.core.model.tree.TmfTreeDataModel;
 import org.eclipse.tracecompass.tmf.ui.viewers.tree.AbstractSelectTreeViewer2;
 import org.eclipse.tracecompass.tmf.ui.viewers.tree.ITmfTreeColumnDataProvider;
@@ -27,7 +27,7 @@ import org.eclipse.tracecompass.tmf.ui.viewers.tree.TmfTreeColumnData;
  *
  * @author adel
  */
-public class DpdkLpmHitRateTreeViewer extends AbstractSelectTreeViewer2 {
+public class DpdkLpmRuleHitRateTreeViewer extends AbstractSelectTreeViewer2 {
 
     private final class NetworkTreeLabelProvider extends TreeLabelProvider {
 
@@ -49,8 +49,8 @@ public class DpdkLpmHitRateTreeViewer extends AbstractSelectTreeViewer2 {
      * @param parent
      *            Parent composite
      */
-    public DpdkLpmHitRateTreeViewer(Composite parent) {
-        super(parent, 1, LpmLookupSuccessRateDataProvider.ID);
+    public DpdkLpmRuleHitRateTreeViewer(Composite parent) {
+        super(parent, 1, LpmPerRuleLookupHitRateDataProvider.ID);
         setLabelProvider(new NetworkTreeLabelProvider());
     }
 

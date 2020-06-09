@@ -32,10 +32,12 @@ public abstract class DpdkEventHandler {
     /**
      * Handle a specific event.
      *
-     * @param ss the state system to write to
-     * @param event the event
+     * @param ss
+     *      the state system to write to
+     * @param event
+     *      the event
      * @throws AttributeNotFoundException
-     *             if the attribute is not yet create
+     *      if the attribute is not yet create
      */
     public abstract void handleEvent(ITmfStateSystemBuilder ss, ITmfEvent event) throws AttributeNotFoundException;
 

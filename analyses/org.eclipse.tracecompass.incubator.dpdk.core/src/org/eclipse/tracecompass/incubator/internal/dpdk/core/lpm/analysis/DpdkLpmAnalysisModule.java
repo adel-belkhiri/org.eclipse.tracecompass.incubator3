@@ -20,7 +20,7 @@ import org.eclipse.tracecompass.tmf.core.trace.ITmfTrace;
 import org.eclipse.tracecompass.tmf.core.trace.TmfTrace;
 
 /**
- * Analysis Module for LPM DPDK
+ * Analysis Module for DPDK LPM
  *
  * @author Adel Belkhiri
  */

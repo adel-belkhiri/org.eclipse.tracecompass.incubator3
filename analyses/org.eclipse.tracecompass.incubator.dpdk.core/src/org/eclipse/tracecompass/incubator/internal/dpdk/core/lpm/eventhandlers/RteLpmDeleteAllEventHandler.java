@@ -16,7 +16,9 @@ public class RteLpmDeleteAllEventHandler extends DpdkEventHandler {
 
     /**
      * @param layout
+     *      DpdkLpmAnalysisEventLayout
      * @param stateProvider
+     *      DpdkLpmStateProvider
      */
     public RteLpmDeleteAllEventHandler(@NonNull DpdkLpmAnalysisEventLayout layout, DpdkLpmStateProvider stateProvider) {
         super(layout, stateProvider);

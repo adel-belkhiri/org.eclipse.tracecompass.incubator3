@@ -16,7 +16,7 @@ import org.eclipse.tracecompass.tmf.core.util.Pair;
 import com.google.common.net.InetAddresses;
 
 /**
- * @author adel
+ * @author  Adel Belkhiri
  *
  */
 public class LpmTableModel {

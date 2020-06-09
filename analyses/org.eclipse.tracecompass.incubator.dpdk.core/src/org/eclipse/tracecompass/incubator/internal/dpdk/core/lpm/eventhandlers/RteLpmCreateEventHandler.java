@@ -15,7 +15,9 @@ public class RteLpmCreateEventHandler extends DpdkEventHandler {
 
     /**
      * @param layout
+     *      DpdkLpmAnalysisEventLayout
      * @param stateProvider
+     *      DpdkLpmStateProvider
      */
     public RteLpmCreateEventHandler(@NonNull DpdkLpmAnalysisEventLayout layout, DpdkLpmStateProvider stateProvider) {
         super(layout, stateProvider);
@@ -25,10 +27,8 @@ public class RteLpmCreateEventHandler extends DpdkEventHandler {
     public void handleEvent(ITmfStateSystemBuilder ss, ITmfEvent event) throws AttributeNotFoundException {
         DpdkLpmAnalysisEventLayout layout = getLayout();
 
-        //Content   name=test_lpm_perf, max_rules=2000000, number_tlb8s=2048
         /* unpack the event */
         ITmfEventField content = event.getContent();
-        //long ts = event.getTimestamp().getValue();
 
         String name = content.getFieldValue(String.class, layout.fieldName());
         Integer maxRules = content.getFieldValue(Integer.class, layout.fieldMaxRules());

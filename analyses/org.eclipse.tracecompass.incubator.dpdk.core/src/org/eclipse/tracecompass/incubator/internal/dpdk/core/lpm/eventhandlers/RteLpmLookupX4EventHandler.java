@@ -16,7 +16,9 @@ public class RteLpmLookupX4EventHandler extends DpdkEventHandler {
 
     /**
      * @param layout
+     *      DpdkLpmAnalysisEventLayout
      * @param stateProvider
+     *      DpdkLpmStateProvider
      */
     public RteLpmLookupX4EventHandler(@NonNull DpdkLpmAnalysisEventLayout layout, DpdkLpmStateProvider stateProvider) {
         super(layout, stateProvider);

@@ -4,7 +4,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osgi.util.NLS;
 
 /**
- * @author adel
+ * @author  Adel Belkhiri
  *
  */
 

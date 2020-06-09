@@ -17,7 +17,9 @@ public class RteLpmLookupEventHandler extends DpdkEventHandler {
 
     /**
      * @param layout
+     *      DpdkLpmAnalysisEventLayout
      * @param stateProvider
+     *      DpdkLpmStateProvider
      */
     public RteLpmLookupEventHandler(@NonNull DpdkLpmAnalysisEventLayout layout, DpdkLpmStateProvider stateProvider) {
         super(layout, stateProvider);
@@ -27,7 +29,6 @@ public class RteLpmLookupEventHandler extends DpdkEventHandler {
     public void handleEvent(ITmfStateSystemBuilder ss, ITmfEvent event) throws AttributeNotFoundException {
         DpdkLpmAnalysisEventLayout layout = getLayout();
 
-        // name=test_lpm_perf, ipv4=12345, rule_depth=3, next_hop=170
         /* unpack the event */
         ITmfEventField content = event.getContent();
         long ts = event.getTimestamp().getValue();
@@ -35,10 +36,9 @@ public class RteLpmLookupEventHandler extends DpdkEventHandler {
         String name = content.getFieldValue(String.class, layout.fieldName());
         Long ipv4 = content.getFieldValue(Long.class, layout.fieldIPv4Addr());
         Integer depth = content.getFieldValue(Integer.class, layout.fieldRuleDepth());
-        //Integer nextHop = content.getFieldValue(Integer.class, layout.fieldNextHop());
         Integer ret = content.getFieldValue(Integer.class, layout.fieldOpResult());
 
-        if (name == null || ipv4 == null || depth == null || /*nextHop == null ||*/ ret == null) {
+        if (name == null || ipv4 == null || depth == null || ret == null) {
             throw new IllegalArgumentException(layout.eventRteLpmLookup() + " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 

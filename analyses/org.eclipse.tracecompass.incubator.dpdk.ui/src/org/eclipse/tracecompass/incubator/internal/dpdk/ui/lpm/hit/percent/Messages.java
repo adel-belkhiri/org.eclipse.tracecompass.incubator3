@@ -1,4 +1,4 @@
-package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.rate;
+package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.percent;
 
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.osgi.util.NLS;
@@ -10,7 +10,7 @@ import org.eclipse.osgi.util.NLS;
 @SuppressWarnings("javadoc")
 public class Messages extends NLS {
 
-    private static String BUNDLE_NAME = "org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.rate.messages";  //$NON-NLS-1$
+    private static String BUNDLE_NAME = "org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.percent.messages";  //$NON-NLS-1$
 
     public static @Nullable String DpdkLpmHitRateViewer_Title;
     public static @Nullable String DpdkLpmHitRateViewer_XAxis;

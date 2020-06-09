@@ -8,4 +8,4 @@
  *******************************************************************************/
 
 @org.eclipse.jdt.annotation.NonNullByDefault
-package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.rate;
+package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.percent;

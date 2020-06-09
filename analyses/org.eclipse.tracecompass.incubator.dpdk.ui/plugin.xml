@@ -46,22 +46,20 @@
       </view>
       <view
             category="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk"
-            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.rate.DpdkLpmHitRateView"
-            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.rate.view"
-            name="LPM Lookup Success Rate"
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.percent.DpdkLpmHitPercentageView"
+            icon="icons/eview16/scatter.png"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.percent.view"
+            name="LPM Lookup Hit/Miss Percentage"
             restorable="true">
       </view>
-   </extension>
-   <extension
-         point="org.eclipse.tracecompass.tmf.core.dataprovider">
-      <dataProviderFactory
-            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.DpdkVhostUserAvailDescrDataProviderFactory"
-            id="org.eclipse.tracecompass.incubator.dpdk.vhost.data.provider">
-      </dataProviderFactory>
-      <dataProviderFactory
-            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.packet.rate.DpdkVhostUserPacketRateDataProviderFactory"
-            id="org.eclipse.tracecompass.incubator.dpdk.vhost.packet.rate.data.provider">
-      </dataProviderFactory>
+      <view
+            category="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk"
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.rule.hit.rate.DpdkLpmRuleHitRateView"
+            icon="icons/eview16/scatter.png"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.rule.hit.rate.view"
+            name="Per-rule lookup hit"
+            restorable="true">
+      </view>
    </extension>
 
 </plugin>

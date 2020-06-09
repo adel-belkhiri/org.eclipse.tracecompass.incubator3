@@ -11,7 +11,7 @@ import org.eclipse.jdt.annotation.NonNull;
 public class DpdkLpmAnalysisEventLayout {
 
     /**
-     * This event Indicates
+     * This event Indicates the creation of an LPM table
      *
      * @return The name of the event
      * @since 3.0
@@ -21,7 +21,7 @@ public class DpdkLpmAnalysisEventLayout {
     }
 
     /**
-     * This event Indicates
+     * This event Indicates the freeing of an LPM table
      *
      * @return The name of the event
      * @since 3.0
@@ -41,7 +41,7 @@ public class DpdkLpmAnalysisEventLayout {
     }
 
     /**
-     * This event Indicates
+     * This event Indicates the deletion of an LPM rule
      *
      * @return The name of the event
      * @since 3.0
@@ -51,7 +51,7 @@ public class DpdkLpmAnalysisEventLayout {
     }
 
     /**
-     * This event Indicates
+     * This event Indicates the deletion of all LPM rules
      *
      * @return The name of the event
      * @since 3.0
@@ -61,7 +61,7 @@ public class DpdkLpmAnalysisEventLayout {
     }
 
     /**
-     * This event Indicates
+     * This event is triggered when a lookup is initiated
      *
      * @return The name of the event
      * @since 3.0
@@ -71,7 +71,7 @@ public class DpdkLpmAnalysisEventLayout {
     }
 
     /**
-     * This event Indicates
+     * This event is triggered when a bulk (x4) lookup is initiated
      *
      * @return The name of the event
      * @since 3.0
@@ -81,7 +81,7 @@ public class DpdkLpmAnalysisEventLayout {
     }
 
     /**
-     * This event Indicates
+     * This event is triggered when a bulk lookup is initiated
      *
      * @return The name of the event
      * @since 3.0
@@ -92,7 +92,7 @@ public class DpdkLpmAnalysisEventLayout {
 
     /**
     *
-    * @return available index
+    * @return
     * @since 3.0
     */
     public @NonNull String fieldName() {
@@ -102,7 +102,7 @@ public class DpdkLpmAnalysisEventLayout {
 
     /**
     *
-    * @return available index
+    * @return
     * @since 3.0
     */
     public @NonNull String fieldMaxRules() {
@@ -111,7 +111,7 @@ public class DpdkLpmAnalysisEventLayout {
 
     /**
     *
-    * @return available index
+    * @return
     * @since 3.0
     */
     public @NonNull String fieldIPv4Addr() {
@@ -120,7 +120,7 @@ public class DpdkLpmAnalysisEventLayout {
 
     /**
     *
-    * @return available index
+    * @return
     * @since 3.0
     */
     public @NonNull String fieldAddrLength() {
@@ -130,7 +130,7 @@ public class DpdkLpmAnalysisEventLayout {
 
     /**
     *
-    * @return available index
+    * @return
     * @since 3.0
     */
     public @NonNull String fieldNextHop() {
@@ -140,7 +140,7 @@ public class DpdkLpmAnalysisEventLayout {
 
     /**
     *
-    * @return available index
+    * @return
     * @since 3.0
     */
     public @NonNull String fieldIps() {
@@ -150,7 +150,7 @@ public class DpdkLpmAnalysisEventLayout {
 
     /**
     *
-    * @return available index
+    * @return
     * @since 3.0
     */
     public @NonNull String fieldNextHops() {
@@ -159,7 +159,7 @@ public class DpdkLpmAnalysisEventLayout {
 
     /**
     *
-    * @return available index
+    * @return
     * @since 3.0
     */
     public @NonNull String fieldTblEntries() {
@@ -168,7 +168,7 @@ public class DpdkLpmAnalysisEventLayout {
 
     /**
     *
-    * @return available index
+    * @return
     * @since 3.0
     */
     public @NonNull String fieldNumberOfIpAddresses() {
@@ -177,7 +177,7 @@ public class DpdkLpmAnalysisEventLayout {
 
     /**
     *
-    * @return available index
+    * @return
     * @since 3.0
     */
     public @NonNull String fieldDefaultValue() {
@@ -186,7 +186,7 @@ public class DpdkLpmAnalysisEventLayout {
 
     /**
     *
-    * @return available index
+    * @return
     * @since 3.0
     */
     public @NonNull String fieldRuleDepth() {
@@ -195,7 +195,7 @@ public class DpdkLpmAnalysisEventLayout {
 
     /**
     *
-    * @return available index
+    * @return
     * @since 3.0
     */
     public @NonNull String fieldDepth() {
@@ -204,7 +204,7 @@ public class DpdkLpmAnalysisEventLayout {
 
     /**
     *
-    * @return available index
+    * @return
     * @since 3.0
     */
     public @NonNull String fieldOpResult() {

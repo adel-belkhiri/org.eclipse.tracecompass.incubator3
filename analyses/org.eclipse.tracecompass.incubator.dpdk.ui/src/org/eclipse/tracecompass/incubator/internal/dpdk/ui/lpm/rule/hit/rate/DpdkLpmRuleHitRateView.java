@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  **********************************************************************/
 
-package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.rate;
+package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.rule.hit.rate;
 
 import java.util.Objects;
 
@@ -24,27 +24,27 @@ import org.eclipse.tracecompass.tmf.ui.views.xychart.TmfChartView;
  *
  * @author Adel
  */
-public class DpdkLpmHitRateView extends TmfChartView {
+public class DpdkLpmRuleHitRateView extends TmfChartView {
 
     /** ID string */
-    public static final String ID = "org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.rate.view"; //$NON-NLS-1$
+    public static final String ID = "org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.rule.hit.rate.view"; //$NON-NLS-1$
     private static final double RESOLUTION = 0.3;
 
     /**
      * Constructor
      */
-    public DpdkLpmHitRateView() {
+    public DpdkLpmRuleHitRateView() {
         super(Messages.DpdkLpmHitRateView_Title);
     }
 
     @Override
     protected TmfXYChartViewer createChartViewer(@Nullable Composite parent) {
         TmfXYChartSettings settings = new TmfXYChartSettings(Messages.DpdkLpmHitRateViewer_Title, Messages.DpdkLpmHitRateViewer_XAxis, Messages.DpdkLpmHitRateViewer_YAxis, RESOLUTION);
-        return new DpdkLpmHitRateViewer(parent, settings);
+        return new DpdkLpmRuleHitRateViewer(parent, settings);
     }
 
     @Override
     protected @NonNull TmfViewer createLeftChildViewer(@Nullable Composite parent) {
-        return new DpdkLpmHitRateTreeViewer(Objects.requireNonNull(parent));
+        return new DpdkLpmRuleHitRateTreeViewer(Objects.requireNonNull(parent));
     }
 }

@@ -4,6 +4,26 @@
    <extension
          point="org.eclipse.linuxtools.tmf.core.analysis">
       <module
+            analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.vhost.analysis.DpdkVhostAnalysisModule"
+            automatic="false"
+            id="org.eclipse.tracecompass.incubator.dpdk.vhost.analysis"
+            name="DPDK Vhost Analysis">
+         <tracetype
+               applies="true"
+               class="org.eclipse.tracecompass.tmf.core.trace.TmfTrace">
+         </tracetype>
+      </module>
+      <module
+            analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.analysis.DpdkLogicalCoreAnalysisModule"
+            automatic="true"
+            id="org.eclipse.tracecompass.incubator.dpdk.lcore.analysis"
+            name="DPDK LCore Analysis">
+         <tracetype
+               applies="true"
+               class="org.eclipse.tracecompass.tmf.core.trace.TmfTrace">
+         </tracetype>
+      </module>
+      <module
             analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmAnalysisModule"
             automatic="true"
             id="org.eclipse.tracecompass.incubator.dpdk.lpm.analysis"
@@ -15,36 +35,14 @@
       </module>
    </extension>
    <extension
-         point="org.eclipse.linuxtools.tmf.core.analysis">
-      <module
-            analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.analysis.DpdkLogicalCoreAnalysisModule"
-            automatic="true"
-            id="org.eclipse.tracecompass.incubator.dpdk.lcore.analysis"
-            name="DPDK LCore Analysis">
-         <tracetype
-               applies="true"
-               class="org.eclipse.tracecompass.tmf.core.trace.TmfTrace">
-         </tracetype>
-      </module>
-   </extension>
-   <extension
-         point="org.eclipse.linuxtools.tmf.core.analysis">
-      <module
-            analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.vhost.analysis.DpdkVhostAnalysisModule"
-            automatic="false"
-            id="org.eclipse.tracecompass.incubator.dpdk.vhost.analysis"
-            name="DPDK Vhost Analysis">
-         <tracetype
-               applies="true"
-               class="org.eclipse.tracecompass.tmf.core.trace.TmfTrace">
-         </tracetype>
-      </module>
-   </extension>
-   <extension
          point="org.eclipse.tracecompass.tmf.core.dataprovider">
       <dataProviderFactory
-            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmHitRateDataProviderFactory"
-            id="org.eclipse.tracecompass.incubator.dpdk.lpm.lookup.success.rate.data.provider">
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmHitMissRatioDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.dpdk.lpm.lookup.hit.miss.ratio.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmPerRuleHitRateDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.dpdk.lpm.per.rule.lookup.hit.rate.data.provider">
       </dataProviderFactory>
    </extension>
 

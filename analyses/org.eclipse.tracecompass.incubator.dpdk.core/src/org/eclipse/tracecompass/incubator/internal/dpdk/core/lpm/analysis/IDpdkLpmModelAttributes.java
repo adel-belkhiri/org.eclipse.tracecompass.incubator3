@@ -4,7 +4,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 
 /**
- * @author adel
+ * @author  Adel Belkhiri
  *
  */
 @SuppressWarnings("javadoc")
