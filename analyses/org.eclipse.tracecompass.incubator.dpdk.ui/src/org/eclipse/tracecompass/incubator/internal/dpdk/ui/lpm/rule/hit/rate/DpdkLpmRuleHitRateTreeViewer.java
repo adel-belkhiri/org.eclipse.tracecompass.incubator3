@@ -63,4 +63,8 @@ public class DpdkLpmRuleHitRateTreeViewer extends AbstractSelectTreeViewer2 {
         };
     }
 
+    @Override
+    public void updateContent(long start, long end, boolean isSelection) {
+        super.updateContent(start, end, isSelection);
+    }
 }

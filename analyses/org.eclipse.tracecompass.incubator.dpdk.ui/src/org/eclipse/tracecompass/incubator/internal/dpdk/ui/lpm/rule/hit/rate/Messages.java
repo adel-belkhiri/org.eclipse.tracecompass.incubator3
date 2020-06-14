@@ -21,6 +21,16 @@ public class Messages extends NLS {
     public static @Nullable String DpdkLpmHitRateView_Title;
     public static @Nullable String DpdkLpmHitRateTreeViewer_Legend;
 
+    public static @Nullable String ParameterDialog_ModifyParameter;
+    public static @Nullable String ParameterDialog_Customize;
+    public static @Nullable String ParameterDialog_OptionsGroupLabel;
+    public static @Nullable String ParameterDialog_AscendingOption;
+    public static @Nullable String ParameterDialog_DescendingOption;
+    public static @Nullable String ParameterDialog_OutOfRangeErrorMsg;
+    public static @Nullable String ParameterDialog_NotNumberErrorMsg;
+    public static @Nullable String ParameterDialog_MaxNumberTextLabel;
+    public static @Nullable String ParameterDialog_TextRulesMaxNumberToolTip;
+
 
     static {
         // initialize resource bundle

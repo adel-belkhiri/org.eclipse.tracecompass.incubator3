@@ -3,6 +3,7 @@ package org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -53,6 +54,9 @@ public class LpmPerRuleLookupHitRateDataProvider extends AbstractTreeCommonXData
 
 
     private static final long INVALID_COUNT_VALUE = -1;
+
+    private int maxRulesNumber = 10;
+    private boolean ascendingSortingOrder = true;
 
     /**
      * Inline class to encapsulate all the values required to build a series. Allows
@@ -157,7 +161,7 @@ public class LpmPerRuleLookupHitRateDataProvider extends AbstractTreeCommonXData
     }
 
     /**
-     *
+     * Get LPM rules Tree
      */
 
     @SuppressWarnings("nls")
@@ -180,7 +184,7 @@ public class LpmPerRuleLookupHitRateDataProvider extends AbstractTreeCommonXData
             if (rulesQuark != ITmfStateSystem.INVALID_ATTRIBUTE) {
 
                 /* browse the rules */
-                final Map<Integer, Long> wordCounts = new HashMap<>();
+                final Map<Integer, Long> lpmRulesMap = new HashMap<>();
                 for (Integer ruleQuark : ss.getQuarks(rulesQuark, "*")) {
 
                     int nbHitQuark = ss.optQuarkRelative(ruleQuark, IDpdkLpmModelAttributes.NB_HIT);
@@ -203,34 +207,35 @@ public class LpmPerRuleLookupHitRateDataProvider extends AbstractTreeCommonXData
 
                         if((stateValue != null) && (stateValue instanceof Number)) {
                                 long countValue = ((Number) stateValue).longValue();
-                                wordCounts.put(ruleQuark, countValue);
+                                lpmRulesMap.put(ruleQuark, countValue);
                          }
 
                     }
                 }
 
-                final Map<Integer, Long> sortedByCount = wordCounts.entrySet()
+                Comparator<Entry<Integer, Long>> comparator = this.ascendingSortingOrder ?
+                        (Map.Entry.<Integer, Long> comparingByValue().reversed()) :
+                            Map.Entry.<Integer, Long> comparingByValue();
+
+                final Map<Integer, Long> sortedLpmRulesMap = lpmRulesMap.entrySet()
                         .stream()
-                        .sorted((Map.Entry.<Integer, Long> comparingByValue().reversed()))
+                        .sorted(comparator)
                         .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
                                 LinkedHashMap::new));
 
-                int entriesCount = 0;
-                for(Entry<Integer, Long> entry : sortedByCount.entrySet()) {
+                int rulesCount = 0;
+                for(Entry<Integer, Long> entry : sortedLpmRulesMap.entrySet()) {
 
                     int ruleQuark = entry.getKey();
                     long ruleId = getId(ruleQuark);
                     String ruleName = getQuarkValue(ss, ruleQuark);
                     nodes.add(new TmfTreeDataModel(ruleId, tabId, ruleName));
 
-                    entriesCount ++;
-                    if(entriesCount >= 100) {
+                    rulesCount ++;
+                    if(rulesCount >= this.maxRulesNumber) {
                         break;
                     }
-
-
                 }
-
             }
         }
 
@@ -315,8 +320,11 @@ public class LpmPerRuleLookupHitRateDataProvider extends AbstractTreeCommonXData
     /**
      *
      * @param ss
+     *      ITmfStateSystem
      * @param filter
+     *      SelectionTimeQueryFilter
      * @return
+     *      List<LpmTablesBuilder>
      */
     private List<LpmTablesBuilder> initBuilders(ITmfStateSystem ss, SelectionTimeQueryFilter filter) {
 
@@ -345,8 +353,12 @@ public class LpmPerRuleLookupHitRateDataProvider extends AbstractTreeCommonXData
     }
 
     /**
-     * @param metricQuark Quark
-     * @param states Sates
+     * @param ruleQuark
+     *      Rule Quark
+     * @param states
+     *      List<ITmfStateInterval>
+     * @param ss
+     *      ITmfStateSystem
      * @return xx
      */
     public static long extractCount(int ruleQuark, List<ITmfStateInterval> states, ITmfStateSystem ss) {
@@ -372,7 +384,7 @@ public class LpmPerRuleLookupHitRateDataProvider extends AbstractTreeCommonXData
 
     @Override
     protected boolean isCacheable() {
-        return true;
+        return false;
     }
 
     @Override
@@ -380,4 +392,19 @@ public class LpmPerRuleLookupHitRateDataProvider extends AbstractTreeCommonXData
         return PROVIDER_TITLE;
     }
 
+    /**
+     * @param value
+     *      Maximum number of LPM rules to show in the view
+     */
+    public void setMaxRulesNumber(int value) {
+        assert(value > 0 && value <= 100);
+        this.maxRulesNumber = value;
+    }
+
+    /**
+     * @param ascending sorting order
+     */
+    public void setSortingOrder(boolean ascending) {
+        this.ascendingSortingOrder = ascending;
+    }
 }
