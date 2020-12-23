@@ -8,4 +8,4 @@
  *******************************************************************************/
 
 @org.eclipse.jdt.annotation.NonNullByDefault
-package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.percent;
+package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lookup.object.hit.percentage;

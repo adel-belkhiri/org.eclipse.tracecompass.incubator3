@@ -6,7 +6,7 @@ import java.util.Map;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.tracecompass.common.core.NonNullUtils;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers.DpdkEventHandler;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers.DpdkLpmAnalysisEventLayout;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers.DpdkLookupObjectsAnalysisEventLayout;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers.RteLpmAddEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers.RteLpmCreateEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers.RteLpmDeleteAllEventHandler;
@@ -28,7 +28,7 @@ import com.google.common.collect.ImmutableMap;
  *
  */
 @SuppressWarnings("nls")
-public class DpdkLpmStateProvider extends AbstractTmfStateProvider {
+public class DpdkLpmObjectsStateProvider extends AbstractTmfStateProvider {
 
     private static final int VERSION = 1;
 
@@ -36,9 +36,8 @@ public class DpdkLpmStateProvider extends AbstractTmfStateProvider {
     private final Map<String, DpdkEventHandler> fEventNames;
 
     /* Events layout */
-    private final DpdkLpmAnalysisEventLayout fLayout;
-
-    private final Map<String, LpmTableModel> fTables = new HashMap<>();
+    private final DpdkLookupObjectsAnalysisEventLayout fLayout;
+    private final Map<Integer, LpmLookupObjectModel> fLpmObjects = new HashMap<>();
 
 
     /**
@@ -46,7 +45,7 @@ public class DpdkLpmStateProvider extends AbstractTmfStateProvider {
      * @param layout layout
      * @param id id
      */
-    protected DpdkLpmStateProvider(TmfTrace trace, DpdkLpmAnalysisEventLayout layout, String id) {
+    protected DpdkLpmObjectsStateProvider(TmfTrace trace, DpdkLookupObjectsAnalysisEventLayout layout, String id) {
         super(trace, id);
         fLayout = layout;
         fEventNames = buildEventNames(layout);
@@ -80,7 +79,7 @@ public class DpdkLpmStateProvider extends AbstractTmfStateProvider {
      */
     @Override
     public ITmfStateProvider getNewInstance() {
-        return new DpdkLpmStateProvider(this.getTrace(), this.fLayout, "Dpdk LPM Analysis");
+        return new DpdkLpmObjectsStateProvider(this.getTrace(), this.fLayout, "Dpdk LPM Analysis");
     }
 
 
@@ -89,11 +88,11 @@ public class DpdkLpmStateProvider extends AbstractTmfStateProvider {
      * @param layout :
      *
      */
-    private Map<String, DpdkEventHandler> buildEventNames(DpdkLpmAnalysisEventLayout layout) {
+    private Map<String, DpdkEventHandler> buildEventNames(DpdkLookupObjectsAnalysisEventLayout layout) {
 
         ImmutableMap.Builder<String, DpdkEventHandler> builder = ImmutableMap.builder();
 
-         /* OpenvSwitch Events */
+         /* LPM events */
          builder.put(layout.eventRteLpmCreate(),  new RteLpmCreateEventHandler(layout, this));
          builder.put(layout.eventRteLpmAdd(),  new RteLpmAddEventHandler(layout, this));
          builder.put(layout.eventRteLpmDelete(),  new RteLpmDeleteEventHandler(layout, this));
@@ -133,9 +132,9 @@ public class DpdkLpmStateProvider extends AbstractTmfStateProvider {
     /**
      * @param name
      */
-    public void addLpmTable(String name) {
-        if(!fTables.containsKey(name)) {
-            fTables.put(name, new LpmTableModel(name, NonNullUtils.checkNotNull(getStateSystemBuilder())));
+    public void addLpmTable(Integer id, String name) {
+        if(!fLpmObjects.containsKey(id)) {
+            fLpmObjects.put(id, new LpmLookupObjectModel(id, name, NonNullUtils.checkNotNull(getStateSystemBuilder())));
         }
     }
 
@@ -143,9 +142,9 @@ public class DpdkLpmStateProvider extends AbstractTmfStateProvider {
      * @param name
      * @return
      */
-    public @Nullable LpmTableModel getLpmTable(String name) {
-        if(fTables.containsKey(name)) {
-            return fTables.get(name);
+    public @Nullable LpmLookupObjectModel getLpmTable(Integer id) {
+        if(fLpmObjects.containsKey(id)) {
+            return fLpmObjects.get(id);
         }
         return null;
     }

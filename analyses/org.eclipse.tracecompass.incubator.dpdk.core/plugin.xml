@@ -24,10 +24,50 @@
          </tracetype>
       </module>
       <module
-            analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmAnalysisModule"
+            analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmObjectLookupAnalysisModule"
             automatic="true"
-            id="org.eclipse.tracecompass.incubator.dpdk.lpm.analysis"
-            name="DPDK LPM Analysis">
+            id="org.eclipse.tracecompass.incubator.dpdk.lpm.object.lookup.analysis"
+            name="DPDK Lpm Objects Lookup Analysis">
+         <tracetype
+               applies="true"
+               class="org.eclipse.tracecompass.tmf.core.trace.TmfTrace">
+         </tracetype>
+      </module>
+      <module
+            analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.classifier.analysis.DpdkClassifierAnalysisModule"
+            automatic="true"
+            id="org.eclipse.tracecompass.incubator.dpdk.classifier.analysis"
+            name="DPDK Classifier Analysis">
+         <tracetype
+               applies="true"
+               class="org.eclipse.tracecompass.tmf.core.trace.TmfTrace">
+         </tracetype>
+      </module>
+      <module
+            analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.table.analysis.DpdkTableAnalysisModule"
+            automatic="true"
+            id="org.eclipse.tracecompass.incubator.dpdk.tables.analysis"
+            name="DPDK Table Analysis">
+         <tracetype
+               applies="true"
+               class="org.eclipse.tracecompass.tmf.core.trace.TmfTrace">
+         </tracetype>
+      </module>
+      <module
+            analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.DpdkPipelineAnalysisModule"
+            automatic="true"
+            id="org.eclipse.tracecompass.incubator.dpdk.pipeline.analysis"
+            name="DPDK Pipelines Analysis">
+         <tracetype
+               applies="true"
+               class="org.eclipse.tracecompass.tmf.core.trace.TmfTrace">
+         </tracetype>
+      </module>
+      <module
+            analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis.DpdkEventDevAnalysisModule"
+            automatic="true"
+            id="org.eclipse.tracecompass.incubator.dpdk.eventdev.analysis"
+            name="DPDK EventDev Analysis">
          <tracetype
                applies="true"
                class="org.eclipse.tracecompass.tmf.core.trace.TmfTrace">
@@ -37,12 +77,36 @@
    <extension
          point="org.eclipse.tracecompass.tmf.core.dataprovider">
       <dataProviderFactory
-            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmHitMissRatioDataProviderFactory"
-            id="org.eclipse.tracecompass.incubator.dpdk.lpm.lookup.hit.miss.ratio.data.provider">
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmObjectLookupHitPercentageDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.dpdk.lpm.object.lookup.hit.miss.ratio.data.provider">
       </dataProviderFactory>
       <dataProviderFactory
             class="org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmPerRuleHitRateDataProviderFactory"
             id="org.eclipse.tracecompass.incubator.dpdk.lpm.per.rule.lookup.hit.rate.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.classifier.analysis.ClassifierPerRuleLookupHitRateDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.classifier.per.rule.lookup.hit.rate.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.table.analysis.TableLookupHitRateDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.table.lookup.hit.rate.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.PipelinePortsPacketRateDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.ports.packets.rate.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.InterPipelinesPacketRateDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.core.interpipeline.packets.rate.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.vhost.analysis.DpdkVhostUserPacketRateDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.dpdk.vhost.packet.rate.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.vhost.analysis.DpdkVhostUserAvailDescrDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.dpdk.vhost.data.provider">
       </dataProviderFactory>
    </extension>
 

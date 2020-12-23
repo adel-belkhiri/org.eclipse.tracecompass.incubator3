@@ -36,17 +36,17 @@ import com.google.common.collect.Maps;
  */
 
 @SuppressWarnings("restriction")
-public class LpmLookupHitMissRatioDataProvider extends AbstractTreeCommonXDataProvider<@NonNull DpdkLpmAnalysisModule, @NonNull TmfTreeDataModel> {
+public class DpdkLpmObjectHitPercentageDataProvider extends AbstractTreeCommonXDataProvider<@NonNull DpdkLpmObjectLookupAnalysisModule, @NonNull TmfTreeDataModel> {
 
     /**
-     * Title used to create XY models for the {@link LpmLookupHitMissRatioDataProvider}.
+     * Title used to create XY models for the {@link DpdkLpmObjectHitPercentageDataProvider}.
      */
     public static final String PROVIDER_TITLE = IDpdkLpmModelAttributes.LPM_LOOKUP_DATA_PROVIDER_TITLE;
 
     /**
      * Extension point ID.
      */
-    public static final String ID = "org.eclipse.tracecompass.incubator.dpdk.lpm.lookup.hit.miss.ratio.data.provider"; //$NON-NLS-1$
+    public static final String ID = "org.eclipse.tracecompass.incubator.dpdk.lpm.object.lookup.hit.miss.ratio.data.provider"; //$NON-NLS-1$
 
     /**
      * Inline class to encapsulate all the values required to build a series.
@@ -123,24 +123,24 @@ public class LpmLookupHitMissRatioDataProvider extends AbstractTreeCommonXDataPr
     /**
      * Constructor
      */
-    private LpmLookupHitMissRatioDataProvider(@NonNull ITmfTrace trace, @NonNull DpdkLpmAnalysisModule module) {
+    private DpdkLpmObjectHitPercentageDataProvider(@NonNull ITmfTrace trace, @NonNull DpdkLpmObjectLookupAnalysisModule module) {
         super(trace, module);
     }
 
     /**
-     * Create an instance of {@link LpmLookupHitMissRatioDataProvider}. Returns a null instance if
+     * Create an instance of {@link DpdkLpmObjectHitPercentageDataProvider}. Returns a null instance if
      * the analysis module is not found.
      *
      * @param trace
      *            A trace on which we are interested to fetch a model
-     * @return A {@link LpmLookupHitMissRatioDataProvider} instance. If analysis module is not
+     * @return A {@link DpdkLpmObjectHitPercentageDataProvider} instance. If analysis module is not
      *         found, it returns null
      */
-    public static LpmLookupHitMissRatioDataProvider create(ITmfTrace trace) {
-        DpdkLpmAnalysisModule module = TmfTraceUtils.getAnalysisModuleOfClass(trace, DpdkLpmAnalysisModule.class, DpdkLpmAnalysisModule.ID);
+    public static DpdkLpmObjectHitPercentageDataProvider create(ITmfTrace trace) {
+        DpdkLpmObjectLookupAnalysisModule module = TmfTraceUtils.getAnalysisModuleOfClass(trace, DpdkLpmObjectLookupAnalysisModule.class, DpdkLpmObjectLookupAnalysisModule.ID);
         if (module != null) {
             module.schedule();
-            return new LpmLookupHitMissRatioDataProvider(trace, module);
+            return new DpdkLpmObjectHitPercentageDataProvider(trace, module);
         }
         return null;
     }
@@ -166,19 +166,22 @@ public class LpmLookupHitMissRatioDataProvider extends AbstractTreeCommonXDataPr
         long rootId = getId(ITmfStateSystem.ROOT_ATTRIBUTE);
         nodes.add(new TmfTreeDataModel(rootId, -1, getTrace().getName()));
 
-        /* browse the device set : net_vhost0, etc. */
-        for (Integer tabQuark : ss.getQuarks(IDpdkLpmModelAttributes.LPM_TABS, "*")) {
-            String tabName = getQuarkValue(ss, tabQuark);
-            long tabId = getId(tabQuark);
-            nodes.add(new TmfTreeDataModel(tabId, rootId, tabName));
+        /* browse LPM lookup objects */
+        List<@NonNull Integer> lookupObjQuarks = new ArrayList<>() ;
+        lookupObjQuarks.addAll(ss.getQuarks(IDpdkLpmModelAttributes.LPM_OBJS, "*"));
 
-            int totNbHitQuark = ss.optQuarkRelative(tabQuark, IDpdkLpmModelAttributes.TOT_NB_HIT);
+        for (Integer objQuark : lookupObjQuarks) {
+            String objName = getQuarkValue(ss, objQuark);
+            long tabId = getId(objQuark);
+            nodes.add(new TmfTreeDataModel(tabId, rootId, objName));
+
+            int totNbHitQuark = ss.optQuarkRelative(objQuark, IDpdkLpmModelAttributes.TOT_NB_HIT);
             if (totNbHitQuark != ITmfStateSystem.INVALID_ATTRIBUTE) {
                 long firstMetricId = getId(totNbHitQuark);
                 nodes.add(new TmfTreeDataModel(firstMetricId, tabId, IDpdkLpmModelAttributes.HIT_PERCENT_METRIC_LABEL ));
             }
 
-            int totNbMissQuark = ss.optQuarkRelative(tabQuark, IDpdkLpmModelAttributes.TOT_NB_MISS);
+            int totNbMissQuark = ss.optQuarkRelative(objQuark, IDpdkLpmModelAttributes.TOT_NB_MISS);
             if (totNbMissQuark != ITmfStateSystem.INVALID_ATTRIBUTE) {
                 long secondMetricId = getId(totNbMissQuark);
                 nodes.add(new TmfTreeDataModel(secondMetricId, tabId, IDpdkLpmModelAttributes.MISS_PERCENT_METRIC_LABEL));

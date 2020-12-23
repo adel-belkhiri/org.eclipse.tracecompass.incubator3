@@ -18,7 +18,13 @@
       <output
             class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput">
          <analysisId
-               id="org.eclipse.tracecompass.incubator.dpdk.lpm.analysis">
+               id="org.eclipse.tracecompass.incubator.dpdk.lookup.objects.analysis">
+         </analysisId>
+      </output>
+      <output
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput">
+         <analysisId
+               id="org.eclipse.tracecompass.incubator.dpdk.classifier.analysis">
          </analysisId>
       </output>
    </extension>
@@ -33,7 +39,7 @@
             class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.DpdkVhostUserAvailDescrView"
             icon="icons/eview16/scatter.png"
             id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.avail.descr.view"
-            name="Queue Rings Status"
+            name="Vhost Ring Queues Status"
             restorable="true">
       </view>
       <view
@@ -41,15 +47,15 @@
             class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.packet.rate.DpdkVhostUserPacketRateView"
             icon="icons/eview16/scatter.png"
             id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.packet.rate.view"
-            name="Packet Rate"
+            name="Vhost Packet rate"
             restorable="true">
       </view>
       <view
             category="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk"
-            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.percent.DpdkLpmHitPercentageView"
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lookup.object.hit.percentage.DpdkLookupObjectHitPercentageView"
             icon="icons/eview16/scatter.png"
-            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.percent.view"
-            name="LPM Lookup Hit/Miss Percentage"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lookup.object.hit.percentage.view"
+            name="LPM Hit/Miss Percentage"
             restorable="true">
       </view>
       <view
@@ -57,7 +63,15 @@
             class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.rule.hit.rate.DpdkLpmRuleHitRateView"
             icon="icons/eview16/scatter.png"
             id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.rule.hit.rate.view"
-            name="Per-rule lookup hit"
+            name="Per-rule lpm lookup hit"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk"
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.flow.classifier.lookup.rate.DpdkFlowClassifierLookupHitRateView"
+            icon="icons/eview16/scatter.png"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.flow.classifier.lookup.rate.view"
+            name="Flow Classifier Lookup Rate"
             restorable="true">
       </view>
    </extension>

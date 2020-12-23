@@ -2,7 +2,7 @@ package org.eclipse.tracecompass.incubator.internal.dpdk.core.vhost.eventhandler
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.vhost.analysis.DpdkVhostStateProvider;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.vhost.analysis.NetworkDeviceModel;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.vhost.analysis.VhostNetworkDeviceModel;
 import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
@@ -35,7 +35,7 @@ public class VhostUserAddConnectionEventHandler extends DpdkEventHandler {
             throw new IllegalArgumentException(layout.eventVhostUserAddConnection() + " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
-        NetworkDeviceModel dev = fVhostStateProvier.searchDeviceByIfaceName(ifceName);
+        VhostNetworkDeviceModel dev = fVhostStateProvier.searchDeviceByIfaceName(ifceName);
         if(dev != null) {
             dev.attachVirtDevice(vid, connfd);
         }

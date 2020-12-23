@@ -29,6 +29,7 @@ public class RteFlowClassifierFreeEventHandler extends DpdkEventHandler {
 
         /* unpack the event */
         ITmfEventField content = event.getContent();
+        long ts = event.getTimestamp().getValue();
 
         String clsName = content.getFieldValue(String.class, layout.fieldClsName());
 
@@ -36,7 +37,7 @@ public class RteFlowClassifierFreeEventHandler extends DpdkEventHandler {
             throw new IllegalArgumentException(layout.eventRteFlowClassifierCreate() + " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
-        fClassifierStateProvier.getClassifier(clsName);
+        fClassifierStateProvier.deleteClassifier(clsName, ts);
     }
 
 }

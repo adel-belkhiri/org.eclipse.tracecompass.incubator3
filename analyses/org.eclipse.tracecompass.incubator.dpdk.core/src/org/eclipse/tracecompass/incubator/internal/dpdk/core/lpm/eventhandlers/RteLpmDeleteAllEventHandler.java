@@ -1,8 +1,8 @@
 package org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmStateProvider;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.LpmTableModel;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmObjectsStateProvider;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.LpmLookupObjectModel;
 import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
@@ -20,24 +20,24 @@ public class RteLpmDeleteAllEventHandler extends DpdkEventHandler {
      * @param stateProvider
      *      DpdkLpmStateProvider
      */
-    public RteLpmDeleteAllEventHandler(@NonNull DpdkLpmAnalysisEventLayout layout, DpdkLpmStateProvider stateProvider) {
+    public RteLpmDeleteAllEventHandler(@NonNull DpdkLookupObjectsAnalysisEventLayout layout, DpdkLpmObjectsStateProvider stateProvider) {
         super(layout, stateProvider);
     }
 
     @Override
     public void handleEvent(ITmfStateSystemBuilder ss, ITmfEvent event) throws AttributeNotFoundException {
-        DpdkLpmAnalysisEventLayout layout = getLayout();
+        DpdkLookupObjectsAnalysisEventLayout layout = getLayout();
 
         /* unpack the event */
         ITmfEventField content = event.getContent();
         long ts = event.getTimestamp().getValue();
-        String name = content.getFieldValue(String.class, layout.fieldName());
+        Integer id = content.getFieldValue(Integer.class, layout.fieldLpm());
 
-        if (name == null) {
+        if (id == null) {
             throw new IllegalArgumentException(layout.eventRteLpmDeleteAll() + " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
-        LpmTableModel table = fLpmStateProvier.getLpmTable(name);
+        LpmLookupObjectModel table = fLpmStateProvier.getLpmTable(id);
         if(table != null) {
             table.deleteAllRules(ts);
         }

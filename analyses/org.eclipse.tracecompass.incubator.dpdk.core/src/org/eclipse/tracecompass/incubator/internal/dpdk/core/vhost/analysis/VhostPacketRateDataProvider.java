@@ -36,8 +36,10 @@ import com.google.common.collect.Maps;
  */
 
 @SuppressWarnings("restriction")
-public class VhostPacketRateDataProvider extends AbstractTreeCommonXDataProvider<@NonNull DpdkVhostAnalysisModule, @NonNull TmfTreeDataModel> {
+public class VhostPacketRateDataProvider
+    extends AbstractTreeCommonXDataProvider<@NonNull DpdkVhostAnalysisModule, @NonNull TmfTreeDataModel> {
 
+    public static final int INVALID_ATTRIBUTE = -2;
     /**
      * Title used to create XY models for the {@link VhostPacketRateDataProvider}.
      */
@@ -167,6 +169,10 @@ public class VhostPacketRateDataProvider extends AbstractTreeCommonXDataProvider
 
             /* browse the vid set : vid(0), etc. */
             int vidsQuark = ss.optQuarkRelative(devQuark, IDpdkVhostModelAttributes.VIDS);
+            if(vidsQuark == INVALID_ATTRIBUTE ) {
+                continue;
+            }
+
             for(Integer vidQuark : ss.getQuarks(vidsQuark, "*")) {
                 /*Show the connection fd instead of vid */
                 int connfdQuark = ss.optQuarkRelative(vidQuark, IDpdkVhostModelAttributes.CONNFD);

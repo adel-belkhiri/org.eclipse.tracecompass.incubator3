@@ -15,7 +15,7 @@ import java.util.Comparator;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.LpmPerRuleLookupHitRateDataProvider;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmPerRuleLookupHitRateDataProvider;
 import org.eclipse.tracecompass.tmf.core.model.tree.TmfTreeDataModel;
 import org.eclipse.tracecompass.tmf.ui.viewers.tree.AbstractSelectTreeViewer2;
 import org.eclipse.tracecompass.tmf.ui.viewers.tree.ITmfTreeColumnDataProvider;
@@ -50,7 +50,7 @@ public class DpdkLpmRuleHitRateTreeViewer extends AbstractSelectTreeViewer2 {
      *            Parent composite
      */
     public DpdkLpmRuleHitRateTreeViewer(Composite parent) {
-        super(parent, 1, LpmPerRuleLookupHitRateDataProvider.ID);
+        super(parent, 1, DpdkLpmPerRuleLookupHitRateDataProvider.ID);
         setLabelProvider(new NetworkTreeLabelProvider());
     }
 

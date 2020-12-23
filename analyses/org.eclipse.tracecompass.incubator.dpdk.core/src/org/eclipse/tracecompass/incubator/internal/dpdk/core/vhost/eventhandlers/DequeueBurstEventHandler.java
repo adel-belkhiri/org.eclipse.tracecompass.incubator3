@@ -2,7 +2,7 @@ package org.eclipse.tracecompass.incubator.internal.dpdk.core.vhost.eventhandler
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.vhost.analysis.DpdkVhostStateProvider;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.vhost.analysis.NetworkDeviceModel;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.vhost.analysis.VhostNetworkDeviceModel;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.vhost.analysis.VirtualDeviceModel;
 import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
@@ -40,7 +40,7 @@ public class DequeueBurstEventHandler extends DpdkEventHandler {
             throw new IllegalArgumentException(layout.eventDequeueBurst() + " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
-        NetworkDeviceModel dev = fVhostStateProvier.searchDeviceByVid(vid);
+        VhostNetworkDeviceModel dev = fVhostStateProvier.searchDeviceByVid(vid);
         if(dev != null) {
             VirtualDeviceModel vidObj = dev.getVid(vid);
             if(vidObj != null) {

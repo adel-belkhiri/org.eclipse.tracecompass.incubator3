@@ -209,9 +209,9 @@ public class LogicalCoreModel {
         this.role = newRole;
 
         /* modify its status */
-        if(newRole == LogicalCoreRole.LCORE_RTE || newRole == LogicalCoreRole.LCORE_SERVICE) {
+        if(newRole == LogicalCoreRole.LCORE_RTE /*|| newRole == LogicalCoreRole.LCORE_SERVICE*/) {
             this.status = LogicalCoreStatus.DISABLED;
-        } else {
+        } else if (newRole == LogicalCoreRole.LCORE_OFF){
             this.status = LogicalCoreStatus.OFF;
         }
 
@@ -227,5 +227,9 @@ public class LogicalCoreModel {
         } catch (AttributeNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public LogicalCoreRole getRole() {
+        return this.role;
     }
 }

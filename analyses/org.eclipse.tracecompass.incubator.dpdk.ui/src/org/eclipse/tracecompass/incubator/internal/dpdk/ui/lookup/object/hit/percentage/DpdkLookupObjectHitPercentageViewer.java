@@ -7,13 +7,13 @@
  * http://www.eclipse.org/legal/epl-v10.html
  **********************************************************************/
 
-package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.percent;
+package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lookup.object.hit.percentage;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.LpmLookupHitMissRatioDataProvider;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmObjectHitPercentageDataProvider;
 import org.eclipse.tracecompass.tmf.core.model.OutputElementStyle;
 import org.eclipse.tracecompass.tmf.core.model.StyleProperties;
 import org.eclipse.tracecompass.tmf.ui.viewers.xychart.linechart.TmfFilteredXYChartViewer;
@@ -25,7 +25,7 @@ import org.eclipse.swtchart.Chart;
  *
  * @author Adel Belkhiri
  */
-public class DpdkLpmHitPercentageViewer extends TmfFilteredXYChartViewer {
+public class DpdkLookupObjectHitPercentageViewer extends TmfFilteredXYChartViewer {
 
     private static final int DEFAULT_SERIES_WIDTH = 2;
 
@@ -37,8 +37,8 @@ public class DpdkLpmHitPercentageViewer extends TmfFilteredXYChartViewer {
      * @param settings
      *            See {@link TmfXYChartSettings} to know what it contains
      */
-    public DpdkLpmHitPercentageViewer(@Nullable Composite parent, TmfXYChartSettings settings) {
-        super(parent, settings, LpmLookupHitMissRatioDataProvider.ID);
+    public DpdkLookupObjectHitPercentageViewer(@Nullable Composite parent, TmfXYChartSettings settings) {
+        super(parent, settings, DpdkLpmObjectHitPercentageDataProvider.ID);
         Chart chart = getSwtChart();
         chart.getLegend().setPosition(SWT.LEFT);
     }

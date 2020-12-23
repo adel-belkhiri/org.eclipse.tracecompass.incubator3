@@ -8,7 +8,7 @@ import org.eclipse.jdt.annotation.NonNull;
  */
 
 @SuppressWarnings("nls")
-public class DpdkLpmAnalysisEventLayout {
+public class DpdkLookupObjectsAnalysisEventLayout {
 
     /**
      * This event Indicates the creation of an LPM table
@@ -90,6 +90,59 @@ public class DpdkLpmAnalysisEventLayout {
         return new String("librte_lpm:rte_lpm_lookup_bulk");
     }
 
+    //-----------------------------------------------------------------
+    //TODO :
+    //-----------------------------------------------------------------
+
+    public @NonNull String eventRteHashCreate() {
+        return new String("librte_hash:rte_hash_create");
+    }
+
+
+    public @NonNull String eventRteHashFree() {
+        return new String("librte_hash:rte_hash_free");
+    }
+
+
+    public @NonNull String eventRteHashAddKey() {
+        return new String("librte_hash:rte_hash_add_key");
+    }
+
+
+    public @NonNull String eventRteHashDeleteKey() {
+        return new String("librte_hash:rte_hash_del_key");
+    }
+
+    public @NonNull String eventRteHashLookupKey() {
+        return new String("librte_hash:rte_hash_lookup_key");
+    }
+
+    public @NonNull String eventRteHashLookupKeyWithData() {
+        return new String("librte_hash:rte_hash_lookup_key_with_data");
+    }
+
+    public @NonNull String fieldKey() {
+        return new String("key");
+    }
+
+    public @NonNull String fieldSignature() {
+        return new String("sig");
+    }
+
+    public @NonNull String fieldKeyPosition() {
+        return new String("pos");
+    }
+
+    /**
+    *
+    * @return
+    * @since 3.0
+    */
+    public @NonNull String fieldMaxEntries() {
+        return new String("max_entries");
+    }
+
+    //------------------------------------------------------------------
     /**
     *
     * @return
@@ -99,6 +152,15 @@ public class DpdkLpmAnalysisEventLayout {
         return new String("name");
     }
 
+
+    /**
+    * Pointer on the LPM data structure
+    * @return
+    * @since 3.0
+    */
+    public @NonNull String fieldLpm() {
+        return new String("lpm");
+    }
 
     /**
     *

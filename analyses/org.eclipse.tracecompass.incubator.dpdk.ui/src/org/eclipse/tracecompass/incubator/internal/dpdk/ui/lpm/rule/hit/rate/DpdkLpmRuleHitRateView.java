@@ -21,7 +21,7 @@ import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.LpmPerRuleLookupHitRateDataProvider;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmPerRuleLookupHitRateDataProvider;
 import org.eclipse.tracecompass.tmf.core.dataprovider.DataProviderManager;
 import org.eclipse.tracecompass.tmf.core.trace.ITmfTrace;
 import org.eclipse.tracecompass.tmf.core.trace.TmfTraceManager;
@@ -102,9 +102,9 @@ public class DpdkLpmRuleHitRateView extends TmfChartView {
                     boolean ascendingSortOrder = dialog.isSortingOrderAscending();
                     ITmfTrace trace = TmfTraceManager.getInstance().getActiveTrace();
                     if(trace != null) {
-                        LpmPerRuleLookupHitRateDataProvider provider =
+                        DpdkLpmPerRuleLookupHitRateDataProvider provider =
                                 DataProviderManager.getInstance()
-                                .getDataProvider(trace, LpmPerRuleLookupHitRateDataProvider.ID, LpmPerRuleLookupHitRateDataProvider.class);
+                                .getDataProvider(trace, DpdkLpmPerRuleLookupHitRateDataProvider.ID, DpdkLpmPerRuleLookupHitRateDataProvider.class);
                         if(provider != null) {
                             provider.setMaxRulesNumber(value);
                             provider.setSortingOrder(ascendingSortOrder);

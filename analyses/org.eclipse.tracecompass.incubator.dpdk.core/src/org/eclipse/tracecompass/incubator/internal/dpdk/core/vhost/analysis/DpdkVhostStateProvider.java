@@ -39,7 +39,7 @@ public class DpdkVhostStateProvider extends AbstractTmfStateProvider {
     /* Events layout */
     private final DpdkVhostAnalysisEventLayout fLayout;
 
-    private final Map<String, NetworkDeviceModel> fDevices = new HashMap<>();
+    private final Map<String, VhostNetworkDeviceModel> fDevices = new HashMap<>();
 
 
     /**
@@ -139,10 +139,10 @@ public class DpdkVhostStateProvider extends AbstractTmfStateProvider {
      * @param mac Mac address
      * @return NetworkDeviceModel
      */
-    public NetworkDeviceModel addDevice(String devName, String ifceName, long[] mac) {
-        NetworkDeviceModel dev = fDevices.get(devName);
+    public VhostNetworkDeviceModel addDevice(String devName, String ifceName, long[] mac) {
+        VhostNetworkDeviceModel dev = fDevices.get(devName);
         if(dev == null) {
-            dev = new NetworkDeviceModel(devName, ifceName, mac, NonNullUtils.checkNotNull(getStateSystemBuilder()));
+            dev = new VhostNetworkDeviceModel(devName, ifceName, mac, NonNullUtils.checkNotNull(getStateSystemBuilder()));
             fDevices.put(devName, dev);
         }
         return dev;
@@ -152,7 +152,7 @@ public class DpdkVhostStateProvider extends AbstractTmfStateProvider {
      * @param devName
      * @return NetworkDeviceModel
      */
-    public NetworkDeviceModel getDevice(String devName) {
+    public VhostNetworkDeviceModel getDevice(String devName) {
         return fDevices.get(devName);
     }
 
@@ -160,8 +160,8 @@ public class DpdkVhostStateProvider extends AbstractTmfStateProvider {
      * @param vid The id of the attached device
      * @return the NetworkDeviceModel
      */
-    public @Nullable NetworkDeviceModel searchDeviceByVid(int vid) {
-        for(NetworkDeviceModel dev : fDevices.values()) {
+    public @Nullable VhostNetworkDeviceModel searchDeviceByVid(int vid) {
+        for(VhostNetworkDeviceModel dev : fDevices.values()) {
             if(dev.isVidAttached(vid)) {
                 return dev;
             }
@@ -174,8 +174,8 @@ public class DpdkVhostStateProvider extends AbstractTmfStateProvider {
      * @param vid The id of the attached device
      * @return the NetworkDeviceModel
      */
-    public @Nullable NetworkDeviceModel searchDeviceByIfaceName(String ifaceName) {
-        for(NetworkDeviceModel dev : fDevices.values()) {
+    public @Nullable VhostNetworkDeviceModel searchDeviceByIfaceName(String ifaceName) {
+        for(VhostNetworkDeviceModel dev : fDevices.values()) {
             if(dev.getIfceName().equals(ifaceName)) {
                 return dev;
             }

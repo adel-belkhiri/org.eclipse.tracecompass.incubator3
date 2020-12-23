@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *******************************************************************************/
 
-package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.percent;
+package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lookup.object.hit.percentage;
 
 import com.google.common.collect.ImmutableList;
 import java.util.Comparator;
@@ -15,7 +15,7 @@ import java.util.Comparator;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.LpmLookupHitMissRatioDataProvider;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmObjectHitPercentageDataProvider;
 import org.eclipse.tracecompass.tmf.core.model.tree.TmfTreeDataModel;
 import org.eclipse.tracecompass.tmf.ui.viewers.tree.AbstractSelectTreeViewer2;
 import org.eclipse.tracecompass.tmf.ui.viewers.tree.ITmfTreeColumnDataProvider;
@@ -27,9 +27,9 @@ import org.eclipse.tracecompass.tmf.ui.viewers.tree.TmfTreeColumnData;
  *
  * @author Adel Belkhiri
  */
-public class DpdkLpmHitPercentageTreeViewer extends AbstractSelectTreeViewer2 {
+public class DpdkLookupObjectHitPercentageTreeViewer extends AbstractSelectTreeViewer2 {
 
-    private final class NetworkTreeLabelProvider extends TreeLabelProvider {
+    private final class LookupObjectTreeLabelProvider extends TreeLabelProvider {
 
         @Override
         public @Nullable Image getColumnImage(@Nullable Object element, int columnIndex) {
@@ -49,17 +49,17 @@ public class DpdkLpmHitPercentageTreeViewer extends AbstractSelectTreeViewer2 {
      * @param parent
      *            Parent composite
      */
-    public DpdkLpmHitPercentageTreeViewer(Composite parent) {
-        super(parent, 1, LpmLookupHitMissRatioDataProvider.ID);
-        setLabelProvider(new NetworkTreeLabelProvider());
+    public DpdkLookupObjectHitPercentageTreeViewer(Composite parent) {
+        super(parent, 1, DpdkLpmObjectHitPercentageDataProvider.ID);
+        setLabelProvider(new LookupObjectTreeLabelProvider());
     }
 
     @Override
     protected ITmfTreeColumnDataProvider getColumnDataProvider() {
         return () -> {
             return ImmutableList.of(
-                    createColumn(Messages.DpdkLpmHitRateTreeViewer_TabName, Comparator.comparing(TmfGenericTreeEntry::getName)),
-                    new TmfTreeColumnData(Messages.DpdkLpmHitRateTreeViewer_Legend));
+                    createColumn(Messages.DpdkLookupObjectHitRateTreeViewer_ObjName, Comparator.comparing(TmfGenericTreeEntry::getName)),
+                    new TmfTreeColumnData(Messages.DpdkLookupObjectHitRateTreeViewer_Legend));
         };
     }
 

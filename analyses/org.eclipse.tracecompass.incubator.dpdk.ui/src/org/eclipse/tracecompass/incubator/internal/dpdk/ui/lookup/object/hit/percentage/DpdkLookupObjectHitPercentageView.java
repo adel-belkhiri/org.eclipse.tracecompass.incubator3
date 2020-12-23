@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  **********************************************************************/
 
-package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.percent;
+package org.eclipse.tracecompass.incubator.internal.dpdk.ui.lookup.object.hit.percentage;
 
 import java.util.Objects;
 
@@ -24,27 +24,27 @@ import org.eclipse.tracecompass.tmf.ui.views.xychart.TmfChartView;
  *
  * @author Adel Belkhiri
  */
-public class DpdkLpmHitPercentageView extends TmfChartView {
+public class DpdkLookupObjectHitPercentageView extends TmfChartView {
 
     /** ID string */
-    public static final String ID = "org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.hit.percent.view"; //$NON-NLS-1$
+    public static final String ID = "org.eclipse.tracecompass.incubator.internal.dpdk.ui.lookup.object.hit.percentage.view"; //$NON-NLS-1$
     private static final double RESOLUTION = 0.3;
 
     /**
      * Constructor
      */
-    public DpdkLpmHitPercentageView() {
-        super(Messages.DpdkLpmHitRateView_Title);
+    public DpdkLookupObjectHitPercentageView() {
+        super(Messages.DpdkLookupObjectHitRateView_Title);
     }
 
     @Override
     protected TmfXYChartViewer createChartViewer(@Nullable Composite parent) {
-        TmfXYChartSettings settings = new TmfXYChartSettings(Messages.DpdkLpmHitRateViewer_Title, Messages.DpdkLpmHitRateViewer_XAxis, Messages.DpdkLpmHitRateViewer_YAxis, RESOLUTION);
-        return new DpdkLpmHitPercentageViewer(parent, settings);
+        TmfXYChartSettings settings = new TmfXYChartSettings(Messages.DpdkLookupObjectHitRateViewer_Title, Messages.DpdkLookupObjectHitRateViewer_XAxis, Messages.DpdkLookupObjectHitRateViewer_YAxis, RESOLUTION);
+        return new DpdkLookupObjectHitPercentageViewer(parent, settings);
     }
 
     @Override
     protected @NonNull TmfViewer createLeftChildViewer(@Nullable Composite parent) {
-        return new DpdkLpmHitPercentageTreeViewer(Objects.requireNonNull(parent));
+        return new DpdkLookupObjectHitPercentageTreeViewer(Objects.requireNonNull(parent));
     }
 }

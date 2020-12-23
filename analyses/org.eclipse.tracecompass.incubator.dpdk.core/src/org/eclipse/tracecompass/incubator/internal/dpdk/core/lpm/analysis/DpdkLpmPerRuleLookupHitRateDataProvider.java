@@ -40,10 +40,10 @@ import com.google.common.collect.Maps;
  */
 
 @SuppressWarnings("restriction")
-public class LpmPerRuleLookupHitRateDataProvider extends AbstractTreeCommonXDataProvider<@NonNull DpdkLpmAnalysisModule, @NonNull TmfTreeDataModel> {
+public class DpdkLpmPerRuleLookupHitRateDataProvider extends AbstractTreeCommonXDataProvider<@NonNull DpdkLpmObjectLookupAnalysisModule, @NonNull TmfTreeDataModel> {
 
     /**
-     * Title used to create XY models for the {@link VhostPacketRateDataProvider}.
+     * Title used to create XY models for the {@link DpdkLpmPerRuleLookupHitRateDataProvider}.
      */
     public static final String PROVIDER_TITLE = IDpdkLpmModelAttributes.LPM_LOOKUP_DATA_PROVIDER_TITLE;
 
@@ -130,24 +130,24 @@ public class LpmPerRuleLookupHitRateDataProvider extends AbstractTreeCommonXData
     /**
      * Constructor
      */
-    private LpmPerRuleLookupHitRateDataProvider(@NonNull ITmfTrace trace, @NonNull DpdkLpmAnalysisModule module) {
+    private DpdkLpmPerRuleLookupHitRateDataProvider(@NonNull ITmfTrace trace, @NonNull DpdkLpmObjectLookupAnalysisModule module) {
         super(trace, module);
     }
 
     /**
-     * Create an instance of {@link LpmPerRuleLookupHitRateDataProvider}. Returns a null instance if
+     * Create an instance of {@link DpdkLpmPerRuleLookupHitRateDataProvider}. Returns a null instance if
      * the analysis module is not found.
      *
      * @param trace
      *            A trace on which we are interested to fetch a model
-     * @return A {@link LpmPerRuleLookupHitRateDataProvider} instance. If analysis module is not
+     * @return A {@link DpdkLpmPerRuleLookupHitRateDataProvider} instance. If analysis module is not
      *         found, it returns null
      */
-    public static LpmPerRuleLookupHitRateDataProvider create(ITmfTrace trace) {
-        DpdkLpmAnalysisModule module = TmfTraceUtils.getAnalysisModuleOfClass(trace, DpdkLpmAnalysisModule.class, DpdkLpmAnalysisModule.ID);
+    public static DpdkLpmPerRuleLookupHitRateDataProvider create(ITmfTrace trace) {
+        DpdkLpmObjectLookupAnalysisModule module = TmfTraceUtils.getAnalysisModuleOfClass(trace, DpdkLpmObjectLookupAnalysisModule.class, DpdkLpmObjectLookupAnalysisModule.ID);
         if (module != null) {
             module.schedule();
-            return new LpmPerRuleLookupHitRateDataProvider(trace, module);
+            return new DpdkLpmPerRuleLookupHitRateDataProvider(trace, module);
         }
         return null;
     }
@@ -174,7 +174,7 @@ public class LpmPerRuleLookupHitRateDataProvider extends AbstractTreeCommonXData
         nodes.add(new TmfTreeDataModel(rootId, -1, getTrace().getName()));
 
         /* browse the lpm tables */
-        for (Integer tabQuark : ss.getQuarks(IDpdkLpmModelAttributes.LPM_TABS, "*")) {
+        for (Integer tabQuark : ss.getQuarks(IDpdkLpmModelAttributes.LPM_OBJS, "*")) {
             String tabName = getQuarkValue(ss, tabQuark);
             long tabId = getId(tabQuark);
             nodes.add(new TmfTreeDataModel(tabId, rootId, tabName));

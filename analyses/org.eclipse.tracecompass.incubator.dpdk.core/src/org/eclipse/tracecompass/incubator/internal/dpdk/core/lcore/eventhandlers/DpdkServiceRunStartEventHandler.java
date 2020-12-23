@@ -3,6 +3,7 @@ package org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.eventhandler
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.analysis.DpdkCoreStateProvider;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.analysis.LogicalCoreModel;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.analysis.LogicalCoreRole;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.analysis.ServiceModel;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.analysis.ServiceStatus;
 import org.eclipse.tracecompass.internal.analysis.os.linux.core.Activator;
@@ -51,11 +52,23 @@ public class DpdkServiceRunStartEventHandler extends DpdkEventHandler {
         ServiceModel service = core.getService(serviceId);
 
 
-        if(service != null) {
-            boolean success = core.updateServiceStatus(serviceId, ServiceStatus.RUN, ts);
-            if (!success) {
-                Activator.getDefault().logError("Exception while building the state system"); //$NON-NLS-1$
+        if(service == null) {
+            service = fCoreStateProvier.getService(serviceId);
+            if(service != null) {
+                if(core.getRole() != LogicalCoreRole.LCORE_SERVICE) {
+                    core.setRole(ts, LogicalCoreRole.LCORE_SERVICE);
+                }
+                core.mapService(service, ts);
             }
+            else {
+                Activator.getDefault().logError("Error : Service" + serviceId.toString() + "not registered"); //$NON-NLS-1$
+                return;
+            }
+        }
+
+        boolean success = core.updateServiceStatus(serviceId, ServiceStatus.RUN, ts);
+        if (!success) {
+            Activator.getDefault().logError("Exception while building the state system"); //$NON-NLS-1$
         }
     }
 }

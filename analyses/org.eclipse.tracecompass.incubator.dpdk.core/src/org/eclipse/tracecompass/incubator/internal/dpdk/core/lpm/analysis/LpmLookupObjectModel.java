@@ -19,12 +19,13 @@ import com.google.common.net.InetAddresses;
  * @author  Adel Belkhiri
  *
  */
-public class LpmTableModel {
+public class LpmLookupObjectModel {
 
     /* Bitmask used to indicate successful lookup */
     private final int RTE_LPM_LOOKUP_SUCCESS = 0x01000000;
 
     private final String fName;
+    private final Integer fId;
     private Long totNbHit;
     private Long totNbMiss;
 
@@ -38,13 +39,13 @@ public class LpmTableModel {
      *  A rule is composed of two parts : the matching part (key) and the action part (forwarding port)
      */
     private class RuleModel {
-        private final Pair<Inet4Address, Integer> fId;
+        private final Pair<Inet4Address, Integer> fRuleId;
         private final int fNextHop;
         private final int fRuleQuark;
         private long nbHit;
 
         public RuleModel(Inet4Address ipv4, int depth, int nextHop, int quark) {
-            this.fId = new Pair<>(ipv4, depth);
+            this.fRuleId = new Pair<>(ipv4, depth);
             this.fNextHop = nextHop;
             this.fRuleQuark = quark;
 
@@ -52,13 +53,17 @@ public class LpmTableModel {
         }
 
         public Pair<Inet4Address, Integer> getId() {
-            return this.fId;
+            return this.fRuleId;
         }
 
     }
 
-    String getName() {
+    public String getName() {
         return this.fName;
+    }
+
+    public Integer getId() {
+        return this.fId;
     }
 
     /**
@@ -69,7 +74,8 @@ public class LpmTableModel {
      * @param ss
      *      TmfStateSystemBuilder
      */
-    public LpmTableModel(String name, ITmfStateSystemBuilder ss) {
+    public LpmLookupObjectModel(Integer id, String name, ITmfStateSystemBuilder ss) {
+        this.fId = id;
         this.fName = name;
         this.totNbHit = 0L;
         this.totNbMiss = 0L;
@@ -77,7 +83,7 @@ public class LpmTableModel {
         this.fSs = ss;
 
         /* create the LPM tables tree within the state system */
-        this.fQuark = fSs.getQuarkAbsoluteAndAdd(IDpdkLpmModelAttributes.LPM_TABS, this.fName);
+        this.fQuark = fSs.getQuarkAbsoluteAndAdd(IDpdkLpmModelAttributes.LPM_OBJS, this.fName);
         int totNbHitQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkLpmModelAttributes.TOT_NB_HIT);
         fSs.modifyAttribute(0, this.totNbHit, totNbHitQuark);
 

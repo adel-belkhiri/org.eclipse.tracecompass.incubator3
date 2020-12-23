@@ -9,7 +9,7 @@ import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
  * @author Adel Belkhiri
  *
  */
-public class NetworkDeviceModel {
+public class VhostNetworkDeviceModel {
     private final String fDevName;
     private final String fIfceName;
 
@@ -25,7 +25,7 @@ public class NetworkDeviceModel {
      * @param mac Mac address
      * @param ss TmfStateSystemBuilder
      */
-    public NetworkDeviceModel(String dev, String name, long[] mac, ITmfStateSystemBuilder ss) {
+    public VhostNetworkDeviceModel(String dev, String name, long[] mac, ITmfStateSystemBuilder ss) {
         this.fDevName = dev;
         this.fIfceName = name;
         this.fHwAddr = mac;

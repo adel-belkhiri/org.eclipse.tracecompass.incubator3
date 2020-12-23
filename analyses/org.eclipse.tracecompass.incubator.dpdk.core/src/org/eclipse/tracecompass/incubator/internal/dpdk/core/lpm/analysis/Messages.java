@@ -13,11 +13,15 @@ public class Messages extends NLS {
 
     private static String BUNDLE_NAME = "org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.messages";  //$NON-NLS-1$
 
-    public static @Nullable String IDpdkModel_LPM_TABS;
-    public static @Nullable String IDpdkModel_TAB_NAME;
+    public static @Nullable String IDpdkModel_LOOKUP_OBJS;
+    public static @Nullable String IDpdkModel_LPM_OBJS;
+    public static @Nullable String IDpdkModel_EM_OBJS;
+
+    public static @Nullable String IDpdkModel_OBJ_NAME;
     public static @Nullable String IDpdkModel_TOT_NB_HIT;
     public static @Nullable String IDpdkModel_TOT_NB_MISS;
     public static @Nullable String IDpdkModel_LPM_RULES;
+    public static @Nullable String IDpdkModel_NB_RULES;
     public static @Nullable String IDpdkModel_RULE_ID;
     public static @Nullable String IDpdkModel_RULE_NEXT_HOP;
     public static @Nullable String IDpdkModel_NB_HIT;

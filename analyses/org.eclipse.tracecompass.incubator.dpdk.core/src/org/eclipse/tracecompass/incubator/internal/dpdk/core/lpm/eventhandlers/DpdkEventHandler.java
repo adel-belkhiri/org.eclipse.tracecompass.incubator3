@@ -1,22 +1,22 @@
 package org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers;
 
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmStateProvider;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmObjectsStateProvider;
 import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
 
 @SuppressWarnings("javadoc")
 public abstract class DpdkEventHandler {
 
-    private final DpdkLpmAnalysisEventLayout fLayout;
-    protected final DpdkLpmStateProvider fLpmStateProvier;
+    private final DpdkLookupObjectsAnalysisEventLayout fLayout;
+    protected final DpdkLpmObjectsStateProvider fLpmStateProvier;
 
     /**
      * Constructor
      *
      * @param layout the layout of the analysis
      */
-    public DpdkEventHandler(DpdkLpmAnalysisEventLayout layout, DpdkLpmStateProvider ss) {
+    public DpdkEventHandler(DpdkLookupObjectsAnalysisEventLayout layout, DpdkLpmObjectsStateProvider ss) {
         this.fLayout = layout;
         this.fLpmStateProvier = ss;
     }
@@ -25,7 +25,7 @@ public abstract class DpdkEventHandler {
      * Get the analysis layout
      * @return the analysis layout
      */
-    protected DpdkLpmAnalysisEventLayout getLayout() {
+    protected DpdkLookupObjectsAnalysisEventLayout getLayout() {
         return fLayout;
     }
 

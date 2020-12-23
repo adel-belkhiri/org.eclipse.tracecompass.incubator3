@@ -23,12 +23,12 @@ import org.eclipse.tracecompass.tmf.core.trace.TmfTraceUtils;
  *
  */
 @SuppressWarnings("restriction")
-public class DpdkLpmHitMissRatioDataProviderFactory implements IDataProviderFactory {
+public class DpdkLpmObjectLookupHitPercentageDataProviderFactory implements IDataProviderFactory {
 
     private static final IDataProviderDescriptor DESCRIPTOR = new DataProviderDescriptor.Builder()
-            .setId(LpmLookupHitMissRatioDataProvider.ID)
-            .setName("LPM lookup hit/miss ratio data provider") //$NON-NLS-1$
-            .setDescription("LPM lookup hit/miss ratio data provider") //$NON-NLS-1$
+            .setId(DpdkLpmObjectHitPercentageDataProvider.ID)
+            .setName("LPM object lookup hit/miss percentage data provider") //$NON-NLS-1$
+            .setDescription("LPM object lookup hit/miss percentage data provider") //$NON-NLS-1$
             .setProviderType(ProviderType.TREE_TIME_XY)
             .build();
 
@@ -36,14 +36,14 @@ public class DpdkLpmHitMissRatioDataProviderFactory implements IDataProviderFact
     public @Nullable ITmfTreeDataProvider<? extends ITmfTreeDataModel> createProvider(@NonNull ITmfTrace trace) {
         Collection<ITmfTrace> traces = TmfTraceManager.getTraceSet(trace);
         if (traces.size() == 1) {
-            return LpmLookupHitMissRatioDataProvider.create(trace);
+            return DpdkLpmObjectHitPercentageDataProvider.create(trace);
         }
-        return TmfTreeXYCompositeDataProvider.create(traces, LpmLookupHitMissRatioDataProvider.PROVIDER_TITLE, LpmLookupHitMissRatioDataProvider.ID);
+        return TmfTreeXYCompositeDataProvider.create(traces, DpdkLpmObjectHitPercentageDataProvider.PROVIDER_TITLE, DpdkLpmObjectHitPercentageDataProvider.ID);
     }
 
     @Override
     public Collection<IDataProviderDescriptor> getDescriptors(@NonNull ITmfTrace trace) {
-        DpdkLpmAnalysisModule module = TmfTraceUtils.getAnalysisModuleOfClass(trace, DpdkLpmAnalysisModule.class, DpdkLpmAnalysisModule.ID);
+        DpdkLpmObjectLookupAnalysisModule module = TmfTraceUtils.getAnalysisModuleOfClass(trace, DpdkLpmObjectLookupAnalysisModule.class, DpdkLpmObjectLookupAnalysisModule.ID);
         return module != null ? Collections.singletonList(DESCRIPTOR) : Collections.emptyList();
     }
 }

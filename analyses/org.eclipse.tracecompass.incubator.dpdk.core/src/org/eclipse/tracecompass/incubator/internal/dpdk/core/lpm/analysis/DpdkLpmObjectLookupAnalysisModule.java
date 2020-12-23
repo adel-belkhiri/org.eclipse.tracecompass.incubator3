@@ -11,7 +11,7 @@ package org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis;
 
 import static org.eclipse.tracecompass.common.core.NonNullUtils.checkNotNull;
 
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers.DpdkLpmAnalysisEventLayout;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.eventhandlers.DpdkLookupObjectsAnalysisEventLayout;
 import org.eclipse.tracecompass.tmf.core.signal.TmfSignalHandler;
 import org.eclipse.tracecompass.tmf.core.signal.TmfTraceClosedSignal;
 import org.eclipse.tracecompass.tmf.core.statesystem.ITmfStateProvider;
@@ -20,21 +20,21 @@ import org.eclipse.tracecompass.tmf.core.trace.ITmfTrace;
 import org.eclipse.tracecompass.tmf.core.trace.TmfTrace;
 
 /**
- * Analysis Module for DPDK LPM
+ * Analysis Module for DPDK Lookup Objects (Hash and LPM)
  *
  * @author Adel Belkhiri
  */
-public class DpdkLpmAnalysisModule extends TmfStateSystemAnalysisModule {
+public class DpdkLpmObjectLookupAnalysisModule extends TmfStateSystemAnalysisModule {
 
     /** The ID of this analysis module */
-    public static final String ID = "org.eclipse.tracecompass.incubator.dpdk.lpm.analysis"; //$NON-NLS-1$
+    public static final String ID = "org.eclipse.tracecompass.incubator.dpdk.lpm.object.lookup.analysis"; //$NON-NLS-1$
 
     @Override
     protected ITmfStateProvider createStateProvider() {
         ITmfTrace trace = checkNotNull(getTrace());
 
         if (trace instanceof TmfTrace) {
-            return new DpdkLpmStateProvider((TmfTrace)trace, new DpdkLpmAnalysisEventLayout(), ID);
+            return new DpdkLpmObjectsStateProvider((TmfTrace)trace, new DpdkLookupObjectsAnalysisEventLayout(), ID);
         }
 
         throw new IllegalStateException();
