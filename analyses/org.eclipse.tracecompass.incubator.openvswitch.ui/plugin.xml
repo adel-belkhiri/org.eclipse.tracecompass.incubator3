@@ -4,18 +4,21 @@
    <extension
          point="org.eclipse.ui.views">
       <view
+            category="org.eclipse.tracecompass.incubator.openvswitch.ui.ovs"
             class="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.OvsCacheUsageView"
             id="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.ovs.cache.usage.view"
             name="Cache Usage View (OVS)"
             restorable="true">
       </view>
       <view
+            category="org.eclipse.tracecompass.incubator.openvswitch.ui.ovs"
             class="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.packet.rate.OvsPacketRateView"
             id="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.packet.rate.view"
             name="Packet Rate View (OVS)"
             restorable="true">
       </view>
       <view
+            category="org.eclipse.tracecompass.incubator.openvswitch.ui.ovs"
             class="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.upcall.rate.OvsUpcallRateView"
             id="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.upcall.rate.view"
             name="Upcall Rate (OVS)"
@@ -23,11 +26,16 @@
       </view>
       <view
             allowMultiple="true"
+            category="org.eclipse.tracecompass.incubator.openvswitch.ui.ovs"
             class="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.revalidation.OvsRevalidationView"
             id="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.revalidation.view"
             name="Revalidation (OVS)"
             restorable="true">
       </view>
+      <category
+            id="org.eclipse.tracecompass.incubator.openvswitch.ui.ovs"
+            name="Open vSwitch">
+      </category>
    </extension>
    <extension
          point="org.eclipse.linuxtools.tmf.core.analysis">
