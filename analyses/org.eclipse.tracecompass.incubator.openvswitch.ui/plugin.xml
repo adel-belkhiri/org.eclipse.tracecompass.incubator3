@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.OvsCacheUsageView"
+            id="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.ovs.cache.usage.view"
+            name="Cache Usage View (OVS)"
+            restorable="true">
+      </view>
+      <view
+            class="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.packet.rate.OvsPacketRateView"
+            id="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.packet.rate.view"
+            name="Packet Rate View (OVS)"
+            restorable="true">
+      </view>
+      <view
+            class="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.upcall.rate.OvsUpcallRateView"
+            id="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.upcall.rate.view"
+            name="Upcall Rate (OVS)"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="true"
+            class="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.revalidation.OvsRevalidationView"
+            id="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.revalidation.view"
+            name="Revalidation (OVS)"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.linuxtools.tmf.core.analysis">
+      <output
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput">
+         <analysisId
+               id="org.eclipse.tracecompass.incubator.internal.openvswitch.core.flows.analysis">
+         </analysisId>
+      </output>
+      <output
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput">
+         <analysisId
+               id="org.eclipse.tracecompass.incubator.internal.openvswitch.core.datapath.interface.analysis">
+         </analysisId>
+      </output>
+      <output
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput">
+         <analysisId
+               id="org.eclipse.tracecompass.incubator.internal.openvswitch.core.revalidation.analysis">
+         </analysisId>
+      </output>
+   </extension>
+   <extension
+         point="org.eclipse.tracecompass.tmf.core.dataprovider">
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.OvsCacheUsageDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.openvswitch.core.ovs.cache.usage.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.packet.rate.OvsPacketRateDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.openvswitch.core.packet.rate.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.upcall.rate.OvsUpcallRateDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.openvswitch.core.upcall.rate.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.openvswitch.ui.revalidation.OvsRevalidationDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.openvswitch.core.revalidation.data.provider">
+      </dataProviderFactory>
+   </extension>
+   
+
+</plugin>

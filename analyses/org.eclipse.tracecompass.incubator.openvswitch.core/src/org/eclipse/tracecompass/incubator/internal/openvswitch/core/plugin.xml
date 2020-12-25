@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.linuxtools.tmf.core.analysis">
+      <module
+            analysis_module="org.eclipse.tracecompass.incubator.internal.openvswitch.core.OpenvSwitchDatapathInterfaceAnalysisModule"
+            applies_experiment="true"
+            automatic="false"
+            id="org.eclipse.tracecompass.incubator.internal.openvswitch.core.datapath.interface.analysis"
+            name="OpenvSwitch Upcalls">
+         <tracetype
+               applies="true"
+               class="org.eclipse.tracecompass.tmf.core.trace.experiment.TmfExperiment">
+         </tracetype>
+      </module>
+      <module
+            analysis_module="org.eclipse.tracecompass.incubator.internal.openvswitch.core.OpenvSwitchFlowsAnalysisModule"
+            applies_experiment="true"
+            automatic="false"
+            id="org.eclipse.tracecompass.incubator.internal.openvswitch.core.flows.analysis"
+            name="OpenvSwitch Flows">
+         <tracetype
+               applies="true"
+               class="org.eclipse.tracecompass.tmf.core.trace.experiment.TmfExperiment">
+         </tracetype>
+      </module>
+      <module
+            analysis_module="org.eclipse.tracecompass.incubator.internal.openvswitch.core.OpenvSwitchRevalidationAnalysisModule"
+            automatic="true"
+            id="org.eclipse.tracecompass.incubator.internal.openvswitch.core.revalidation.analysis"
+            name="OpenvSwitch Revalidation">
+         <tracetype
+               applies="true"
+               class="org.eclipse.tracecompass.tmf.core.trace.experiment.TmfExperiment">
+         </tracetype>
+      </module>
+   </extension>
+
+</plugin>
