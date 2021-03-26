@@ -33,7 +33,7 @@ public class SwPortSetupEventHandler extends DpdkEventHandler {
         ITmfEventField content = event.getContent();
 
         Integer backendId = content.getFieldValue(Integer.class, layout.fieldSw());
-        Integer portId = content.getFieldValue(Integer.class, layout.fieldPortIdx());
+        Integer portId = content.getFieldValue(Integer.class, layout.fieldPortId());
 
         Integer newEvtThreshold = content.getFieldValue(Integer.class, layout.fieldPortNewEventsThreshold());
         Integer enqueueDepth = content.getFieldValue(Integer.class, layout.fieldPortEnqueueDepth());
@@ -44,7 +44,7 @@ public class SwPortSetupEventHandler extends DpdkEventHandler {
 
         if (backendId == null || portId == null || enqueueDepth == null || dequeueDepth == null
                 || newEvtThreshold == null || ringRxId == null || ringCqId == null) {
-            throw new IllegalArgumentException(layout.eventRtePortSetup() + " event does not have expected fields"); //$NON-NLS-1$ ;
+            throw new IllegalArgumentException(layout.eventSwPortSetup() + " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
         EventDevModel device = fEventdevStateProvier.searchEventDevByBackendId(backendId);

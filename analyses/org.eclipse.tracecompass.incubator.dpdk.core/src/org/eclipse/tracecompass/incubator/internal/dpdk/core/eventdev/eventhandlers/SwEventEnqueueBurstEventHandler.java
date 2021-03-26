@@ -34,23 +34,26 @@ public class SwEventEnqueueBurstEventHandler extends DpdkEventHandler {
         long ts = event.getTimestamp().getValue();
 
         Integer backendId = content.getFieldValue(Integer.class, layout.fieldSw());
-        Integer portId = content.getFieldValue(Integer.class, layout.fieldPortIdx());
+        Integer portId = content.getFieldValue(Integer.class, layout.fieldPortId());
 
         Integer nbEnqEvents = content.getFieldValue(Integer.class, layout.fieldNbEnqEvents());
         Integer nbNewEnqEvents = content.getFieldValue(Integer.class, layout.fieldNbNewEvents());
 
         Integer portInflightCredit = content.getFieldValue(Integer.class, layout.fieldPortInflightCredits());
-        Integer swInflights = content.getFieldValue(Integer.class, layout.fieldSwInflights());
+        Integer swInflightCredit = content.getFieldValue(Integer.class, layout.fieldSwInflights());
 
         if (backendId == null || portId == null || nbEnqEvents == null || nbNewEnqEvents == null
-                || portInflightCredit == null || swInflights == null) {
+                || portInflightCredit == null || swInflightCredit == null) {
             throw new IllegalArgumentException(layout.eventSwEventEnqueueBurst() + " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
         EventDevModel device = fEventdevStateProvier.searchEventDevByBackendId(backendId);
         if(device != null) {
             PortModel port = device.getPort(portId);
-            port.enqueueEvents(nbEnqEvents, ts);
+            if(port != null) {
+                device.updateInflight(swInflightCredit, portId, portInflightCredit, ts);
+                port.enqueueEvents(nbEnqEvents, ts);
+            }
         }
     }
 

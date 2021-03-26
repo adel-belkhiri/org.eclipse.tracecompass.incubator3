@@ -30,6 +30,7 @@ public class RteEventDevConfigureEventHandler extends DpdkEventHandler {
 
         /* unpack the event */
         ITmfEventField content = event.getContent();
+        long ts = event.getTimestamp().getValue();
 
         Integer devId = content.getFieldValue(Integer.class, layout.fieldDevID());
         Integer nbEvLimit = content.getFieldValue(Integer.class, layout.fieldNbEventsLimit());
@@ -40,7 +41,7 @@ public class RteEventDevConfigureEventHandler extends DpdkEventHandler {
 
         EventDevModel evDev = fEventdevStateProvier.getEventDevice(devId);
         if(evDev != null) {
-            evDev.setNbEventsLimit(nbEvLimit);
+            evDev.updateNbEventsLimit(nbEvLimit, ts);
         }
 
     }

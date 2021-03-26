@@ -22,14 +22,20 @@ public class Messages extends NLS {
     public static @Nullable String IDpdkModel_SCHED_QUANTA;
 
     public static @Nullable String IDpdkModel_NB_EVENT_LIMIT;
+    public static @Nullable String IDpdkModel_INFLIGHTS_CREDIT;
     public static @Nullable String IDpdkModel_EVENTDEV_NAME;
 
     public static @Nullable String  IDpdkModel_PORTS;
+    public static @Nullable String  IDpdkModel_ATTACHED_PORTS;
+    public static @Nullable String  IDpdkModel_PORT_STATUS;
+    public static @Nullable String  IDpdkModel_NB_FLOW_MIGRATION;
     public static @Nullable String  IDpdkModel_PORT_DEQUEUE_DEPTH;
     public static @Nullable String  IDpdkModel_PORT_ENQUEUE_DEPTH;
     public static @Nullable String  IDpdkModel_PORT_NEW_THRESHOLD;
     public static @Nullable String  IDpdkModel_PRIORITY;
     public static @Nullable String  IDpdkModel_SCHEDULE_TYPE;
+    public static @Nullable String  IDpdkModel_PORT_LOAD;
+
 
     public static @Nullable String  IDpdkModel_QUEUES;
     public static @Nullable String  IDpdkModel_EVENT_RX;
@@ -43,13 +49,17 @@ public class Messages extends NLS {
 
     public static @Nullable String  IDpdkModel_QUEUE_SCHEDULE_TYPE;
     public static @Nullable String  IDpdkModel_FLOW_ID;
+    public static @Nullable String  IDpdkModel_FLOWS;
+    public static @Nullable String  IDpdkModel_NB_FLOWS;
+    public static @Nullable String  IDpdkModel_FLOW_MIGRATION_LATENCY;
 
-    public static String IDpdkModel_PER_PORT_PACKET_RATE_DATAPROVIDER_TITLE;
+    public static String IDpdkModel_EVENTDEV_RING_OCCUPATION_DATAPROVIDER_TITLE;
+    public static String IDpdkModel_EVENTDEV_INFLIGHT_CREDIT_DATAPROVIDER_TITLE;
+    public static String IDpdkModel_EVENTDEV_PORT_ENQUEUE_DEQUEUE_DATAPROVIDER_TITLE;
+    public static String IDpdkModel_EVENTDEV_PORT_PER_STAGE_LOAD_PERCENTAGE_DATAPROVIDER_TITLE;
 
     static {
-        // initialize resource bundle
-
-    NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+        NLS.initializeMessages(BUNDLE_NAME, Messages.class);
     }
 
 }

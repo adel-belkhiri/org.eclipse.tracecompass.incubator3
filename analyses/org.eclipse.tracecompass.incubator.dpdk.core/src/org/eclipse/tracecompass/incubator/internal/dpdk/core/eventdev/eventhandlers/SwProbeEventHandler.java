@@ -2,6 +2,7 @@ package org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhand
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis.DpdkEventDevStateProvider;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis.EventDevBackendType;
 import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
@@ -43,7 +44,8 @@ public class SwProbeEventHandler extends DpdkEventHandler {
             throw new IllegalArgumentException(layout.eventSwProbe() + " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
-        fEventdevStateProvier.addEventDevice(devName, devId, sw, serviceId, creditQ, schedQ);
+        fEventdevStateProvier
+            .addEventDevice(devName, devId, sw, serviceId, creditQ, schedQ, EventDevBackendType.SW);
     }
 
 }

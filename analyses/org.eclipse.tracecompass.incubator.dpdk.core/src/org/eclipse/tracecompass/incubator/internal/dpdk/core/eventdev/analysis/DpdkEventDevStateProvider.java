@@ -8,14 +8,33 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.tracecompass.common.core.NonNullUtils;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.DpdkEventDevAnalysisEventLayout;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.DpdkEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.DswCollectConfirmationMessagesEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.DswEventDequeueBurstEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.DswEventEnqueueBurstEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.DswPortAquireCreditsEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.DswPortBufferNonPausedEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.DswPortEndMigrationEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.DswPortMoveMigratingFlowEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.DswPortSetupEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.DswPortStartMigrationEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.DswPortUpdateLoadEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.DswProbeEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.RteEventDevConfigureEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.RteEventRingCreateEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.RteEventRingDequeueBurstEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.RteEventRingEnqueueBurstEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.RtePortLinkEventHandler;
 //import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.RtePortSetupEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.RteQueueSetupEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwEventDequeueBurstEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwEventEnqueueBurstEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwPortSetupEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwProbeEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwScheduleAtomicToCqEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwScheduleDirToCqEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwScheduleParallelToCqEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwSchedulePullPortDirEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwSchedulePullPortLBEventHandler;
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
 import org.eclipse.tracecompass.tmf.core.statesystem.AbstractTmfStateProvider;
@@ -108,6 +127,34 @@ public class DpdkEventDevStateProvider extends AbstractTmfStateProvider {
          builder.put(layout.eventSwEventEnqueueBurst(), new SwEventEnqueueBurstEventHandler(layout, this));
          builder.put(layout.eventSwEventDequeueBurst(), new SwEventDequeueBurstEventHandler(layout, this));
 
+         builder.put(layout.eventSwScheduleDirToCq(), new SwScheduleDirToCqEventHandler(layout, this));
+         builder.put(layout.eventSwScheduleAtomicToCq(), new SwScheduleAtomicToCqEventHandler(layout, this));
+         builder.put(layout.eventSwScheduleParallelToCq(), new SwScheduleParallelToCqEventHandler(layout, this));
+
+         builder.put(layout.eventSwSchedulePullPortDir(), new SwSchedulePullPortDirEventHandler(layout, this));
+         builder.put(layout.eventSwPullPortLB(), new SwSchedulePullPortLBEventHandler(layout, this));
+
+         builder.put(layout.eventRtePortLink(), new RtePortLinkEventHandler(layout, this));
+
+         builder.put(layout.eventRteEventRingEnqueueBurst(), new RteEventRingEnqueueBurstEventHandler(layout, this));
+         builder.put(layout.eventRteEventRingDequeueBurst(), new RteEventRingDequeueBurstEventHandler(layout, this));
+
+         //--------------------------------
+         builder.put(layout.eventDswProbe(), new DswProbeEventHandler(layout, this));
+         builder.put(layout.eventDswPortSetup(), new DswPortSetupEventHandler(layout, this));
+
+         builder.put(layout.eventDswPortStartMigration(), new DswPortStartMigrationEventHandler(layout, this));
+         builder.put(layout.eventDswPortMoveMigratingFlow(), new DswPortMoveMigratingFlowEventHandler(layout, this));
+         builder.put(layout.eventCollectAllConfirmationMessages(), new DswCollectConfirmationMessagesEventHandler(layout, this));
+         builder.put(layout.eventDswPortEndMigration(), new DswPortEndMigrationEventHandler(layout, this));
+
+         builder.put(layout.eventDswPortBufferNonPaused(), new DswPortBufferNonPausedEventHandler(layout, this));
+         builder.put(layout.eventDswEventEnqueueBurst(), new DswEventEnqueueBurstEventHandler(layout, this));
+         builder.put(layout.eventDswEventDequeueBurst(), new DswEventDequeueBurstEventHandler(layout, this));
+
+         builder.put(layout.eventDswPortAcquireCredits(), new DswPortAquireCreditsEventHandler(layout, this));
+         builder.put(layout.eventDswPortLoadUpdate(), new DswPortUpdateLoadEventHandler(layout, this));
+
          return (builder.build());
     }
 
@@ -141,6 +188,7 @@ public class DpdkEventDevStateProvider extends AbstractTmfStateProvider {
      * @param serviceId
      * @param creditQuanta
      * @param schedQuanta
+     * @param backendType
      * @param pipeName
      *          Pipeline name
      * @param id
@@ -149,10 +197,10 @@ public class DpdkEventDevStateProvider extends AbstractTmfStateProvider {
      *          PipelineModel instance
      */
     public @NonNull EventDevModel addEventDevice(@NonNull String name, int devId, int backend, int serviceId,
-            int creditQuanta, int schedQuanta) {
+            int creditQuanta, int schedQuanta, EventDevBackendType backendType) {
         EventDevModel eventdev = fEventdevs.get(devId);
         if(eventdev == null) {
-            eventdev = new EventDevModel(name, devId, backend, serviceId, creditQuanta, schedQuanta,
+            eventdev = new EventDevModel(name, devId, backend, serviceId, creditQuanta, schedQuanta, backendType,
                     NonNullUtils.checkNotNull(getStateSystemBuilder()));
             fEventdevs.put(devId, eventdev);
         }

@@ -11,6 +11,8 @@ import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
  *
  */
 public class EventDevModel {
+
+    private final EventDevBackendType backendType;
     private final String fName;
     private final int fQuark;
 
@@ -21,6 +23,7 @@ public class EventDevModel {
     private final int fSchedQuanta;
 
     private int nbEventsLimit;
+    private int inflightCredit;
 
     private final Map<Integer, PortModel> fPorts = new HashMap<>();
     private final Map<Integer, QueueModel> fQueues = new HashMap<>();
@@ -37,11 +40,14 @@ public class EventDevModel {
      * @param serviceId
      * @param creditQuanta
      * @param schedQuanta
+     * @param type
      * @param ss
      *      State system builder
      */
     public EventDevModel(String eventdevName, int devId, int backend,int serviceId, int creditQuanta,
-            int schedQuanta, @NonNull ITmfStateSystemBuilder ss) {
+            int schedQuanta, EventDevBackendType type, @NonNull ITmfStateSystemBuilder ss) {
+
+        this.backendType = type;
         this.fName = eventdevName;
         this.fDevId = devId;
         this.fServiceId = serviceId;
@@ -49,6 +55,7 @@ public class EventDevModel {
         this.fSchedQuanta = schedQuanta;
         this.fBackend = backend;
         this.nbEventsLimit = 0;
+        this.inflightCredit = 0;
 
         /* Create the eventdev node in the ss */
         this.fSs = ss;
@@ -57,11 +64,17 @@ public class EventDevModel {
         int devIdQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.DEV_ID);
         fSs.modifyAttribute(0, this.fDevId, devIdQuark);
 
+        int nbEventsLimitQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.NB_EVENT_LIMIT);
+        fSs.modifyAttribute(0, this.nbEventsLimit, nbEventsLimitQuark);
+
         int creditQuantaQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.CREDIT_QUANTA);
         fSs.modifyAttribute(0, this.fCreditQuanta, creditQuantaQuark);
 
         int schedQuantaQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.SCHED_QUANTA);
         fSs.modifyAttribute(0, this.fSchedQuanta, schedQuantaQuark);
+
+        int inflightCreditQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.INFLIGHTS_CREDIT);
+        fSs.modifyAttribute(0, this.inflightCredit, inflightCreditQuark);
 
         int serviceIdQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.SERVICE_ID);
         fSs.modifyAttribute(0, this.fServiceId, serviceIdQuark);
@@ -76,8 +89,15 @@ public class EventDevModel {
         return this.nbEventsLimit;
     }
 
-    public void setNbEventsLimit(int limit) {
+    /**
+     * @param limit
+     * @param ts
+     */
+    public void updateNbEventsLimit(int limit, long ts) {
         this.nbEventsLimit = limit;
+
+        int nbEventsLimitQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.NB_EVENT_LIMIT);
+        fSs.modifyAttribute(ts, this.nbEventsLimit, nbEventsLimitQuark);
     }
 
     /**
@@ -96,7 +116,7 @@ public class EventDevModel {
         PortModel port = fPorts.get(portId);
 
         if(port == null) {
-            port = new PortModel(portId, newEventThreshold, enqueueDepth, dequeueDepth, ringRx, ringCq, this.fQuark, this.fSs);
+            port = new PortModel(portId, newEventThreshold, enqueueDepth, dequeueDepth, ringRx, ringCq, this.backendType, this.fQuark, this.fSs);
             fPorts.put(portId, port);
         }
 
@@ -121,11 +141,42 @@ public class EventDevModel {
         return queue;
     }
 
+
+    /**
+     * @param queueId
+     * @return
+     */
+    public QueueModel getQueue(int queueId) {
+        return fQueues.get(queueId);
+    }
+
     /**
      * @param portId
      * @return
      */
     public PortModel getPort(int portId) {
         return fPorts.get(portId);
+    }
+
+    /**
+     * Update the inflight of the eventdev and the port
+     *
+     * @param portId
+     * @param portInflightCredit
+     * @param inflight
+     * @param ts
+     */
+    public void updateInflight(int inflight, int portId, int portInflightCredit, long ts) {
+
+        this.inflightCredit = inflight;
+
+        int swInflightsQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.INFLIGHTS_CREDIT);
+        fSs.modifyAttribute(ts, this.inflightCredit, swInflightsQuark);
+
+        PortModel port = fPorts.get(portId);
+        if(port != null) {
+            port.updateInflight(portInflightCredit, ts);
+        }
+
     }
 }
