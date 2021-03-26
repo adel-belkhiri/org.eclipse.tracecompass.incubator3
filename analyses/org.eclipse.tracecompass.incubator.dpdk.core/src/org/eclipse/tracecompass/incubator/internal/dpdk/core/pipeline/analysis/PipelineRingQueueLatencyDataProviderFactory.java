@@ -17,17 +17,22 @@ import org.eclipse.tracecompass.tmf.core.trace.TmfTraceManager;
 import org.eclipse.tracecompass.tmf.core.trace.TmfTraceUtils;
 
 /**
- * Pipeline Ports Packets Rate DataProvider Factory
- * @author Adel Belkhiri
+ * @author adel
  *
  */
 @SuppressWarnings("restriction")
-public class PipelinePortsPacketRateDataProviderFactory implements IDataProviderFactory {
+public class PipelineRingQueueLatencyDataProviderFactory implements IDataProviderFactory {
+
+    /**
+     * Constructor
+     */
+    public PipelineRingQueueLatencyDataProviderFactory() {
+    }
 
     private static final IDataProviderDescriptor DESCRIPTOR = new DataProviderDescriptor.Builder()
-            .setId(PipelinePortsPacketRateDataProvider.ID)
-            .setName("Pipeline ports packet rate data provider") //$NON-NLS-1$
-            .setDescription("Pipeline ports packet rate data provider") //$NON-NLS-1$
+            .setId(PipelineRingQueueLatencyDataProvider.ID)
+            .setName("Pipeline SW Queue Latency") //$NON-NLS-1$
+            .setDescription("Pipeline SW Queue Latency") //$NON-NLS-1$
             .setProviderType(ProviderType.TREE_TIME_XY)
             .build();
 
@@ -35,9 +40,9 @@ public class PipelinePortsPacketRateDataProviderFactory implements IDataProvider
     public @Nullable ITmfTreeDataProvider<? extends ITmfTreeDataModel> createProvider(@NonNull ITmfTrace trace) {
         Collection<ITmfTrace> traces = TmfTraceManager.getTraceSet(trace);
         if (traces.size() == 1) {
-            return PipelinePortsPacketRateDataProvider.create(trace);
+            return PipelineRingQueueLatencyDataProvider.create(trace);
         }
-        return TmfTreeXYCompositeDataProvider.create(traces, PipelinePortsPacketRateDataProvider.PROVIDER_TITLE, PipelinePortsPacketRateDataProvider.ID);
+        return TmfTreeXYCompositeDataProvider.create(traces, PipelineRingQueueLatencyDataProvider.PROVIDER_TITLE, PipelineRingQueueLatencyDataProvider.ID);
     }
 
     @Override

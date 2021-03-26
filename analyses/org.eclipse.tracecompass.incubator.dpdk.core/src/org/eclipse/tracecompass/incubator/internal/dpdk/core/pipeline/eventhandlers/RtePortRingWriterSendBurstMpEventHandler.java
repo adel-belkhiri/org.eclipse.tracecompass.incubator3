@@ -3,6 +3,7 @@ package org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhand
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.DpdkPipelineStateProvider;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.PipelineModel;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.SoftwareQueueModel;
 import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
@@ -12,7 +13,7 @@ import org.eclipse.tracecompass.tmf.core.event.ITmfEventField;
  * @author Adel Belkhiri
  *
  */
-public class RtePortRingWriterTxEventHandler extends DpdkEventHandler {
+public class RtePortRingWriterSendBurstMpEventHandler extends DpdkEventHandler {
 
     /**
      * @param layout
@@ -20,7 +21,7 @@ public class RtePortRingWriterTxEventHandler extends DpdkEventHandler {
      * @param stateProvider
      *      Pipelinesstate provider
      */
-    public RtePortRingWriterTxEventHandler(@NonNull DpdkPipelineAnalysisEventLayout layout, DpdkPipelineStateProvider stateProvider) {
+    public RtePortRingWriterSendBurstMpEventHandler(@NonNull DpdkPipelineAnalysisEventLayout layout, DpdkPipelineStateProvider stateProvider) {
         super(layout, stateProvider);
     }
 
@@ -33,15 +34,20 @@ public class RtePortRingWriterTxEventHandler extends DpdkEventHandler {
         long ts = event.getTimestamp().getValue();
 
         Integer portId = content.getFieldValue(Integer.class, layout.fieldPort());
-        Integer nbTxPkts = content.getFieldValue(Integer.class, layout.fieldNbTx());
+        Integer txPktCount = content.getFieldValue(Integer.class, layout.fieldTxPktCount());
 
-        if (portId == null || nbTxPkts == null) {
-            throw new IllegalArgumentException(layout.eventRtePortRingReaderRx()+ " event does not have expected fields"); //$NON-NLS-1$ ;
+        if (portId == null || txPktCount == null) {
+            throw new IllegalArgumentException(layout.eventRtePortRingWriterTxBulk()+ " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
         PipelineModel pipeline = fPipelineStateProvier.searchPipelineByPortID(portId);
         if(pipeline != null) {
-            pipeline.sendPackets(portId, nbTxPkts, ts);
+            pipeline.sendPackets(portId, txPktCount, ts);
+
+            SoftwareQueueModel queue = fPipelineStateProvier.getSoftwareQueue(portId);
+            if(queue != null) {
+                queue.enqueuePackets(txPktCount, ts);
+            }
         }
     }
 

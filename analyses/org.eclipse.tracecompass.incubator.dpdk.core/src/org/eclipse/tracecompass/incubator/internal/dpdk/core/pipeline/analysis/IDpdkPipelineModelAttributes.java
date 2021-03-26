@@ -9,6 +9,8 @@ import org.eclipse.jdt.annotation.Nullable;
 @SuppressWarnings("javadoc")
 public interface IDpdkPipelineModelAttributes {
 
+    @Nullable String PIPELINES = Messages.IDpdkModel_PIPELINES;
+
     @Nullable String IDpdkModel_PORT_NAME = Messages.IDpdkModel_PORT_NAME;
     @Nullable String IDpdkModel_TAB_NAME = Messages.IDpdkModel_TAB_NAME;
     @Nullable String IDpdkModel_TABLES = Messages.IDpdkModel_TABLES;
@@ -34,6 +36,13 @@ public interface IDpdkPipelineModelAttributes {
     String OUT_PORTS = Messages.IDpdkModel_OUT_PORTS;
     @Nullable String PORT_STATUS = Messages.IDpdkModel_PORT_STATUS;
     @Nullable String IDpdkModel_PORT_TYPE = Messages.IDpdkModel_PORT_TYPE;
+    @Nullable String ZERO_POLLS = Messages.IDpdkModel_ZERO_POLLS;
+    @Nullable String NON_ZERO_POLLS = Messages.IDpdkModel_NON_ZERO_POLLS;
+
+    @Nullable String QUEUE_LATENCY = Messages.IDpdkModel_QUEUE_LATENCY;
+    @Nullable String QUEUE_CAPACITY = Messages.IDpdkModel_QUEUE_CAPACITY;
+    @Nullable String SW_QUEUES = Messages.IDpdkModel_QUEUES;
+    @Nullable String NB_PKT = Messages.IDpdkModel_NB_PKT;
 
     @Nullable String HIT_PERCENT_METRIC_LABEL = Messages.IDpdkModel_HIT_PERCENT_METRIC_LABEL;
     @Nullable String MISS_PERCENT_METRIC_LABEL = Messages.IDpdkModel_MISS_PERCENT_METRIC_LABEL;
@@ -43,4 +52,7 @@ public interface IDpdkPipelineModelAttributes {
 
     @Nullable String IDpdkModel_PER_PORT_PACKET_RATE_DATAPROVIDER_TITLE = Messages.IDpdkModel_PER_PORT_PACKET_RATE_DATAPROVIDER_TITLE;
     @Nullable String IDpdkModel_INTER_PIPELINE_PACKET_RATE_DATAPROVIDER_TITLE = Messages.IDpdkModel_INTER_PIPELINE_PACKET_RATE_DATAPROVIDER_TITLE;
+    @Nullable String IDpdkModel_RING_QUEUE_OCCUPANCY_DATAPROVIDER_TITLE = Messages.IDpdkModel_RING_QUEUE_OCCUPANCY_DATAPROVIDER_TITLE;
+    @Nullable String IDpdkModel_RING_QUEUE_LATENCY_DATAPROVIDER_TITLE = Messages.IDpdkModel_RING_QUEUE_LATENCY_DATAPROVIDER_TITLE;
+
 }

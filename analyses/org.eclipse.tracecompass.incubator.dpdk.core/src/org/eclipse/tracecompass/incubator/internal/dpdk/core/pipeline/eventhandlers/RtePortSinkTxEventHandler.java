@@ -33,7 +33,7 @@ public class RtePortSinkTxEventHandler extends DpdkEventHandler {
         long ts = event.getTimestamp().getValue();
 
         Integer portId = content.getFieldValue(Integer.class, layout.fieldPort());
-        Integer nbTxPkts = content.getFieldValue(Integer.class, layout.fieldNbTx());
+        Integer nbTxPkts = content.getFieldValue(Integer.class, layout.fieldTxPktCount());
 
         if (portId == null || nbTxPkts == null) {
             throw new IllegalArgumentException(layout.eventRtePortSinkTx() +

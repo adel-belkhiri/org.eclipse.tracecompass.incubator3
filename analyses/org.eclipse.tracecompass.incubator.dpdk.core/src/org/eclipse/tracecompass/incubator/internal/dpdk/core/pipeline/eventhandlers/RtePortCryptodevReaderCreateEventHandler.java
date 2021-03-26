@@ -1,8 +1,9 @@
 package org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.CryptoDeviceModel;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.DpdkPipelineStateProvider;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.PipelineModel;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.PortTypeEnum;
 import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
@@ -12,7 +13,7 @@ import org.eclipse.tracecompass.tmf.core.event.ITmfEventField;
  * @author Adel Belkhiri
  *
  */
-public class RtePortEthdevWriterTxEventHandler extends DpdkEventHandler {
+public class RtePortCryptodevReaderCreateEventHandler extends DpdkEventHandler {
 
     /**
      * @param layout
@@ -20,7 +21,7 @@ public class RtePortEthdevWriterTxEventHandler extends DpdkEventHandler {
      * @param stateProvider
      *      Pipelinesstate provider
      */
-    public RtePortEthdevWriterTxEventHandler(@NonNull DpdkPipelineAnalysisEventLayout layout, DpdkPipelineStateProvider stateProvider) {
+    public RtePortCryptodevReaderCreateEventHandler(@NonNull DpdkPipelineAnalysisEventLayout layout, DpdkPipelineStateProvider stateProvider) {
         super(layout, stateProvider);
     }
 
@@ -30,18 +31,22 @@ public class RtePortEthdevWriterTxEventHandler extends DpdkEventHandler {
 
         /* unpack the event */
         ITmfEventField content = event.getContent();
-        long ts = event.getTimestamp().getValue();
 
         Integer portId = content.getFieldValue(Integer.class, layout.fieldPort());
+        Integer devIdx = content.getFieldValue(Integer.class, layout.fieldDevIdx());
+        Integer queueId = content.getFieldValue(Integer.class, layout.fieldQueueId());
 
-        if (portId == null) {
-            throw new IllegalArgumentException(layout.eventRtePortEthdevWriterTx()+ " event does not have expected fields"); //$NON-NLS-1$ ;
+        if (portId == null || devIdx == null || queueId == null ) {
+            throw new IllegalArgumentException(layout.eventRtePortCryptoReaderCreate() +
+                    " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
-        PipelineModel pipeline = fPipelineStateProvier.searchPipelineByPortID(portId);
-        if(pipeline != null) {
-            pipeline.sendPackets(portId, 1, ts);
+        String name = "no_name";
+        CryptoDeviceModel dev = fPipelineStateProvier.getCryptoDevice(devIdx);
+        if(dev != null) {
+            name = dev.getName() + "/RX" + queueId.toString(); //$NON-NLS-1$
         }
+        fPipelineStateProvier.addPort(name, portId, PortTypeEnum.CRYPTO, 0);
     }
 
 }

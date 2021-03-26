@@ -2,7 +2,6 @@ package org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhand
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.DpdkPipelineStateProvider;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.PipelineModel;
 import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
@@ -12,7 +11,7 @@ import org.eclipse.tracecompass.tmf.core.event.ITmfEventField;
  * @author Adel Belkhiri
  *
  */
-public class RtePortEthdevWriterTxEventHandler extends DpdkEventHandler {
+public class RteCryptodevConfigureEventHandler extends DpdkEventHandler {
 
     /**
      * @param layout
@@ -20,7 +19,7 @@ public class RtePortEthdevWriterTxEventHandler extends DpdkEventHandler {
      * @param stateProvider
      *      Pipelinesstate provider
      */
-    public RtePortEthdevWriterTxEventHandler(@NonNull DpdkPipelineAnalysisEventLayout layout, DpdkPipelineStateProvider stateProvider) {
+    public RteCryptodevConfigureEventHandler(@NonNull DpdkPipelineAnalysisEventLayout layout, DpdkPipelineStateProvider stateProvider) {
         super(layout, stateProvider);
     }
 
@@ -30,18 +29,16 @@ public class RtePortEthdevWriterTxEventHandler extends DpdkEventHandler {
 
         /* unpack the event */
         ITmfEventField content = event.getContent();
-        long ts = event.getTimestamp().getValue();
 
-        Integer portId = content.getFieldValue(Integer.class, layout.fieldPort());
+        Integer devIdx = content.getFieldValue(Integer.class, layout.fieldDevIdx());
+        String devName = content.getFieldValue(String.class, layout.fieldName());
+        Integer nbQueuePairs = content.getFieldValue(Integer.class, layout.fieldNbQueuePairs());
 
-        if (portId == null) {
-            throw new IllegalArgumentException(layout.eventRtePortEthdevWriterTx()+ " event does not have expected fields"); //$NON-NLS-1$ ;
+        if (devIdx == null || devName == null || nbQueuePairs == null) {
+            throw new IllegalArgumentException(layout.eventRteCryptoDevConfigure()+ " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
-        PipelineModel pipeline = fPipelineStateProvier.searchPipelineByPortID(portId);
-        if(pipeline != null) {
-            pipeline.sendPackets(portId, 1, ts);
-        }
+        fPipelineStateProvier.addCryptoDevice(devName, devIdx, nbQueuePairs);
     }
 
 }

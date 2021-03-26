@@ -13,7 +13,7 @@ import org.eclipse.tracecompass.tmf.core.event.ITmfEventField;
  * @author Adel Belkhiri
  *
  */
-public class RtePortRingReaderRxEventHandler extends DpdkEventHandler {
+public class RtePortRingWriterSendBurstEventHandler extends DpdkEventHandler {
 
     /**
      * @param layout
@@ -21,7 +21,7 @@ public class RtePortRingReaderRxEventHandler extends DpdkEventHandler {
      * @param stateProvider
      *      Pipelinesstate provider
      */
-    public RtePortRingReaderRxEventHandler(@NonNull DpdkPipelineAnalysisEventLayout layout, DpdkPipelineStateProvider stateProvider) {
+    public RtePortRingWriterSendBurstEventHandler(@NonNull DpdkPipelineAnalysisEventLayout layout, DpdkPipelineStateProvider stateProvider) {
         super(layout, stateProvider);
     }
 
@@ -34,20 +34,19 @@ public class RtePortRingReaderRxEventHandler extends DpdkEventHandler {
         long ts = event.getTimestamp().getValue();
 
         Integer portId = content.getFieldValue(Integer.class, layout.fieldPort());
-        Integer nbRxPkts = content.getFieldValue(Integer.class, layout.fieldNbRx());
-        Long nbZeroPolls = content.getFieldValue(Long.class, layout.fieldzeroPolls());
+        Integer txPktCount = content.getFieldValue(Integer.class, layout.fieldTxPktCount());
 
-        if (portId == null || nbRxPkts == null || nbZeroPolls == null) {
-            throw new IllegalArgumentException(layout.eventRtePortRingReaderRx()+ " event does not have expected fields"); //$NON-NLS-1$ ;
+        if (portId == null || txPktCount == null) {
+            throw new IllegalArgumentException(layout.eventRtePortRingSendBurst()+ " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
         PipelineModel pipeline = fPipelineStateProvier.searchPipelineByPortID(portId);
         if(pipeline != null) {
-            pipeline.receivePackets(portId, nbRxPkts, nbZeroPolls, ts);
+            pipeline.sendPackets(portId, txPktCount, ts);
 
             SoftwareQueueModel queue = fPipelineStateProvier.getSoftwareQueue(portId);
             if(queue != null) {
-                queue.dequeuePackets(nbRxPkts, ts);
+                queue.enqueuePackets(txPktCount, ts);
             }
         }
     }

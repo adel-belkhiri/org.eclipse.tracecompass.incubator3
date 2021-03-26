@@ -6,6 +6,7 @@ import java.util.Collections;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.tracecompass.internal.tmf.core.model.DataProviderDescriptor;
+
 import org.eclipse.tracecompass.internal.tmf.core.model.xy.TmfTreeXYCompositeDataProvider;
 import org.eclipse.tracecompass.tmf.core.dataprovider.IDataProviderDescriptor;
 import org.eclipse.tracecompass.tmf.core.dataprovider.IDataProviderFactory;
@@ -22,12 +23,12 @@ import org.eclipse.tracecompass.tmf.core.trace.TmfTraceUtils;
  *
  */
 @SuppressWarnings("restriction")
-public class PipelinePortsPacketRateDataProviderFactory implements IDataProviderFactory {
+public class PipelinePortsBusynessDataProviderFactory implements IDataProviderFactory {
 
     private static final IDataProviderDescriptor DESCRIPTOR = new DataProviderDescriptor.Builder()
-            .setId(PipelinePortsPacketRateDataProvider.ID)
-            .setName("Pipeline ports packet rate data provider") //$NON-NLS-1$
-            .setDescription("Pipeline ports packet rate data provider") //$NON-NLS-1$
+            .setId(PipelinePortsBusynessDataProvider.ID)
+            .setName("Pipeline ports busyness data provider") //$NON-NLS-1$
+            .setDescription("Pipeline ports busyness data provider") //$NON-NLS-1$
             .setProviderType(ProviderType.TREE_TIME_XY)
             .build();
 
@@ -35,9 +36,9 @@ public class PipelinePortsPacketRateDataProviderFactory implements IDataProvider
     public @Nullable ITmfTreeDataProvider<? extends ITmfTreeDataModel> createProvider(@NonNull ITmfTrace trace) {
         Collection<ITmfTrace> traces = TmfTraceManager.getTraceSet(trace);
         if (traces.size() == 1) {
-            return PipelinePortsPacketRateDataProvider.create(trace);
+            return PipelinePortsBusynessDataProvider.create(trace);
         }
-        return TmfTreeXYCompositeDataProvider.create(traces, PipelinePortsPacketRateDataProvider.PROVIDER_TITLE, PipelinePortsPacketRateDataProvider.ID);
+        return TmfTreeXYCompositeDataProvider.create(traces, PipelinePortsBusynessDataProvider.PROVIDER_TITLE, PipelinePortsBusynessDataProvider.ID);
     }
 
     @Override

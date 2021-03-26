@@ -3,7 +3,6 @@ package org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhand
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.DpdkPipelineStateProvider;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.PipelineModel;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.SoftwareQueueModel;
 import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
@@ -13,7 +12,7 @@ import org.eclipse.tracecompass.tmf.core.event.ITmfEventField;
  * @author Adel Belkhiri
  *
  */
-public class RtePortRingReaderRxEventHandler extends DpdkEventHandler {
+public class RtePortCryptodevReaderRxEventHandler extends DpdkEventHandler {
 
     /**
      * @param layout
@@ -21,7 +20,7 @@ public class RtePortRingReaderRxEventHandler extends DpdkEventHandler {
      * @param stateProvider
      *      Pipelinesstate provider
      */
-    public RtePortRingReaderRxEventHandler(@NonNull DpdkPipelineAnalysisEventLayout layout, DpdkPipelineStateProvider stateProvider) {
+    public RtePortCryptodevReaderRxEventHandler(@NonNull DpdkPipelineAnalysisEventLayout layout, DpdkPipelineStateProvider stateProvider) {
         super(layout, stateProvider);
     }
 
@@ -38,17 +37,12 @@ public class RtePortRingReaderRxEventHandler extends DpdkEventHandler {
         Long nbZeroPolls = content.getFieldValue(Long.class, layout.fieldzeroPolls());
 
         if (portId == null || nbRxPkts == null || nbZeroPolls == null) {
-            throw new IllegalArgumentException(layout.eventRtePortRingReaderRx()+ " event does not have expected fields"); //$NON-NLS-1$ ;
+            throw new IllegalArgumentException(layout.eventRtePortCryptoReaderRx()+ " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
         PipelineModel pipeline = fPipelineStateProvier.searchPipelineByPortID(portId);
         if(pipeline != null) {
             pipeline.receivePackets(portId, nbRxPkts, nbZeroPolls, ts);
-
-            SoftwareQueueModel queue = fPipelineStateProvier.getSoftwareQueue(portId);
-            if(queue != null) {
-                queue.dequeuePackets(nbRxPkts, ts);
-            }
         }
     }
 

@@ -9,24 +9,18 @@ package org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis;
 public class PortModel {
 
     private final int fId;
-    private final int fQueueSize;
     private final String fName;
     PortTypeEnum fType;
 
 
-    public PortModel(int portId, String name, PortTypeEnum type, int queueSize) {
+    public PortModel(int portId, String name, PortTypeEnum type) {
         this.fId = portId;
-        this.fQueueSize = queueSize;
         this.fName = name;
         this.fType = type;
     }
 
     public int getId() {
         return this.fId;
-    }
-
-    public int getCapacity() {
-        return this.fQueueSize;
     }
 
     public String getName() {

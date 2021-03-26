@@ -24,13 +24,30 @@ public class DpdkPipelineAnalysisEventLayout {
     }
 
     public @NonNull String eventRtePortRingWriterTx() {
+        return new String("librte_port_ring:rte_port_ring_writer_tx");
+    }
+
+    public @NonNull String eventRtePortRingWriterTxBulk() {
+        return new String("librte_port_ring:rte_port_ring_writer_tx_bulk");
+    }
+
+    public @NonNull String eventRtePortRingSendBurst() {
         return new String("librte_port_ring:send_burst");
+    }
+
+    public @NonNull String eventRtePortRingSendBurstMp() {
+        return new String("librte_port_ring:send_burst_mp");
     }
 
     /** Ethdev events */
     public @NonNull String eventRteEthDevConfigure() {
         return new String("librte_ethdev:rte_eth_dev_configure");
     }
+
+    public @NonNull String eventRteCryptoDevConfigure() {
+        return new String("librte_cryptodev:rte_cryptodev_configure");
+    }
+
 
     /** Ethdev Port events */
     public @NonNull String eventRtePortEthdevReaderCreate() {
@@ -41,6 +58,21 @@ public class DpdkPipelineAnalysisEventLayout {
         return new String("librte_port_ethdev:rte_port_ethdev_writer_create");
     }
 
+    public @NonNull String eventRtePortCryptoReaderCreate() {
+        return new String("librte_port_sym_crypto:rte_port_sym_crypto_reader_create");
+    }
+
+    public @NonNull String eventRtePortCryptoReaderRx() {
+        return new String("librte_port_sym_crypto:rte_port_sym_crypto_reader_rx");
+    }
+
+    public @NonNull String eventRtePortCryptoWriterCreate() {
+        return new String("librte_port_sym_crypto:rte_port_sym_crypto_writer_create");
+    }
+
+    public @NonNull String eventRtePortCryptoWriterSendBurst() {
+        return new String("librte_port_sym_crypto:send_burst");
+    }
 
     public @NonNull String eventRtePortSinkCreate() {
         return new String("librte_port_source_sink:rte_port_sink_create");
@@ -63,6 +95,10 @@ public class DpdkPipelineAnalysisEventLayout {
     }
 
     public @NonNull String eventRtePortEthdevWriterTx() {
+        return new String("librte_port_ethdev:rte_port_ethdev_writer_tx");
+    }
+
+    public @NonNull String eventRtePortEthdevWriterSendBurst() {
         return new String("librte_port_ethdev:send_burst");
     }
 
@@ -167,6 +203,10 @@ public class DpdkPipelineAnalysisEventLayout {
         return new String("librte_table_array:rte_table_array_create");
     }
 
+    public @NonNull String eventRteTableStubCreate() {
+        return new String("librte_table_stub:rte_table_stub_create");
+    }
+
     /**
      *
      * @return
@@ -175,12 +215,20 @@ public class DpdkPipelineAnalysisEventLayout {
         return new String("name");
     }
 
+    public @NonNull String fieldNbQueuePairs() {
+        return new String("nb_queue_pairs");
+    }
+
     public @NonNull String fieldPipeline() {
         return new String("p");
     }
 
     public @NonNull String fieldPortIdx() {
         return new String("port_id");
+    }
+
+    public @NonNull String fieldDevIdx() {
+        return new String("dev_id");
     }
 
     public @NonNull String fieldPortPtr() {
@@ -220,8 +268,20 @@ public class DpdkPipelineAnalysisEventLayout {
         return new String("rx_pkt_cnt");
     }
 
+    public @NonNull String fieldzeroPolls() {
+        return new String("zero_polls");
+    }
+
     public @NonNull String fieldNbTx() {
+        return new String("tx_n_pkts");
+    }
+
+    public @NonNull String fieldTxPktCount() {
         return new String("tx_pkt_cnt");
+    }
+
+    public @NonNull String fieldTxBuffCount() {
+        return new String("tx_buf_count");
     }
 
     public @NonNull String fieldNbPkts() {

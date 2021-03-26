@@ -42,7 +42,7 @@ public class RtePortSourceRxEventHandler extends DpdkEventHandler {
 
         PipelineModel pipeline = fPipelineStateProvier.searchPipelineByPortID(portId);
         if(pipeline != null) {
-            pipeline.receivePackets(portId, nbRxPkts, ts);
+            pipeline.receivePackets(portId, nbRxPkts, 0, ts);
         }
     }
 

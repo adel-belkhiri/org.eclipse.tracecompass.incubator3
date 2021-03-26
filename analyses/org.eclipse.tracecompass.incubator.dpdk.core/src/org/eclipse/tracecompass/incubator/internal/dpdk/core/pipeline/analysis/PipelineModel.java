@@ -18,6 +18,7 @@ public class PipelineModel {
 
     private final Map<Integer, InputPortModel> fInPorts = new HashMap<>();
     private final Map<Integer, OutputPortModel> fOutPorts = new HashMap<>();
+
     private final ITmfStateSystemBuilder fSs;
 
 
@@ -32,8 +33,8 @@ public class PipelineModel {
         this.fName = clsName;
         this.fSs = ss;
 
-        /* Create the classifier node in the ss */
-        this.fQuark = fSs.getQuarkAbsoluteAndAdd(this.fName);
+        /* Create the pipeline node in the ss */
+        this.fQuark = fSs.getQuarkAbsoluteAndAdd(IDpdkPipelineModelAttributes.PIPELINES, this.fName);
     }
 
     /**
@@ -97,10 +98,10 @@ public class PipelineModel {
      * Add an input port to the pipeline
      */
     @SuppressWarnings("javadoc")
-    public void addInputPort(int portId, int index, String name, PortTypeEnum type, int queueSize, int burstSize, long ts) {
+    public void addInputPort(int portId, int index, String name, PortTypeEnum type, int burstSize, long ts) {
         InputPortModel port = fInPorts.get(portId);
         if(port == null) {
-            port = new InputPortModel(portId, index, name, type, queueSize, burstSize, this.fQuark, this.fSs, ts);
+            port = new InputPortModel(portId, index, name, type, burstSize, this.fQuark, this.fSs, ts);
             fInPorts.put(portId, port);
         }
     }
@@ -110,10 +111,10 @@ public class PipelineModel {
      * @param portId
      */
     @SuppressWarnings("javadoc")
-    public void addOutputPort(int portId, int index, String name, PortTypeEnum type, int queueSize, long ts) {
+    public void addOutputPort(int portId, int index, String name, PortTypeEnum type, long ts) {
         OutputPortModel port = fOutPorts.get(portId);
         if(port == null) {
-            port = new OutputPortModel(portId, index, name, type, queueSize, this.fQuark, this.fSs, ts);
+            port = new OutputPortModel(portId, index, name, type, this.fQuark, this.fSs, ts);
             fOutPorts.put(portId, port);
         }
     }
@@ -175,10 +176,10 @@ public class PipelineModel {
     }
 
     @SuppressWarnings("javadoc")
-    public void receivePackets(int portId, int nbPkts, long ts) {
+    public void receivePackets(int portId, int nbPkts, long zeroPolls, long ts) {
         InputPortModel port = fInPorts.get(portId);
-        if(port != null) {
-            port.receive(nbPkts, ts);
+        if(port != null && nbPkts > 0) {
+            port.receive(nbPkts, zeroPolls, ts);
         }
     }
 

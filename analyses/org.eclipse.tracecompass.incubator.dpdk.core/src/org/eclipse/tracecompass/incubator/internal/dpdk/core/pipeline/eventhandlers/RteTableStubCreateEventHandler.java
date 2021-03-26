@@ -2,7 +2,7 @@ package org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhand
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.DpdkPipelineStateProvider;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.PipelineModel;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.DpdkTableTypeEnum;
 import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
@@ -12,36 +12,34 @@ import org.eclipse.tracecompass.tmf.core.event.ITmfEventField;
  * @author Adel Belkhiri
  *
  */
-public class RtePortEthdevWriterTxEventHandler extends DpdkEventHandler {
+public class RteTableStubCreateEventHandler extends DpdkEventHandler {
 
     /**
      * @param layout
-     *      DpdkPipelineAnalysisEventLayout instance
+     *      DpdkLpmAnalysisEventLayout
      * @param stateProvider
-     *      Pipelinesstate provider
+     *      DpdkLpmStateProvider
      */
-    public RtePortEthdevWriterTxEventHandler(@NonNull DpdkPipelineAnalysisEventLayout layout, DpdkPipelineStateProvider stateProvider) {
+    public RteTableStubCreateEventHandler(@NonNull DpdkPipelineAnalysisEventLayout layout, DpdkPipelineStateProvider stateProvider) {
         super(layout, stateProvider);
     }
 
     @Override
+    @SuppressWarnings("nls")
     public void handleEvent(ITmfStateSystemBuilder ss, ITmfEvent event) throws AttributeNotFoundException {
         DpdkPipelineAnalysisEventLayout layout = getLayout();
 
         /* unpack the event */
         ITmfEventField content = event.getContent();
-        long ts = event.getTimestamp().getValue();
 
-        Integer portId = content.getFieldValue(Integer.class, layout.fieldPort());
+        Integer tbl = content.getFieldValue(Integer.class, layout.fieldTblPointer());
 
-        if (portId == null) {
-            throw new IllegalArgumentException(layout.eventRtePortEthdevWriterTx()+ " event does not have expected fields"); //$NON-NLS-1$ ;
+        if (tbl == null) {
+            throw new IllegalArgumentException(layout.eventRteTableStubCreate() +
+                    " event does not have expected fields");
         }
 
-        PipelineModel pipeline = fPipelineStateProvier.searchPipelineByPortID(portId);
-        if(pipeline != null) {
-            pipeline.sendPackets(portId, 1, ts);
-        }
+        fPipelineStateProvier.addTable("STUB-" + tbl.toString(), tbl, DpdkTableTypeEnum.STUB);
     }
 
 }

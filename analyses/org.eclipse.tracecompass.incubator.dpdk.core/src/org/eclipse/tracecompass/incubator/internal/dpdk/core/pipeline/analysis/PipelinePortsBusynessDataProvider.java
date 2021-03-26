@@ -35,21 +35,18 @@ import com.google.common.collect.Maps;
  */
 
 @SuppressWarnings("restriction")
-public class PipelinePortsPacketRateDataProvider
+public class PipelinePortsBusynessDataProvider
         extends AbstractTreeCommonXDataProvider<@NonNull DpdkPipelineAnalysisModule, @NonNull TmfTreeDataModel> {
 
     /**
-     * Title used to create XY models for the {@link PipelinePortsPacketRateDataProvider}.
+     * Title used to create XY models for the {@link PipelinePortsBusynessDataProvider}.
      */
     public static final String PROVIDER_TITLE = IDpdkPipelineModelAttributes.IDpdkModel_PER_PORT_PACKET_RATE_DATAPROVIDER_TITLE;
 
     /**
      * Extension point ID.
      */
-    public static final String ID = "org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.ports.packets.rate.data.provider"; //$NON-NLS-1$
-
-
-    private static final long INVALID_COUNT_VALUE = -1;
+    public static final String ID = "org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.ports.busyness.data.provider"; //$NON-NLS-1$
 
 
     /**
@@ -58,16 +55,18 @@ public class PipelinePortsPacketRateDataProvider
      */
     private static final class PipelinePortsBuilder {
 
-        private static final double SECONDS_PER_NANOSECOND = 1E-9;
-        private static final double RATIO = 1 / SECONDS_PER_NANOSECOND;
+        private static final double CENT = 100;
 
         private final long fId;
 
-        public final int fMeasuredQuark;
+        public final int fZeroPollQuark;
+        public final int fNonZeroPollQuark;
 
         private final String fName;
         private final double[] fValues;
-        private long fPrevCount;
+
+        private long fPrevCountZeroPolls;
+        private long fPrevCountNonZeroPolls;
 
         /**
          * Constructor
@@ -79,15 +78,15 @@ public class PipelinePortsPacketRateDataProvider
          * @param length
          *            desired length of the series
          */
-        private PipelinePortsBuilder(long id, int firstQuark, String name, int length) {
+        private PipelinePortsBuilder(long id, int firstQuark, int secondQuark, String name, int length) {
             fId = id;
-            fMeasuredQuark = firstQuark;
+            fZeroPollQuark = firstQuark;
+            fNonZeroPollQuark = secondQuark;
             fName = name;
-            fValues = new double[length];
-        }
+            fPrevCountZeroPolls = 0;
+            fPrevCountNonZeroPolls = 0;
 
-        private void setPrevCount(long prevCount) {
-            this.fPrevCount = prevCount;
+            fValues = new double[length];
         }
 
         /**
@@ -101,20 +100,30 @@ public class PipelinePortsPacketRateDataProvider
          * @param deltaT
          *            time difference to the previous value for interpolation
          */
-        private void updateValue(int pos, long newCount, long deltaT) {
-            /**
-             * Linear interpolation to compute the disk throughput between time and the
-             * previous time, from the number of sectors at each time.
-             */
-            if(newCount != INVALID_COUNT_VALUE) {
-                fValues[pos] = (newCount - fPrevCount)  * RATIO / deltaT ;
-                this.fPrevCount = newCount;
-            }
-            else {
+        private void updateValue(int pos, long zeroPolls, long nonZeroPolls, long deltaT) {
+
+            long zeroPollsValue = zeroPolls - fPrevCountZeroPolls;
+            long nonZeroPollsValue = nonZeroPolls - fPrevCountNonZeroPolls;
+
+            double sum = zeroPollsValue + nonZeroPollsValue;
+            if(sum == 0) {
                 fValues[pos] = 0;
-                this.fPrevCount = 0;
+            } else {
+                double value = (1 - (zeroPollsValue / sum)) * CENT ;
+                fValues[pos] = value;
+            }
+
+            if((zeroPolls != fPrevCountZeroPolls) || (nonZeroPolls != fPrevCountNonZeroPolls)) {
+                fPrevCountZeroPolls = zeroPolls;
+                fPrevCountNonZeroPolls = nonZeroPolls;
             }
         }
+
+
+        private void setPrevCount(long prevCount1, long prevCount2) {
+            fPrevCountZeroPolls = prevCount1;
+            fPrevCountNonZeroPolls = prevCount2;
+           }
 
         public IYModel build() {
            return new YModel(fId, fName, fValues);
@@ -124,24 +133,24 @@ public class PipelinePortsPacketRateDataProvider
     /**
      * Constructor
      */
-    private PipelinePortsPacketRateDataProvider(@NonNull ITmfTrace trace, @NonNull DpdkPipelineAnalysisModule module) {
+    private PipelinePortsBusynessDataProvider(@NonNull ITmfTrace trace, @NonNull DpdkPipelineAnalysisModule module) {
         super(trace, module);
     }
 
     /**
-     * Create an instance of {@link PipelinePortsPacketRateDataProvider}. Returns a null instance if
+     * Create an instance of {@link PipelinePortsBusynessDataProvider}. Returns a null instance if
      * the analysis module is not found.
      *
      * @param trace
      *            A trace on which we are interested to fetch a model
-     * @return A {@link PipelinePortsPacketRateDataProvider} instance. If analysis module is not
+     * @return A {@link PipelinePortsBusynessDataProvider} instance. If analysis module is not
      *         found, it returns null
      */
-    public static PipelinePortsPacketRateDataProvider create(ITmfTrace trace) {
+    public static PipelinePortsBusynessDataProvider create(ITmfTrace trace) {
         DpdkPipelineAnalysisModule module = TmfTraceUtils.getAnalysisModuleOfClass(trace, DpdkPipelineAnalysisModule.class, DpdkPipelineAnalysisModule.ID);
         if (module != null) {
             module.schedule();
-            return new PipelinePortsPacketRateDataProvider(trace, module);
+            return new PipelinePortsBusynessDataProvider(trace, module);
         }
         return null;
     }
@@ -155,7 +164,7 @@ public class PipelinePortsPacketRateDataProvider
     }
 
     /**
-     * Get pipelines input/output ports tree
+     * Get pipelines input ports tree
      */
 
     @SuppressWarnings("nls")
@@ -185,41 +194,18 @@ public class PipelinePortsPacketRateDataProvider
                 continue;
             }
 
-            long inputPortsId = getId(inputPortsQuark);
-            nodes.add(new TmfTreeDataModel(inputPortsId, pipelineId, IDpdkPipelineModelAttributes.IN_PORTS));
-
             for(Integer inPortQuark : ss.getQuarks(inputPortsQuark, "*")) {
                 int nameQuark;
                 try {
                     nameQuark = ss.getQuarkRelative(inPortQuark, IDpdkPipelineModelAttributes.IDpdkModel_PORT_NAME);
                     String portName = getQuarkValue(ss, nameQuark);
                     long portId = getId(inPortQuark);
-                    nodes.add(new TmfTreeDataModel(portId, inputPortsId, portName));
+                    nodes.add(new TmfTreeDataModel(portId, pipelineId, portName));
                 } catch (AttributeNotFoundException e) {
                     e.printStackTrace();
                 }
             }
 
-            /* browse the list of output ports */
-            int outputPortsQuark = ss.optQuarkRelative(portsQuark, IDpdkPipelineModelAttributes.OUT_PORTS);
-            if (outputPortsQuark == ITmfStateSystem.INVALID_ATTRIBUTE) {
-                continue;
-            }
-
-            long outputPortsId = getId(outputPortsQuark);
-            nodes.add(new TmfTreeDataModel(outputPortsId, pipelineId, IDpdkPipelineModelAttributes.OUT_PORTS));
-
-            for(Integer outPortQuark : ss.getQuarks(outputPortsQuark, "*")) {
-                int nameQuark;
-                try {
-                    nameQuark = ss.getQuarkRelative(outPortQuark, IDpdkPipelineModelAttributes.IDpdkModel_PORT_NAME);
-                    String portName = getQuarkValue(ss, nameQuark);
-                    long portId = getId(outPortQuark);
-                    nodes.add(new TmfTreeDataModel(portId, outputPortsId, portName));
-                } catch (AttributeNotFoundException e) {
-                    e.printStackTrace();
-                }
-            }
         }
 
         return new TmfTreeModel<>(Collections.emptyList(), nodes);
@@ -271,7 +257,9 @@ public class PipelinePortsPacketRateDataProvider
             List<ITmfStateInterval> states = ss.queryFullState(prevTime);
 
             for (PipelinePortsBuilder entry : builders) {
-                entry.setPrevCount(extractCount(entry.fMeasuredQuark, states, ss));
+                long zeroPolls = extractCount(entry.fZeroPollQuark, states);
+                long nonZeroPolls = extractCount(entry.fNonZeroPollQuark, states);
+                entry.setPrevCount(zeroPolls, nonZeroPolls);
             }
         }
 
@@ -289,9 +277,11 @@ public class PipelinePortsPacketRateDataProvider
                 List<ITmfStateInterval> states = ss.queryFullState(time);
 
                 for (PipelinePortsBuilder entry : builders) {
-                    long count = extractCount(entry.fMeasuredQuark, states, ss);
+                    long zeroPolls = extractCount(entry.fZeroPollQuark, states);
+                    long nonZeroPolls = extractCount(entry.fNonZeroPollQuark, states);
+
                     long observationPeriod = time - prevTime;
-                    entry.updateValue(i, count, observationPeriod);
+                    entry.updateValue(i, zeroPolls, nonZeroPolls, observationPeriod);
                 }
             }
 
@@ -324,12 +314,13 @@ public class PipelinePortsPacketRateDataProvider
             }
 
             String PortsListname = ss.getAttributeName(portsQuark);
-            if(PortsListname.equals(IDpdkPipelineModelAttributes.IN_PORTS) ||
-                    PortsListname.equals(IDpdkPipelineModelAttributes.OUT_PORTS)) {
-                int portNameQuark;
+            if(PortsListname.equals(IDpdkPipelineModelAttributes.IN_PORTS)) {
+                int portNameQuark, zeroPollQuark, nonZeroPollQuark;
 
                 try {
                     portNameQuark = ss.getQuarkRelative(portQuark, IDpdkPipelineModelAttributes.IDpdkModel_PORT_NAME);
+                    zeroPollQuark = ss.getQuarkRelative(portQuark, IDpdkPipelineModelAttributes.ZERO_POLLS);
+                    nonZeroPollQuark = ss.getQuarkRelative(portQuark, IDpdkPipelineModelAttributes.NON_ZERO_POLLS);
                 } catch (AttributeNotFoundException | IndexOutOfBoundsException e) {
                     continue;
                 }
@@ -340,8 +331,8 @@ public class PipelinePortsPacketRateDataProvider
                 int pipelineQuark = ss.getParentAttributeQuark(portsListQuark);
                 String pipelineName = ss.getAttributeName(pipelineQuark);
 
-                String name = getTrace().getName() + '/' + pipelineName + '/' + PortsListname + '/' + portName;
-                builders.add(new PipelinePortsBuilder(entry.getKey(), portQuark, name, length));
+                String name = getTrace().getName() + '/' + pipelineName + '/' + portName;
+                builders.add(new PipelinePortsBuilder(entry.getKey(), zeroPollQuark, nonZeroPollQuark, name, length));
             }
         }
         return builders;
@@ -356,43 +347,17 @@ public class PipelinePortsPacketRateDataProvider
      *      ITmfStateSystem
      * @return xx
      */
-    public static long extractCount(int portQuark, List<ITmfStateInterval> states, ITmfStateSystem ss) {
+    public static long extractCount(int metricQuark, List<ITmfStateInterval> states) {
 
-        if (portQuark != ITmfStateSystem.INVALID_ATTRIBUTE) {
+        if (metricQuark != ITmfStateSystem.INVALID_ATTRIBUTE) {
+            Object occupancyValue = states.get(metricQuark).getValue();
 
-            Object stateValue = null;
-            int metricQuark;
-
-            int portsListQuark = ss.getParentAttributeQuark(portQuark);
-            String PortsListname = ss.getAttributeName(portsListQuark);
-
-            if(PortsListname.equals(IDpdkPipelineModelAttributes.IN_PORTS)) {
-                try {
-                    metricQuark = ss.getQuarkRelative(portQuark, IDpdkPipelineModelAttributes.NB_RX);
-                    stateValue = states.get(metricQuark).getValue();
-                }
-                catch (AttributeNotFoundException | IndexOutOfBoundsException e) {
-                    e.printStackTrace();
-                    return INVALID_COUNT_VALUE;
-                }
-            } else if(PortsListname.equals(IDpdkPipelineModelAttributes.OUT_PORTS)) {
-                try {
-                    metricQuark = ss.getQuarkRelative(portQuark, IDpdkPipelineModelAttributes.NB_TX);
-                    stateValue = states.get(metricQuark).getValue();
-                }
-                catch (AttributeNotFoundException | IndexOutOfBoundsException e) {
-                    e.printStackTrace();
-                    return INVALID_COUNT_VALUE;
-                }
-            }
-
-
-            if((stateValue != null) && (stateValue instanceof Number)) {
-                return ((Number) stateValue).longValue();
+            if(occupancyValue instanceof Number) {
+                return ((Number) occupancyValue).longValue();
             }
         }
 
-        return INVALID_COUNT_VALUE;
+        return 0L;
     }
 
     @Override

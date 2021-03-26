@@ -16,8 +16,8 @@ public class OutputPortModel extends PortModel {
     private final int fIndex;
 
 
-    public OutputPortModel(int portId, int index, String name, PortTypeEnum type, int queueSize, int parentQuark, ITmfStateSystemBuilder ss, long ts) {
-        super(portId, name, type, queueSize);
+    public OutputPortModel(int portId, int index, String name, PortTypeEnum type, int parentQuark, ITmfStateSystemBuilder ss, long ts) {
+        super(portId, name, type);
         this.fSs = ss;
         this.nbTx = 0;
         this.nbDrop = 0;

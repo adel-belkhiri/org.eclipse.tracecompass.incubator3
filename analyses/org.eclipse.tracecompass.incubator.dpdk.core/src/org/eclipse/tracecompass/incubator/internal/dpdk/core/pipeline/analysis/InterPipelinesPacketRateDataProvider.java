@@ -183,7 +183,8 @@ public class InterPipelinesPacketRateDataProvider
         /**
          *  browse the list of pipelines
          */
-        for (Integer pipelineQuark : ss.getQuarks("*")) {
+        int pipelinesQuark = ss.optQuarkAbsolute(IDpdkPipelineModelAttributes.PIPELINES);
+        for (Integer pipelineQuark : ss.getQuarks(pipelinesQuark, "*")) {
             String pipelineName = getQuarkValue(ss, pipelineQuark);
             long pipelineId = getId(pipelineQuark);
             nodes.add(new TmfTreeDataModel(pipelineId, rootId, pipelineName));

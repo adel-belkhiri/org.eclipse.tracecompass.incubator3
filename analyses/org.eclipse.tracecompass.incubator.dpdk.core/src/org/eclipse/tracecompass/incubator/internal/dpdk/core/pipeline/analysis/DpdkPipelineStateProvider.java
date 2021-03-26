@@ -8,6 +8,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.tracecompass.common.core.NonNullUtils;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.DpdkEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.DpdkPipelineAnalysisEventLayout;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RteCryptodevConfigureEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RteEthdevConfigureEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePipelineConnectInputPortToTableEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePipelineCreateEventHandler;
@@ -23,14 +24,19 @@ import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandl
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePipelineTableCreateEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePipelineTableDefaultActionEntryAddEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePipelineTableDropPacketsEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortCryptodevReaderCreateEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortCryptodevReaderRxEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortCryptodevWriterCreateEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortCryptodevWriterSendBurstEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortEthdevReaderCreateEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortEthdevReaderRxEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortEthdevWriterCreateEventHandler;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortEthdevWriterTxEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortEthdevWriterSendBurstEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortRingReaderCreateEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortRingReaderRxEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortRingWriterCreateEventHandler;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortRingWriterTxEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortRingWriterSendBurstEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortRingWriterSendBurstMpEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortSinkCreateEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortSinkTxEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RtePortSourceCreateEventHandler;
@@ -38,6 +44,7 @@ import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandl
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RteTableAclCreateEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RteTableArrayCreateEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RteTableLpmCreateEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.eventhandlers.RteTableStubCreateEventHandler;
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
 import org.eclipse.tracecompass.tmf.core.statesystem.AbstractTmfStateProvider;
@@ -65,7 +72,9 @@ public class DpdkPipelineStateProvider extends AbstractTmfStateProvider {
     private final Map<@NonNull Integer, PortModel> fPorts = new HashMap<>();
     private final Map<@NonNull Integer /*port id*/, PipelineModel> fMapPortToPipeline = new HashMap<>();
     private final Map<@NonNull Integer, GenericTableModel> fTables = new HashMap<>();
-    private final Map<@NonNull Integer, NetworkDeviceModel> fDevices = new HashMap<>();
+    private final Map<@NonNull Integer, NetworkDeviceModel> fEtherDevices = new HashMap<>();
+    private final Map<@NonNull Integer, CryptoDeviceModel> fCryptoDevices = new HashMap<>();
+    private final Map<@NonNull String /*Queue id*/, SoftwareQueueModel> fQueues = new HashMap<>();
 
 
 
@@ -146,7 +155,14 @@ public class DpdkPipelineStateProvider extends AbstractTmfStateProvider {
          builder.put(layout.eventRtePortRingReaderCreate(), new RtePortRingReaderCreateEventHandler(layout, this));
          builder.put(layout.eventRtePortRingWriterCreate(), new RtePortRingWriterCreateEventHandler(layout, this));
          builder.put(layout.eventRtePortRingReaderRx(), new RtePortRingReaderRxEventHandler(layout, this));
-         builder.put(layout.eventRtePortRingWriterTx(), new RtePortRingWriterTxEventHandler(layout, this));
+         builder.put(layout.eventRtePortRingSendBurst(), new RtePortRingWriterSendBurstEventHandler(layout, this));
+         builder.put(layout.eventRtePortRingSendBurstMp(), new RtePortRingWriterSendBurstMpEventHandler(layout, this));
+
+         builder.put(layout.eventRteCryptoDevConfigure(), new RteCryptodevConfigureEventHandler(layout, this));
+         builder.put(layout.eventRtePortCryptoReaderCreate(), new RtePortCryptodevReaderCreateEventHandler(layout, this));
+         builder.put(layout.eventRtePortCryptoWriterCreate(), new RtePortCryptodevWriterCreateEventHandler(layout, this));
+         builder.put(layout.eventRtePortCryptoReaderRx(), new RtePortCryptodevReaderRxEventHandler(layout, this));
+         builder.put(layout.eventRtePortCryptoWriterSendBurst(), new RtePortCryptodevWriterSendBurstEventHandler(layout, this));
 
          builder.put(layout.eventRtePortSinkCreate(), new RtePortSinkCreateEventHandler(layout, this));
          builder.put(layout.eventRtePortSinkTx(), new RtePortSinkTxEventHandler(layout, this));
@@ -157,12 +173,13 @@ public class DpdkPipelineStateProvider extends AbstractTmfStateProvider {
          builder.put(layout.eventRtePortEthdevReaderCreate(), new RtePortEthdevReaderCreateEventHandler(layout, this));
          builder.put(layout.eventRtePortEthdevWriterCreate(), new RtePortEthdevWriterCreateEventHandler(layout, this));
          builder.put(layout.eventRtePortEthdevReaderRx(), new RtePortEthdevReaderRxEventHandler(layout, this));
-         builder.put(layout.eventRtePortEthdevWriterTx(), new RtePortEthdevWriterTxEventHandler(layout, this));
+         builder.put(layout.eventRtePortEthdevWriterSendBurst(), new RtePortEthdevWriterSendBurstEventHandler(layout, this));
 
          builder.put(layout.eventRtePipelineTableCreate(), new RtePipelineTableCreateEventHandler(layout, this));
          builder.put(layout.eventRteTableAclCreate(), new RteTableAclCreateEventHandler(layout, this));
          builder.put(layout.eventRteTableLpmCreate(), new RteTableLpmCreateEventHandler(layout, this));
          builder.put(layout.eventRteTableArrayCreate(), new RteTableArrayCreateEventHandler(layout, this));
+         builder.put(layout.eventRteTableStubCreate(), new RteTableStubCreateEventHandler(layout, this));
          builder.put(layout.eventRtePipelinePortInConnectToTable(), new RtePipelineConnectInputPortToTableEventHandler(layout, this));
 
 
@@ -319,10 +336,10 @@ public class DpdkPipelineStateProvider extends AbstractTmfStateProvider {
      * @param nbTxq
      */
     public NetworkDeviceModel addEthernetDevice(String name, int id, int nbRxq, int nbTxq) {
-        NetworkDeviceModel dev = fDevices.get(id);
+        NetworkDeviceModel dev = fEtherDevices.get(id);
         if(dev == null) {
             dev = new NetworkDeviceModel(name, id, nbRxq, nbTxq);
-            fDevices.put(id, dev);
+            fEtherDevices.put(id, dev);
         }
         return dev;
     }
@@ -332,8 +349,31 @@ public class DpdkPipelineStateProvider extends AbstractTmfStateProvider {
      * @return
      */
     public NetworkDeviceModel getEthernetDevice(int id) {
-        return fDevices.get(id);
+        return fEtherDevices.get(id);
     }
+
+    /**
+     * @param name
+     * @param id
+     * @param nbQpairs
+     */
+    public CryptoDeviceModel addCryptoDevice(String name, int id, int nbQpairs) {
+        CryptoDeviceModel dev = fCryptoDevices.get(id);
+        if(dev == null) {
+            dev = new CryptoDeviceModel(name, id, nbQpairs);
+            fCryptoDevices.put(id, dev);
+        }
+        return dev;
+    }
+
+    /**
+     * @param id
+     * @return
+     */
+    public CryptoDeviceModel getCryptoDevice(int id) {
+        return fCryptoDevices.get(id);
+    }
+
     /**
      * @param name
      * @param id
@@ -342,10 +382,23 @@ public class DpdkPipelineStateProvider extends AbstractTmfStateProvider {
     public PortModel addPort(String name, int id, PortTypeEnum type, int queueSize) {
         PortModel port = fPorts.get(id);
         if(port == null) {
-            port = new PortModel(id, name, type, queueSize);
+            port = new PortModel(id, name, type);
             fPorts.put(id, port);
+
+            if(type == PortTypeEnum.SWQ) {
+                SoftwareQueueModel queue = new SoftwareQueueModel(name, queueSize, NonNullUtils.checkNotNull(getStateSystemBuilder()));
+                fQueues.put(name, queue);
+            }
         }
         return port;
+    }
+
+    public @Nullable SoftwareQueueModel getSoftwareQueue(int id) {
+        PortModel p = fPorts.get(id);
+        if(p != null) {
+            return fQueues.get(p.getName());
+        }
+        return null;
     }
 
     /**
@@ -363,11 +416,11 @@ public class DpdkPipelineStateProvider extends AbstractTmfStateProvider {
         PortModel port = fPorts.get(portId);
         if(pipeline != null) {
             if(port != null) {
-                pipeline.addInputPort(portId, index, port.getName(), port.getType(), port.getCapacity(), burstSize, ts);
-                fPorts.remove(portId);
+                pipeline.addInputPort(portId, index, port.getName(), port.getType(), burstSize, ts);
+                //fPorts.remove(portId);
             }
             else {
-                pipeline.addInputPort(portId, index, "no_name", PortTypeEnum.UNKNOWN, 0, burstSize, ts);
+                pipeline.addInputPort(portId, index, "no_name", PortTypeEnum.UNKNOWN, burstSize, ts);
             }
 
             fMapPortToPipeline.put(portId, pipeline);
@@ -389,11 +442,11 @@ public class DpdkPipelineStateProvider extends AbstractTmfStateProvider {
         PortModel port = fPorts.get(portId);
         if(pipeline != null) {
             if(port != null) {
-                pipeline.addOutputPort(portId, index, port.getName(), port.getType(), port.getCapacity(), ts);
-                fPorts.remove(portId);
+                pipeline.addOutputPort(portId, index, port.getName(), port.getType(), ts);
+                //fPorts.remove(portId);
             }
             else {
-                pipeline.addOutputPort(portId, index, "no_name", PortTypeEnum.UNKNOWN, 0, ts);
+                pipeline.addOutputPort(portId, index, "no_name", PortTypeEnum.UNKNOWN, ts);
             }
 
             fMapPortToPipeline.put(portId, pipeline);
