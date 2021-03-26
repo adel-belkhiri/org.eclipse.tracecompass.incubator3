@@ -1,11 +1,12 @@
 package org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.eventhandlers;
 
+import java.util.ArrayList;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.analysis.DpdkCoreStateProvider;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.analysis.LogicalCoreModel;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.analysis.ServiceModel;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.analysis.ServiceStatus;
-import org.eclipse.tracecompass.internal.analysis.os.linux.core.Activator;
 import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
@@ -15,7 +16,7 @@ import org.eclipse.tracecompass.tmf.core.event.ITmfEventField;
  * @author Adel Belkhiri
  *
  */
-public class DpdkServiceRunStartEventHandler extends DpdkEventHandler {
+public class DpdkServiceRunstateSetEventHandler extends DpdkEventHandler {
 
     DpdkCoreStateProvider fCoreStateProvier;
 
@@ -24,12 +25,10 @@ public class DpdkServiceRunStartEventHandler extends DpdkEventHandler {
      * @param layout :
      * @param stateProvider :
      */
-    public DpdkServiceRunStartEventHandler(@NonNull DpdkAnalysisEventLayout layout, DpdkCoreStateProvider stateProvider) {
+    public DpdkServiceRunstateSetEventHandler(@NonNull DpdkAnalysisEventLayout layout, DpdkCoreStateProvider stateProvider) {
         super(layout);
         this.fCoreStateProvier = stateProvider;
     }
-
-    //id=0, lcore_id=1
 
     @Override
     public void handleEvent(ITmfStateSystemBuilder ss, ITmfEvent event) throws AttributeNotFoundException {
@@ -38,32 +37,30 @@ public class DpdkServiceRunStartEventHandler extends DpdkEventHandler {
         /* unpack the event */
         ITmfEventField content = event.getContent();
         Integer serviceId = content.getFieldValue(Integer.class, layout.fieldServiceId());
-        Integer lcoreId = content.getFieldValue(Integer.class, layout.fieldLcoreId());
+        Integer runState = content.getFieldValue(Integer.class, layout.fieldRunState());
 
         long ts = event.getTimestamp().getValue();
 
 
-        if (serviceId == null || lcoreId == null) {
-            throw new IllegalArgumentException(layout.eventServiceRunEnd() + " event does not have expected fields"); //$NON-NLS-1$ ;
+        if (serviceId == null || runState == null) {
+            throw new IllegalArgumentException(layout.eventServiceRunstateSet() + " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
-        LogicalCoreModel core = fCoreStateProvier.getCore(lcoreId);
-        ServiceModel service = core.getService(serviceId);
+        ArrayList<LogicalCoreModel> coresList = fCoreStateProvier.getMappedCores(serviceId);
 
-        if(service == null) {
-            service = fCoreStateProvier.getService(serviceId);
+        if(coresList.size() > 0) {
+            for(LogicalCoreModel core : coresList) {
+                ServiceModel service = core.getService(serviceId);
+                if(service != null) {
+                    core.updateServiceStatus(serviceId, runState == 1 ? ServiceStatus.ENABLED : ServiceStatus.DISABLED, ts);
+                }
+            }
+        }
+        else {
+            ServiceModel service = fCoreStateProvier.getService(serviceId);
             if(service != null) {
-                core.mapService(service, ts);
+                service.setActivationTimestamp(ts);
             }
-            else {
-                Activator.getDefault().logError("Error : Service" + serviceId.toString() + "not registered"); //$NON-NLS-1$
-                return;
-            }
-        }
-
-        boolean success = core.updateServiceStatus(serviceId, ServiceStatus.RUNNING, ts);
-        if (!success) {
-            Activator.getDefault().logError("Exception while building the state system"); //$NON-NLS-1$
         }
     }
 }

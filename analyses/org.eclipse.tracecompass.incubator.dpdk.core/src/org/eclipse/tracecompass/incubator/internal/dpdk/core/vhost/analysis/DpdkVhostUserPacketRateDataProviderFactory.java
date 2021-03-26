@@ -32,7 +32,7 @@ public class DpdkVhostUserPacketRateDataProviderFactory implements IDataProvider
     private static final IDataProviderDescriptor DESCRIPTOR = new DataProviderDescriptor.Builder()
             .setId(VhostPacketRateDataProvider.ID)
             .setName("Vhost Packet Rate Data Provider") //$NON-NLS-1$
-            .setDescription("vhost packet rate data provider") //$NON-NLS-1$
+            .setDescription("Vhost packet rate data provider") //$NON-NLS-1$
             .setProviderType(ProviderType.TREE_TIME_XY)
             .build();
 

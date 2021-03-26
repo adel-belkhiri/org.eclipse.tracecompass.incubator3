@@ -17,13 +17,16 @@ Require-Bundle: org.eclipse.ui,
  com.google.guava,
  org.eclipse.jdt.annotation;bundle-version="2.2.400"
 Export-Package: org.eclipse.tracecompass.incubator.internal.dpdk.core.classifier.analysis,
+ org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis,
  org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.analysis;x-friends:="org.eclipse.tracecompass.incubator.dpdk.core.tests",
  org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis,
+ org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis,
  org.eclipse.tracecompass.incubator.internal.dpdk.core.vhost.analysis
 Automatic-Module-Name: org.eclipse.tracecompass.incubator.dpdk.core
 Import-Package: com.google.common.collect;version="18.0.0",
  org.eclipse.tracecompass.analysis.os.linux.core.tid,
  org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis,
+ org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis,
  org.eclipse.tracecompass.internal.analysis.os.linux.core,
  org.eclipse.tracecompass.internal.tmf.core.model,
  org.eclipse.tracecompass.internal.tmf.core.model.filters,

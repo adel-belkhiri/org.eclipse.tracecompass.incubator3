@@ -120,6 +120,12 @@ public class VirtualDeviceModel {
 
             int virtQueuesQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, type.toString());
             queue.quark = fSs.getQuarkRelativeAndAdd(virtQueuesQuark, String.valueOf(index));
+
+            if(type == QueueType.RX) {
+                fSs.getQuarkRelativeAndAdd(queue.quark, IDpdkVhostModelAttributes.NB_MBUF_DEQUEUE);
+            } else {
+                fSs.getQuarkRelativeAndAdd(queue.quark, IDpdkVhostModelAttributes.NB_MBUF_ENQUEUE);
+            }
             return true;
         }
 

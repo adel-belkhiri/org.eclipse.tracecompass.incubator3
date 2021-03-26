@@ -9,31 +9,38 @@ import org.eclipse.jdt.annotation.Nullable;
 public enum ServiceStatus {
 
     /**
-     *  LCore role is RTE/Thread
+     *
      */
     UNKNOWN,
     /**
-     *  LCore role is RTE/Thread
+     *
      */
     REGISTRED,
 
     /**
-     *  LCore is Disabled
+     *  Service is Disabled
+     */
+    DISABLED,
+
+    /**
+     *  Service is Enabled
+     */
+    ENABLED,
+
+    /**
+     *  Service is enabled but waiting to be executed
      */
     PENDING,
 
     /**
-     * LCore role is Service
+     * Service is running
      */
-    RUN;
+    RUNNING;
 
     private final static ServiceStatus[] fValues = values();
 
     @Override
     public @Nullable String toString() {
-        //if(this == PENDING) {
-        //    return null;
-        //}
         return this.name().toLowerCase();
 
     }

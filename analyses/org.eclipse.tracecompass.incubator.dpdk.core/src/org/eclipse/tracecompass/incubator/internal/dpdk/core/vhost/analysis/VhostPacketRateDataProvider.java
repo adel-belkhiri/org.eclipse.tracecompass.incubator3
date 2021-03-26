@@ -191,7 +191,6 @@ public class VhostPacketRateDataProvider
                         String queueName = getQuarkValue(ss, rxQueueQuark);
                         long queueId = getId(rxQueueQuark);
                         nodes.add(new TmfTreeDataModel(queueId, rxQueuesId, queueName));
-
                     }
                 }
 
@@ -207,7 +206,6 @@ public class VhostPacketRateDataProvider
                         nodes.add(new TmfTreeDataModel(queueId, txQueuesId, queueName));
                     }
                 }
-
             }
         }
         return new TmfTreeModel<>(Collections.emptyList(), nodes);
@@ -328,7 +326,8 @@ public class VhostPacketRateDataProvider
                 int devQuark = ss.getParentAttributeQuark(ss.getParentAttributeQuark(vidQuark));
                 String devName = getQuarkValue(ss, devQuark);
 
-                String name = getTrace().getName() + '/' + devName + '/' + connfdName + '/' + queueTypeName + '/'+ queueName;
+                String name = getTrace().getName() + '/' + devName + '/' + connfdName + '/' + queueTypeName +  '/' + queueName;
+
                 builders.add(new VirtQueueBuilder(id, metricQuark, name, length));
             }
         }

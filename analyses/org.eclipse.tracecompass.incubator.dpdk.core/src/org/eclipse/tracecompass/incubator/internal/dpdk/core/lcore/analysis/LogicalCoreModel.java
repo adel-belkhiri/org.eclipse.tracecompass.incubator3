@@ -88,24 +88,35 @@ public class LogicalCoreModel {
     /**
      * @param service
      *          Service to add
+     * @param ts
+     *          UNUSED
      */
     public void mapService(ServiceModel service, long ts) {
 
         if(!fServices.containsKey(service.getId())) {
 
+            ServiceStatus serviceStatus = ServiceStatus.DISABLED;
+
             int lcoreServicesQuark = fSs.getQuarkRelativeAndAdd(this.fCoreQuark, IDpdkModelAttributes.SERVICES);
             int serviceQuark = fSs.getQuarkRelativeAndAdd(lcoreServicesQuark, String.valueOf(service.getId()));
 
             int serviceNameQuark = fSs.getQuarkRelativeAndAdd(serviceQuark, IDpdkModelAttributes.SERVICE_NAME);
-            fSs.modifyAttribute(ts, service.getName(), serviceNameQuark);
+            fSs.modifyAttribute(service.getRegistrationTimestamp(), service.getName(), serviceNameQuark);
 
             int serviceStatusQuark = fSs.getQuarkRelativeAndAdd(serviceQuark, IDpdkModelAttributes.SERVICE_STATUS);
-            fSs.modifyAttribute(ts, ServiceStatus.PENDING.toString(), serviceStatusQuark);
+            fSs.modifyAttribute(service.getRegistrationTimestamp(), ServiceStatus.DISABLED.toString(), serviceStatusQuark);
 
+            if(service.getActivationTimestamp() > 0)
+            {
+                serviceStatusQuark = fSs.getQuarkRelativeAndAdd(serviceQuark, IDpdkModelAttributes.SERVICE_STATUS);
+                fSs.modifyAttribute(service.getActivationTimestamp(), ServiceStatus.ENABLED.toString(), serviceStatusQuark);
+
+                serviceStatus = ServiceStatus.ENABLED;
+            }
             try {
                 ServiceModel newServiceInstance = service.clone();
                 newServiceInstance.setQuark(serviceQuark);
-                newServiceInstance.setStatus(ServiceStatus.PENDING);
+                newServiceInstance.setStatus(serviceStatus);
                 fServices.put(newServiceInstance.getId(), newServiceInstance);
             }
             catch (CloneNotSupportedException e) {

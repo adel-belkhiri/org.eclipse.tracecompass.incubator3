@@ -15,9 +15,9 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.tracecompass.tmf.ui.viewers.TmfViewer;
-import org.eclipse.tracecompass.tmf.ui.viewers.xycharts.TmfXYChartViewer;
-import org.eclipse.tracecompass.tmf.ui.viewers.xycharts.linecharts.TmfXYChartSettings;
-import org.eclipse.tracecompass.tmf.ui.views.TmfChartView;
+import org.eclipse.tracecompass.tmf.ui.viewers.xychart.TmfXYChartViewer;
+import org.eclipse.tracecompass.tmf.ui.viewers.xychart.linechart.TmfXYChartSettings;
+import org.eclipse.tracecompass.tmf.ui.views.xychart.TmfChartView;
 
 /**
  * Main view to show the Network Activity
@@ -48,3 +48,4 @@ public class DpdkVhostUserAvailDescrView extends TmfChartView {
         return new DpdkVhostUserAvailDescrTreeViewer(Objects.requireNonNull(parent));
     }
 }
+

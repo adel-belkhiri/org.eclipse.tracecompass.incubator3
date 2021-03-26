@@ -4,27 +4,73 @@
    <extension
          point="org.eclipse.linuxtools.tmf.core.analysis">
       <output
-            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput">
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.flow.classifier.lookup.rate.view">
+         <analysisId
+               id="org.eclipse.tracecompass.incubator.dpdk.classifier.analysis">
+         </analysisId>
+      </output>
+      <output
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.ring.occupation.view">
+         <analysisId
+               id="org.eclipse.tracecompass.incubator.dpdk.eventdev.analysis">
+         </analysisId>
+      </output>
+      <output
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.enqueue.dequeue.rate.view">
+         <analysisId
+               id="org.eclipse.tracecompass.incubator.dpdk.eventdev.analysis">
+         </analysisId>
+      </output>
+      <output
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.per.stage.port.load.view">
+         <analysisId
+               id="org.eclipse.tracecompass.incubator.dpdk.eventdev.analysis">
+         </analysisId>
+      </output>
+      <output
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.inflight.credit.view">
+         <analysisId
+               id="org.eclipse.tracecompass.incubator.dpdk.eventdev.analysis">
+         </analysisId>
+      </output>
+      <output
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.avail.descr.view">
          <analysisId
                id="org.eclipse.tracecompass.incubator.dpdk.vhost.analysis">
          </analysisId>
       </output>
       <output
-            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput">
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.packet.rate.view">
          <analysisId
-               id="org.eclipse.tracecompass.incubator.dpdk.lpm.analysis">
+               id="org.eclipse.tracecompass.incubator.dpdk.vhost.analysis">
          </analysisId>
       </output>
       <output
-            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput">
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.inter-pipeline.packet.rate.view">
          <analysisId
-               id="org.eclipse.tracecompass.incubator.dpdk.lookup.objects.analysis">
+               id="org.eclipse.tracecompass.incubator.dpdk.pipeline.analysis">
          </analysisId>
       </output>
       <output
-            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput">
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.rule.hit.rate.view">
          <analysisId
-               id="org.eclipse.tracecompass.incubator.dpdk.classifier.analysis">
+               id="org.eclipse.tracecompass.incubator.dpdk.lpm.object.lookup.analysis">
+         </analysisId>
+      </output>
+      <output
+            class="org.eclipse.tracecompass.tmf.ui.analysis.TmfAnalysisViewOutput"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lookup.object.hit.percentage.view">
+         <analysisId
+               id="org.eclipse.tracecompass.incubator.dpdk.lpm.object.lookup.analysis">
          </analysisId>
       </output>
    </extension>
@@ -39,7 +85,7 @@
             class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.DpdkVhostUserAvailDescrView"
             icon="icons/eview16/scatter.png"
             id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.avail.descr.view"
-            name="Vhost Ring Queues Status"
+            name="%dpdk.vhost.ring.queue.occupancy"
             restorable="true">
       </view>
       <view
@@ -47,7 +93,7 @@
             class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.packet.rate.DpdkVhostUserPacketRateView"
             icon="icons/eview16/scatter.png"
             id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.packet.rate.view"
-            name="Vhost Packet rate"
+            name="%dpdk.vhost.port.packet.rate"
             restorable="true">
       </view>
       <view
@@ -55,7 +101,7 @@
             class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lookup.object.hit.percentage.DpdkLookupObjectHitPercentageView"
             icon="icons/eview16/scatter.png"
             id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lookup.object.hit.percentage.view"
-            name="LPM Hit/Miss Percentage"
+            name="%dpdk.lpm.table.hit.miss.percentenge"
             restorable="true">
       </view>
       <view
@@ -63,7 +109,7 @@
             class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.rule.hit.rate.DpdkLpmRuleHitRateView"
             icon="icons/eview16/scatter.png"
             id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.lpm.rule.hit.rate.view"
-            name="Per-rule lpm lookup hit"
+            name="%dpdk.lpm.per.rule.lookup.hit"
             restorable="true">
       </view>
       <view
@@ -72,6 +118,70 @@
             icon="icons/eview16/scatter.png"
             id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.flow.classifier.lookup.rate.view"
             name="Flow Classifier Lookup Rate"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk"
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.ring.occupation.DpdkEventdevRingOccupationView"
+            icon="icons/eview16/scatter.png"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.ring.occupation.view"
+            name="%dpdk.eventdev.port.buffers.occupancy"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk"
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.inflight.credit.DpdkEventdevInflightCreditView"
+            icon="icons/eview16/scatter.png"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.inflight.credit.view"
+            name="%dpdk.eventdev.inflight.credit"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk"
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.enqueue.dequeue.rate.DpdkEventDevEnqueueDequeueRateView"
+            icon="icons/eview16/scatter.png"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.enqueue.dequeue.rate.view"
+            name="%dpdk.eventdev.port.enq.deq.rate"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk"
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.per.stage.load.percentage.DpdkEventDevPerStageLoadPercentageView"
+            icon="icons/eview16/scatter.png"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.per.stage.port.load.view"
+            name="%dpdk.eventdev.per.stage.port.load"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk"
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.interpipeline.packet.rate.DpdkInterPipelinePacketRateView"
+            icon="icons/eview16/scatter.png"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.inter-pipeline.packet.rate.view"
+            name="%dpdk.pipeline.inter.pipeline.packet.rate"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk"
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.port.current.load.DpdkEventdevPortCurrentLoadView"
+            icon="icons/eview16/scatter.png"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.port.current.load.view"
+            name="%dpdk.eventdev.port.current.load"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk"
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.pipeline.sw.queue.occupancy.DpdkPipelineSwQueueOccupancyView"
+            icon="icons/eview16/scatter.png"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.pipeline.sw.queue.occupancy.view"
+            name="%dpdk.pipeline.sw.queue.occupancy"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk"
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.pipeline.sw.queue.latency.DpdkPipelineSwQueueLatencyView"
+            icon="icons/eview16/scatter.png"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.pipeline.sw.queue.latency.view"
+            name="%dpdk.pipeline.sw.queue.latency"
             restorable="true">
       </view>
    </extension>

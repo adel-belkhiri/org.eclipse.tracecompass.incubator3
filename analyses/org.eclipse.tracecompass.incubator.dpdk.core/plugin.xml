@@ -15,7 +15,7 @@
       </module>
       <module
             analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.analysis.DpdkLogicalCoreAnalysisModule"
-            automatic="true"
+            automatic="false"
             id="org.eclipse.tracecompass.incubator.dpdk.lcore.analysis"
             name="DPDK LCore Analysis">
          <tracetype
@@ -25,9 +25,9 @@
       </module>
       <module
             analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.lpm.analysis.DpdkLpmObjectLookupAnalysisModule"
-            automatic="true"
+            automatic="false"
             id="org.eclipse.tracecompass.incubator.dpdk.lpm.object.lookup.analysis"
-            name="DPDK Lpm Objects Lookup Analysis">
+            name="DPDK LPM Analysis">
          <tracetype
                applies="true"
                class="org.eclipse.tracecompass.tmf.core.trace.TmfTrace">
@@ -35,7 +35,7 @@
       </module>
       <module
             analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.classifier.analysis.DpdkClassifierAnalysisModule"
-            automatic="true"
+            automatic="false"
             id="org.eclipse.tracecompass.incubator.dpdk.classifier.analysis"
             name="DPDK Classifier Analysis">
          <tracetype
@@ -45,7 +45,7 @@
       </module>
       <module
             analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.table.analysis.DpdkTableAnalysisModule"
-            automatic="true"
+            automatic="false"
             id="org.eclipse.tracecompass.incubator.dpdk.tables.analysis"
             name="DPDK Table Analysis">
          <tracetype
@@ -107,6 +107,38 @@
       <dataProviderFactory
             class="org.eclipse.tracecompass.incubator.internal.dpdk.core.vhost.analysis.DpdkVhostUserAvailDescrDataProviderFactory"
             id="org.eclipse.tracecompass.incubator.dpdk.vhost.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis.EventDevRingBufferOccupationDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis.EventDevInflightCreditDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.inflight.credit.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis.EventDevPortEnqueueDequeueRateDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.enqueue.dequeue.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis.EventDevPerStageLoadPercentageDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.per.stage.load.percentage.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis.EventDevPortCurrentLoadDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.port.current.load.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.PipelineRingQueueOccupancyDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.ring.queue.occupancy.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.PipelineRingQueueLatencyDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.ring.queue.latency.data.provider">
+      </dataProviderFactory>
+      <dataProviderFactory
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.PipelinePortsBusynessDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.ports.busyness.data.provider">
       </dataProviderFactory>
    </extension>
 

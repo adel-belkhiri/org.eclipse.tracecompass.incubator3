@@ -11,6 +11,7 @@ public class ServiceModel implements Cloneable {
     private final int fCallbackPointer;
     private ServiceStatus status;
     private long registrationTimestamp;
+    private long activationTimestamp;
 
     private int quark;
 
@@ -29,6 +30,7 @@ public class ServiceModel implements Cloneable {
 
         this.status = ServiceStatus.REGISTRED;
         this.registrationTimestamp = 0;
+        this.activationTimestamp = 0;
     }
 
     @Override
@@ -89,6 +91,14 @@ public class ServiceModel implements Cloneable {
     }
 
     /**
+     * @return
+     *      activation timestamp
+     */
+    public long getActivationTimestamp() {
+        return this.activationTimestamp;
+    }
+
+    /**
      *
      * @param ts
      *   registration timestamp
@@ -96,6 +106,15 @@ public class ServiceModel implements Cloneable {
     public void setRegistrationTimestamp(long ts) {
         this.registrationTimestamp = ts;
     }
+
+    /**
+    *
+    * @param ts
+    *   activation timestamp
+    */
+   public void setActivationTimestamp(long ts) {
+       this.activationTimestamp = ts;
+   }
 
     /**
      * @return

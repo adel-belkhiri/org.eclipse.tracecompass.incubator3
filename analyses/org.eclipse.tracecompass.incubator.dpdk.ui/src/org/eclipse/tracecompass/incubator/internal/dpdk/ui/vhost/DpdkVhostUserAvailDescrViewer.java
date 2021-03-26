@@ -14,11 +14,11 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.vhost.analysis.VhostAvailableDescriptorsDataProvider;
-
-import org.eclipse.tracecompass.tmf.core.presentation.IYAppearance;
-import org.eclipse.tracecompass.tmf.ui.viewers.xycharts.linecharts.TmfFilteredXYChartViewer;
-import org.eclipse.tracecompass.tmf.ui.viewers.xycharts.linecharts.TmfXYChartSettings;
-import org.swtchart.Chart;
+import org.eclipse.tracecompass.tmf.core.model.OutputElementStyle;
+import org.eclipse.tracecompass.tmf.core.model.StyleProperties;
+import org.eclipse.tracecompass.tmf.ui.viewers.xychart.linechart.TmfFilteredXYChartViewer;
+import org.eclipse.tracecompass.tmf.ui.viewers.xychart.linechart.TmfXYChartSettings;
+import org.eclipse.swtchart.Chart;
 
 /**
  * Network Activity viewer, shows read and write bandwidth used over time.
@@ -45,7 +45,7 @@ public class DpdkVhostUserAvailDescrViewer extends TmfFilteredXYChartViewer {
     }
 
     @Override
-    public IYAppearance getSeriesAppearance(@NonNull String seriesName) {
-        return getPresentationProvider().getAppearance(seriesName, IYAppearance.Type.AREA, DEFAULT_SERIES_WIDTH);
+    public OutputElementStyle getSeriesStyle(@NonNull Long seriesId) {
+        return getPresentationProvider().getSeriesStyle(seriesId, StyleProperties.SeriesType.AREA, DEFAULT_SERIES_WIDTH);
     }
 }

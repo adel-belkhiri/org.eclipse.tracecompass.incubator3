@@ -1,5 +1,6 @@
 package org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.analysis;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,9 +14,10 @@ import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.eventhandlers
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.eventhandlers.DpdkServiceMapCoreEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.eventhandlers.DpdkServiceRunEndEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.eventhandlers.DpdkServiceRunStartEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.eventhandlers.DpdkServiceRunstateSetEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.eventhandlers.DpdkThreadLcoreReadyEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.eventhandlers.DpdkThreadLcoreRunningEventHandler;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.eventhandlers.DpdkThreadLcoreWaitingEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.eventhandlers.DpdkThreadLcoreStoppedEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.lcore.eventhandlers.DpdkAnalysisEventLayout;
 import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
@@ -100,11 +102,13 @@ public class DpdkCoreStateProvider extends AbstractTmfStateProvider {
          builder.put(layout.eventLcoreRoleChange(),  new DpdkLcoreRoleChangeEventHandler(layout, this));
          builder.put(layout.eventThreadLcoreReady(),  new DpdkThreadLcoreReadyEventHandler(layout, this));
          builder.put(layout.eventThreadLcoreRunning(),  new DpdkThreadLcoreRunningEventHandler(layout, this));
-         builder.put(layout.eventThreadLcoreWaiting(),  new DpdkThreadLcoreWaitingEventHandler(layout, this));
+         builder.put(layout.eventThreadLcoreStopped(),  new DpdkThreadLcoreStoppedEventHandler(layout, this));
 
          builder.put(layout.eventServiceComponentRegister(),  new DpdkServiceComponentRegisterEventHandler(layout, this));
          builder.put(layout.eventServiceMapLcore(),  new DpdkServiceMapCoreEventHandler(layout, this));
+         //builder.put(layout.eventServiceRunIterationOnAppLcore(),  new DpdkServiceRunOnAppLCoreEventHandler(layout, this));
          builder.put(layout.eventServiceRunBegin(),  new DpdkServiceRunStartEventHandler(layout, this));
+         builder.put(layout.eventServiceRunstateSet(),  new DpdkServiceRunstateSetEventHandler(layout, this));
          builder.put(layout.eventServiceRunEnd(),  new DpdkServiceRunEndEventHandler(layout, this));
          builder.put(layout.eventServiceLcoreReady(),  new DpdkServiceLcoreReadyEventHandler(layout, this));
          builder.put(layout.eventServiceLcoreStop(), new DpdkServiceLcoreStopEventHandler(layout, this));
@@ -172,6 +176,16 @@ public class DpdkCoreStateProvider extends AbstractTmfStateProvider {
         }
 
         return null;
+    }
+
+    public ArrayList<LogicalCoreModel> getMappedCores(int serviceId) {
+        ArrayList<LogicalCoreModel> lcores = new ArrayList<>();
+        for(LogicalCoreModel core : fCores.values()) {
+            if(core.getService(serviceId) != null) {
+                lcores.add(core);
+            }
+        }
+        return lcores;
     }
 
 }

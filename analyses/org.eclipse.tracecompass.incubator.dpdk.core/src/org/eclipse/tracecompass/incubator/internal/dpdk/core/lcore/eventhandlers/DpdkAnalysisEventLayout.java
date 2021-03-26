@@ -47,8 +47,8 @@ public class DpdkAnalysisEventLayout {
     * @return The name of the event
     * @since 3.0
     */
-    public @NonNull String eventThreadLcoreWaiting() {
-        return new String("librte_eal:thread_lcore_waiting");
+    public @NonNull String eventThreadLcoreStopped() {
+        return new String("librte_eal:thread_lcore_stopped");
     }
 
 
@@ -59,7 +59,7 @@ public class DpdkAnalysisEventLayout {
     * @since 3.0
     */
     public @NonNull String eventServiceLcoreReady() {
-        return new String("librte_eal:service_lcore_ready");
+        return new String("librte_eal:service_lcore_start");
     }
 
     /**
@@ -83,6 +83,10 @@ public class DpdkAnalysisEventLayout {
     }
 
 
+    public @NonNull String eventServiceRunstateSet() {
+        return new String("librte_eal:service_runstate_set");
+    }
+
     /**
     *  This event indiates the end of execution of a service
     *
@@ -104,6 +108,15 @@ public class DpdkAnalysisEventLayout {
         return new String("librte_eal:service_map_lcore");
     }
 
+    /**
+    * This event is fired when a service is run on an RTE lcore
+    *
+    * @return The name of the event
+    * @since 3.0
+    */
+    public @NonNull String eventServiceRunIterationOnAppLcore() {
+        return new String("librte_eal:service_run_iter_on_app_lcore");
+    }
 
     /**
     * This event indiates the registration of a service
@@ -170,6 +183,15 @@ public class DpdkAnalysisEventLayout {
     */
     public @NonNull String fieldCoreStatus() {
         return new String("status");
+    }
+
+    /**
+    *
+    * @return The name of the field
+    * @since 3.0
+    */
+    public @NonNull String fieldRunState() {
+        return new String("runstate");
     }
 
     /**

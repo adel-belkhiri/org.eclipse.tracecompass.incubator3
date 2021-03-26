@@ -13,7 +13,7 @@ import org.eclipse.tracecompass.tmf.core.event.ITmfEventField;
  * @author Adel Belkhiri
  *
  */
-public class DpdkThreadLcoreWaitingEventHandler extends DpdkEventHandler {
+public class DpdkThreadLcoreStoppedEventHandler extends DpdkEventHandler {
 
     DpdkCoreStateProvider fCoreStateProvier;
 
@@ -22,7 +22,7 @@ public class DpdkThreadLcoreWaitingEventHandler extends DpdkEventHandler {
      * @param layout :
      * @param stateProvider :
      */
-    public DpdkThreadLcoreWaitingEventHandler(@NonNull DpdkAnalysisEventLayout layout, DpdkCoreStateProvider stateProvider) {
+    public DpdkThreadLcoreStoppedEventHandler(@NonNull DpdkAnalysisEventLayout layout, DpdkCoreStateProvider stateProvider) {
         super(layout);
         this.fCoreStateProvier = stateProvider;
     }
@@ -43,7 +43,7 @@ public class DpdkThreadLcoreWaitingEventHandler extends DpdkEventHandler {
 
 
         if (coreId == null || status == null || ret == null) {
-            throw new IllegalArgumentException(layout.eventThreadLcoreWaiting() + " event does not have expected fields"); //$NON-NLS-1$ ;
+            throw new IllegalArgumentException(layout.eventThreadLcoreStopped() + " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
         LogicalCoreModel core = fCoreStateProvier.getCore(coreId);
