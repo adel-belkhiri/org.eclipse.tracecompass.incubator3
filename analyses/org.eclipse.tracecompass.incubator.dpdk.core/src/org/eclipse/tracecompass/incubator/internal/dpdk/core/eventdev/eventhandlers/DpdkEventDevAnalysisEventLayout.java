@@ -79,6 +79,13 @@ public class DpdkEventDevAnalysisEventLayout {
         return new String("sw_eventdev:schedule_atomic_to_cq");
     }
 
+    public @NonNull String eventSwPinFlowToPort() {
+        return new String("sw_eventdev:pin_flow_to_port");
+    }
+
+    public @NonNull String eventSwUnpinFlowFromPort() {
+        return new String("sw_eventdev:unpin_flow_from_port");
+    }
     /**
      * Distributed Software Event Device
      */
@@ -262,6 +269,14 @@ public class DpdkEventDevAnalysisEventLayout {
 
     public @NonNull String fieldPort() {
         return new String("port");
+    }
+
+    public @NonNull String fieldZeroPolls() {
+        return new String("zero_polls");
+    }
+
+    public @NonNull String fieldTotPolls() {
+        return new String("tot_polls");
     }
 
     public @NonNull String fieldRxWorkerRing() {

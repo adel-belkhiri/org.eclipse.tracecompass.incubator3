@@ -46,7 +46,7 @@ public class DswEventDequeueBurstEventHandler extends DpdkEventHandler {
         if(device != null) {
             PortModel port = device.getPort(portId);
             if(port != null) {
-                port.dequeueEvents(nbDeqEvents, ts);
+                port.dequeueEvents(nbDeqEvents, 0L, 0L, ts);
             }
         }
     }

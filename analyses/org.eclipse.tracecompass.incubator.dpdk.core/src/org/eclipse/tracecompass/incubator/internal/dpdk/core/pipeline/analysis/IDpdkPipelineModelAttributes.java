@@ -36,8 +36,6 @@ public interface IDpdkPipelineModelAttributes {
     String OUT_PORTS = Messages.IDpdkModel_OUT_PORTS;
     @Nullable String PORT_STATUS = Messages.IDpdkModel_PORT_STATUS;
     @Nullable String IDpdkModel_PORT_TYPE = Messages.IDpdkModel_PORT_TYPE;
-    @Nullable String ZERO_POLLS = Messages.IDpdkModel_ZERO_POLLS;
-    @Nullable String NON_ZERO_POLLS = Messages.IDpdkModel_NON_ZERO_POLLS;
 
     @Nullable String QUEUE_LATENCY = Messages.IDpdkModel_QUEUE_LATENCY;
     @Nullable String QUEUE_CAPACITY = Messages.IDpdkModel_QUEUE_CAPACITY;

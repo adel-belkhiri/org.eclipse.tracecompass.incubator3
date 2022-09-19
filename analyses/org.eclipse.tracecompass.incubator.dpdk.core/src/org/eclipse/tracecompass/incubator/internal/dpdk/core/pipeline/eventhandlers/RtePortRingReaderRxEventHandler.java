@@ -35,15 +35,15 @@ public class RtePortRingReaderRxEventHandler extends DpdkEventHandler {
 
         Integer portId = content.getFieldValue(Integer.class, layout.fieldPort());
         Integer nbRxPkts = content.getFieldValue(Integer.class, layout.fieldNbRx());
-        Long nbZeroPolls = content.getFieldValue(Long.class, layout.fieldzeroPolls());
+        //Long nbZeroPolls = content.getFieldValue(Long.class, layout.fieldzeroPolls());
 
-        if (portId == null || nbRxPkts == null || nbZeroPolls == null) {
+        if (portId == null || nbRxPkts == null /*|| nbZeroPolls == null*/) {
             throw new IllegalArgumentException(layout.eventRtePortRingReaderRx()+ " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
         PipelineModel pipeline = fPipelineStateProvier.searchPipelineByPortID(portId);
         if(pipeline != null) {
-            pipeline.receivePackets(portId, nbRxPkts, nbZeroPolls, ts);
+            pipeline.receivePackets(portId, nbRxPkts, ts);
 
             SoftwareQueueModel queue = fPipelineStateProvier.getSoftwareQueue(portId);
             if(queue != null) {

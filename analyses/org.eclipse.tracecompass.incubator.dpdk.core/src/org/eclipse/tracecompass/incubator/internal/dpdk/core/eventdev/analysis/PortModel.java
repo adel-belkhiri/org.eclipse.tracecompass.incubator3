@@ -35,6 +35,9 @@ public class PortModel {
     private long nbDeqEvents = 0;
     private long nbMigrations = 0;
 
+    private long zeroPolls = 0L;
+    private long totPolls = 0L;
+
     public PortModel(int portId, int newEventThreshold, int enqueueDepth, int dequeueDepth,
             RingModel ringRx, RingModel ringCq, EventDevBackendType backendType, int devQuark, @NonNull ITmfStateSystemBuilder ss) {
         this.fId = portId;
@@ -46,6 +49,8 @@ public class PortModel {
         this.fRingBufferCq = ringCq;
         this.inflightCredit = 0;
         this.status = PortStatus.UNKNOWN;
+        this.zeroPolls = 0L;
+        this.totPolls = 0L;
 
         int portSetQuark = fSs.getQuarkRelativeAndAdd(devQuark, IDpdkEventDevModelAttributes.PORTS);
         this.fQuark = fSs.getQuarkRelativeAndAdd(portSetQuark, String.valueOf(this.fId));
@@ -80,6 +85,12 @@ public class PortModel {
 
         int inflightQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.INFLIGHTS_CREDIT);
         fSs.modifyAttribute(0, this.inflightCredit, inflightQuark);
+
+        int zeroPollsQuark = this.fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.ZERO_POLLS);
+        fSs.modifyAttribute(0, 0L, zeroPollsQuark);
+
+        int totPollsQuark = this.fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.TOT_POLLS);
+        fSs.modifyAttribute(0, 0L, totPollsQuark);
 
         /* Setting up RX and CQ rings */
         int ringSetQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.RINGS);
@@ -133,19 +144,25 @@ public class PortModel {
      * @param nbEvents
      * @param ts
      */
-    public void dequeueEvents(int nbEvents, long ts) {
+    public void dequeueEvents(int nbEvents, long zeroPollValue, long totPollValue, long ts) {
         this.nbDeqEvents += nbEvents;
 
         try {
             int rxQuark = fSs.getQuarkRelative(this.fQuark, IDpdkEventDevModelAttributes.EVENT_TX);
             fSs.modifyAttribute(ts, this.nbDeqEvents, rxQuark);
 
-            //if(fRingBufferCq != null) {
-            //    fRingBufferCq.dequeue(nbEvents, ts);
-            //}
+            int zeroPollsQuark = this.fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.ZERO_POLLS);
+            fSs.modifyAttribute(ts, (zeroPollValue - this.zeroPolls), zeroPollsQuark);
+
+            int totPollsQuark = this.fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.TOT_POLLS);
+            fSs.modifyAttribute(ts, (totPollValue - this.totPolls), totPollsQuark);
+
         } catch (AttributeNotFoundException e) {
             e.printStackTrace();
         }
+
+        this.totPolls = totPollValue;
+        this.zeroPolls = zeroPollValue;
     }
 
     public void pushToRingBufferCq(int nbEvents, long ts) {

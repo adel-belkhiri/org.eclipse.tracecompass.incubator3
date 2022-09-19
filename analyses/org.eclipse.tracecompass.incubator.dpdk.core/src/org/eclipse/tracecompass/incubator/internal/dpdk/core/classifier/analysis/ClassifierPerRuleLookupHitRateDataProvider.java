@@ -56,7 +56,7 @@ public class ClassifierPerRuleLookupHitRateDataProvider
 
     private static final long INVALID_COUNT_VALUE = -1;
 
-    private int maxRulesNumber = 10;
+    private int maxRulesNumber = 12;
     private boolean ascendingSortingOrder = true;
 
     /**
@@ -263,11 +263,11 @@ public class ClassifierPerRuleLookupHitRateDataProvider
         return (ss.getAttributeName(nicQuark));
     }
 
-    @Override
-    @Deprecated
-    protected Map<String, IYModel> getYModels(ITmfStateSystem ss, Map<String, Object> fetchParameters, @Nullable IProgressMonitor monitor) throws StateSystemDisposedException {
-        return Maps.uniqueIndex(getYSeriesModels(ss, fetchParameters, monitor), IYModel::getName);
-    }
+ //   @Override
+ //   @Deprecated
+ //   protected Map<String, IYModel> getYModels(ITmfStateSystem ss, Map<String, Object> fetchParameters, @Nullable IProgressMonitor monitor) throws StateSystemDisposedException {
+ //       return Maps.uniqueIndex(getYSeriesModels(ss, fetchParameters, monitor), IYModel::getName);
+ //   }
 
     /**
      *

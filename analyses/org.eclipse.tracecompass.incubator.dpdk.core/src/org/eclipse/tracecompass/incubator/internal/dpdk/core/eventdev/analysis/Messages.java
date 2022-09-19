@@ -35,7 +35,10 @@ public class Messages extends NLS {
     public static @Nullable String  IDpdkModel_PRIORITY;
     public static @Nullable String  IDpdkModel_SCHEDULE_TYPE;
     public static @Nullable String  IDpdkModel_PORT_LOAD;
-
+    public static @Nullable String  IDpdkModel_COUNT_PER_FLOW;
+    public static @Nullable String  IDpdkModel_FLOW_STATUS;
+    public static @Nullable String  IDpdkModel_ZERO_POLLS;
+    public static @Nullable String  IDpdkModel_TOT_POLLS;
 
     public static @Nullable String  IDpdkModel_QUEUES;
     public static @Nullable String  IDpdkModel_EVENT_RX;
@@ -57,6 +60,7 @@ public class Messages extends NLS {
     public static String IDpdkModel_EVENTDEV_INFLIGHT_CREDIT_DATAPROVIDER_TITLE;
     public static String IDpdkModel_EVENTDEV_PORT_ENQUEUE_DEQUEUE_DATAPROVIDER_TITLE;
     public static String IDpdkModel_EVENTDEV_PORT_PER_STAGE_LOAD_PERCENTAGE_DATAPROVIDER_TITLE;
+    public static String IDpdkModel_EVENTDEV_PORT_BUSYNESS_PERCENTAGE_DATAPROVIDER_TITLE;
 
     static {
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

@@ -186,11 +186,11 @@ public class PipelineRingQueueOccupancyDataProvider extends AbstractTreeCommonXD
         return -1; //ERROR
     }
 
-    @Override
-    @Deprecated
-    protected Map<String, IYModel> getYModels(ITmfStateSystem ss, Map<String, Object> fetchParameters, @Nullable IProgressMonitor monitor) throws StateSystemDisposedException {
-        return Maps.uniqueIndex(getYSeriesModels(ss, fetchParameters, monitor), IYModel::getName);
-    }
+//    @Override
+//    @Deprecated
+//    protected Map<String, IYModel> getYModels(ITmfStateSystem ss, Map<String, Object> fetchParameters, @Nullable IProgressMonitor monitor) throws StateSystemDisposedException {
+//        return Maps.uniqueIndex(getYSeriesModels(ss, fetchParameters, monitor), IYModel::getName);
+//    }
 
     /**
      * @since 1.2

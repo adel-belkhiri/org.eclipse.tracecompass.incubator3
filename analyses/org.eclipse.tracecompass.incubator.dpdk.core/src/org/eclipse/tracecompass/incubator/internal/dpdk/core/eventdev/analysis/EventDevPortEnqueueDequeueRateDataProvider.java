@@ -196,11 +196,11 @@ public class EventDevPortEnqueueDequeueRateDataProvider extends AbstractTreeComm
         return new TmfTreeModel<>(Collections.emptyList(), nodes);
     }
 
-    @Override
-    @Deprecated
-    protected Map<String, IYModel> getYModels(ITmfStateSystem ss, Map<String, Object> fetchParameters, @Nullable IProgressMonitor monitor) throws StateSystemDisposedException {
-        return Maps.uniqueIndex(getYSeriesModels(ss, fetchParameters, monitor), IYModel::getName);
-    }
+ //   @Override
+ //   @Deprecated
+ //   protected Map<String, IYModel> getYModels(ITmfStateSystem ss, Map<String, Object> fetchParameters, @Nullable IProgressMonitor monitor) throws StateSystemDisposedException {
+ //       return Maps.uniqueIndex(getYSeriesModels(ss, fetchParameters, monitor), IYModel::getName);
+ //   }
 
     /**
      * @since 1.2

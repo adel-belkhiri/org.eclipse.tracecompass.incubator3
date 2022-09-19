@@ -56,7 +56,11 @@ public class SoftwareQueueModel {
      * @param ts
      */
     public void enqueuePackets(int nbPkts, long ts) {
-        fQueueLatency.add(new Pair<>(nbPkts, ts));
+        //to address the case where recv event is fired before the send event
+        if(this.currentNbPackets >= 0) {
+            fQueueLatency.add(new Pair<>(nbPkts, ts));
+        }
+
         this.currentNbPackets += nbPkts;
 
         int nbPktQuark = this.fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkPipelineModelAttributes.NB_PKT);

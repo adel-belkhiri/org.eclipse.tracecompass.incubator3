@@ -64,7 +64,7 @@ public class EventDevRingBufferOccupationDataProvider extends AbstractTreeCommon
 
         private final String fName;
         private final double[] fValues;
-        private double fPrevCount;
+        private int fSize;
 
         /**
          * Constructor
@@ -76,15 +76,12 @@ public class EventDevRingBufferOccupationDataProvider extends AbstractTreeCommon
          * @param length
          *            desired length of the series
          */
-        private RingBufferBuilder(long id, int sentRecvQuark, String name, int length) {
+        private RingBufferBuilder(long id, int sentRecvQuark, String name, int size, int length) {
             fId = id;
             fMeasuredQuark = sentRecvQuark;
             fName = name;
             fValues = new double[length];
-        }
-
-        private void setPrevCount(double prevCount) {
-         fPrevCount = prevCount;
+            fSize = size;
         }
 
         /**
@@ -103,8 +100,7 @@ public class EventDevRingBufferOccupationDataProvider extends AbstractTreeCommon
              * Linear interpolation to compute the disk throughput between time and the
              * previous time, from the number of sectors at each time.
              */
-            fValues[pos] = (newCount - fPrevCount)/*  * RATIO / deltaT */;
-            fPrevCount = 0 /*newCount*/;
+            fValues[pos] = (newCount * 100) / fSize;
         }
 
         public IYModel build() {
@@ -206,11 +202,11 @@ public class EventDevRingBufferOccupationDataProvider extends AbstractTreeCommon
         return (ss.getAttributeName(nicQuark));
     }
 
-    @Override
-    @Deprecated
-    protected Map<String, IYModel> getYModels(ITmfStateSystem ss, Map<String, Object> fetchParameters, @Nullable IProgressMonitor monitor) throws StateSystemDisposedException {
-        return Maps.uniqueIndex(getYSeriesModels(ss, fetchParameters, monitor), IYModel::getName);
-    }
+ //   @Override
+ //   @Deprecated
+ //   protected Map<String, IYModel> getYModels(ITmfStateSystem ss, Map<String, Object> fetchParameters, @Nullable IProgressMonitor monitor) throws StateSystemDisposedException {
+ //       return Maps.uniqueIndex(getYSeriesModels(ss, fetchParameters, monitor), IYModel::getName);
+ //   }
 
     /**
      * @since 1.2
@@ -232,14 +228,14 @@ public class EventDevRingBufferOccupationDataProvider extends AbstractTreeCommon
 
         long currentEnd = ss.getCurrentEndTime();
         long prevTime = filter.getStart();
-        if (prevTime >= ss.getStartTime() && prevTime <= currentEnd) {
-            // reuse the results from the full query
-            List<ITmfStateInterval> states = ss.queryFullState(prevTime);
+        //if (prevTime >= ss.getStartTime() && prevTime <= currentEnd) {
+        //    // reuse the results from the full query
+        //    List<ITmfStateInterval> states = ss.queryFullState(prevTime);
 
-            for (RingBufferBuilder entry : builders) {
-                entry.setPrevCount(extractCount(entry.fMeasuredQuark, states, ss));
-            }
-        }
+        //    for (RingBufferBuilder entry : builders) {
+        //        entry.setPrevCount(extractCount(entry.fMeasuredQuark, states, ss));
+        //    }
+        //}
 
         for (int i = 1; i < xValues.length; i++) {
             if (monitor != null && monitor.isCanceled()) {
@@ -284,9 +280,21 @@ public class EventDevRingBufferOccupationDataProvider extends AbstractTreeCommon
             int quark = entry.getValue();
 
             int metricQuark = ss.optQuarkRelative(quark, IDpdkEventDevModelAttributes.NB_EVENTS);
+            int ringCapacityQuark = ss.optQuarkRelative(quark, IDpdkEventDevModelAttributes.RING_CAPACITY);
 
-            if (metricQuark != ITmfStateSystem.INVALID_ATTRIBUTE) {
+            if ((metricQuark != ITmfStateSystem.INVALID_ATTRIBUTE) && (ringCapacityQuark != ITmfStateSystem.INVALID_ATTRIBUTE)) {
+
+                int ringSize = 1;
+
+                try {
+                    ringSize = Integer.parseInt(getQuarkValue(ss, ringCapacityQuark));
+                }
+                catch(NumberFormatException e) {
+
+                }
+
                 long id = entry.getKey();
+
                 String ringName = getQuarkValue(ss, quark);
 
                 int ringsQuark = ss.getParentAttributeQuark(quark);
@@ -299,7 +307,7 @@ public class EventDevRingBufferOccupationDataProvider extends AbstractTreeCommon
                 String devName = getQuarkValue(ss, devQuark);
 
                 String name = getTrace().getName() + '/' + devName + '/' + portName + '/' + ringName;
-                builders.add(new RingBufferBuilder(id, quark, name, length));
+                builders.add(new RingBufferBuilder(id, quark, name, ringSize, length));
             }
         }
         return builders;

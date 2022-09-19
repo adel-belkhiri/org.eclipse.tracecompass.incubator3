@@ -29,7 +29,7 @@ public class PortStatModel {
         this.fPriority = priority;
 
         int portSetQuark = fSs.getQuarkRelativeAndAdd(queueQuark, IDpdkEventDevModelAttributes.ATTACHED_PORTS);
-        this.fQuark = fSs.getQuarkRelativeAndAdd(portSetQuark, String.valueOf(this.fId));
+        this.fQuark = fSs.getQuarkRelativeAndAdd(portSetQuark, "Port\\" + String.valueOf(this.fId)); //$NON-NLS-1$
 
 
         int prioQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.PRIORITY);
@@ -68,10 +68,31 @@ public class PortStatModel {
 
             int flowsQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.FLOWS);
             int flowQuark = fSs.getQuarkRelativeAndAdd(flowsQuark, String.valueOf(flowId));
-            fSs.modifyAttribute(ts, fFlows.get(flowId), flowQuark);
+            int countFlowQuark = fSs.getQuarkRelativeAndAdd(flowQuark, IDpdkEventDevModelAttributes.COUNT_PER_FLOW);
+            fSs.modifyAttribute(ts, fFlows.get(flowId), countFlowQuark);
 
             int nbFlowsQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.NB_FLOWS);
             fSs.modifyAttribute(ts, fFlows.size(), nbFlowsQuark);
+        }
+    }
+
+    public void pinFlow(Integer flowId, long ts) {
+
+        /* Keep track of flows only for atomic and parallel queues */
+        if(flowId != null) {
+            int flowsQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.FLOWS);
+            int flowQuark = fSs.getQuarkRelativeAndAdd(flowsQuark, String.valueOf(flowId));
+            fSs.modifyAttribute(ts,  "pinned (#" + String.valueOf(flowId) + ")" , flowQuark); //$NON-NLS-1$
+        }
+    }
+
+    public void unpinFlow(Integer flowId, long ts) {
+
+        /* Keep track of flows only for atomic and parallel queues */
+        if(flowId != null) {
+            int flowsQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.FLOWS);
+            int flowQuark = fSs.getQuarkRelativeAndAdd(flowsQuark, String.valueOf(flowId));
+            fSs.modifyAttribute(ts, null, flowQuark);
         }
     }
 }

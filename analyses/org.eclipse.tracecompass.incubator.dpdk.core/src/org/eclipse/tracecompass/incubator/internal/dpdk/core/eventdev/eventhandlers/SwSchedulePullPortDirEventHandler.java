@@ -4,6 +4,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis.DpdkEventDevStateProvider;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis.EventDevModel;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis.PortModel;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis.QueueModel;
 import org.eclipse.tracecompass.statesystem.core.ITmfStateSystemBuilder;
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
@@ -48,6 +49,12 @@ public class SwSchedulePullPortDirEventHandler extends DpdkEventHandler {
         if(device != null) {
             PortModel port = device.getPort(portId);
             port.pullFromRingBufferRx(1, ts);
+
+            QueueModel queue = device.getQueue(queueId);
+
+            if(queue != null) {
+                queue.transferFromPort(ts);
+            }
         }
     }
 

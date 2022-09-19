@@ -7,13 +7,13 @@
  * http://www.eclipse.org/legal/epl-v10.html
  **********************************************************************/
 
-package org.eclipse.tracecompass.incubator.internal.dpdk.ui.pipeline.sw.queue.latency;
+package org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.port.busyness;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.PipelineRingQueueLatencyDataProvider;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis.EventdevPortsBusynessDataProvider;
 import org.eclipse.tracecompass.tmf.core.model.OutputElementStyle;
 import org.eclipse.tracecompass.tmf.core.model.StyleProperties;
 import org.eclipse.tracecompass.tmf.ui.viewers.xychart.linechart.TmfFilteredXYChartViewer;
@@ -25,7 +25,7 @@ import org.eclipse.swtchart.Chart;
  *
  * @author Adel
  */
-public class DpdkPipelineSwQueueLatencyViewer extends TmfFilteredXYChartViewer {
+public class DpdkEventdevPortBusynessViewer extends TmfFilteredXYChartViewer {
 
     private static final int DEFAULT_SERIES_WIDTH = 2;
 
@@ -37,8 +37,8 @@ public class DpdkPipelineSwQueueLatencyViewer extends TmfFilteredXYChartViewer {
      * @param settings
      *            See {@link TmfXYChartSettings} to know what it contains
      */
-    public DpdkPipelineSwQueueLatencyViewer(@Nullable Composite parent, TmfXYChartSettings settings) {
-        super(parent, settings, PipelineRingQueueLatencyDataProvider.ID);
+    public DpdkEventdevPortBusynessViewer(@Nullable Composite parent, TmfXYChartSettings settings) {
+        super(parent, settings, EventdevPortsBusynessDataProvider.ID);
         Chart chart = getSwtChart();
         chart.getAxisSet().getYAxis(0).getTick().setFormat(null);
         chart.getLegend().setPosition(SWT.LEFT);
@@ -46,6 +46,6 @@ public class DpdkPipelineSwQueueLatencyViewer extends TmfFilteredXYChartViewer {
 
     @Override
     public OutputElementStyle getSeriesStyle(@NonNull Long seriesId) {
-        return getPresentationProvider().getSeriesStyle(seriesId, StyleProperties.SeriesType.LINE, DEFAULT_SERIES_WIDTH);
+        return getPresentationProvider().getSeriesStyle(seriesId, StyleProperties.SeriesType.AREA, DEFAULT_SERIES_WIDTH);
     }
 }

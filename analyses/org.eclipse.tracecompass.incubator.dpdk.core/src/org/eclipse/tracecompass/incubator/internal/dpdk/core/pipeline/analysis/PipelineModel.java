@@ -176,10 +176,10 @@ public class PipelineModel {
     }
 
     @SuppressWarnings("javadoc")
-    public void receivePackets(int portId, int nbPkts, long zeroPolls, long ts) {
+    public void receivePackets(int portId, int nbPkts, long ts) {
         InputPortModel port = fInPorts.get(portId);
         if(port != null && nbPkts > 0) {
-            port.receive(nbPkts, zeroPolls, ts);
+            port.receive(nbPkts, ts);
         }
     }
 

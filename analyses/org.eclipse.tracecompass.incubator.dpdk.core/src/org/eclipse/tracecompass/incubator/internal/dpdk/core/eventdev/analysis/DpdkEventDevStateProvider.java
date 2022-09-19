@@ -28,6 +28,7 @@ import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandl
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.RteQueueSetupEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwEventDequeueBurstEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwEventEnqueueBurstEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwMapFlowToPortAtomicQueueEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwPortSetupEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwProbeEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwScheduleAtomicToCqEventHandler;
@@ -35,6 +36,7 @@ import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandl
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwScheduleParallelToCqEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwSchedulePullPortDirEventHandler;
 import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwSchedulePullPortLBEventHandler;
+import org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.eventhandlers.SwUnmapFlowFromPortAtomicQueueEventHandler;
 import org.eclipse.tracecompass.statesystem.core.exceptions.AttributeNotFoundException;
 import org.eclipse.tracecompass.tmf.core.event.ITmfEvent;
 import org.eclipse.tracecompass.tmf.core.statesystem.AbstractTmfStateProvider;
@@ -132,6 +134,8 @@ public class DpdkEventDevStateProvider extends AbstractTmfStateProvider {
          builder.put(layout.eventSwScheduleParallelToCq(), new SwScheduleParallelToCqEventHandler(layout, this));
 
          builder.put(layout.eventSwSchedulePullPortDir(), new SwSchedulePullPortDirEventHandler(layout, this));
+         builder.put(layout.eventSwPinFlowToPort(), new SwMapFlowToPortAtomicQueueEventHandler(layout, this));
+         builder.put(layout.eventSwUnpinFlowFromPort(), new SwUnmapFlowFromPortAtomicQueueEventHandler(layout, this));
          builder.put(layout.eventSwPullPortLB(), new SwSchedulePullPortLBEventHandler(layout, this));
 
          builder.put(layout.eventRtePortLink(), new RtePortLinkEventHandler(layout, this));

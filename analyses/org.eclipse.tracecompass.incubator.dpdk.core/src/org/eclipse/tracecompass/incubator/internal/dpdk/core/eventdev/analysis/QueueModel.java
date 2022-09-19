@@ -21,6 +21,7 @@ public class QueueModel {
     private final int fPriority;
     private long rx = 0;
     private long tx = 0;
+    private int nbEvtAvailable = 0;
 
     private final Map<@NonNull Integer /*port id*/, @NonNull PortStatModel /*port stats*/> fAttachedPorts = new HashMap<>();
 
@@ -32,7 +33,7 @@ public class QueueModel {
         this.fSs = ss;
 
         int queueSetQuark = fSs.getQuarkRelativeAndAdd(devQuark, IDpdkEventDevModelAttributes.QUEUES);
-        this.fQuark = fSs.getQuarkRelativeAndAdd(queueSetQuark, String.valueOf(this.fId));
+        this.fQuark = fSs.getQuarkRelativeAndAdd(queueSetQuark, "Queue\\"+ String.valueOf(this.fId));
 
         int schedTypeQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.SCHEDULE_TYPE);
         fSs.modifyAttribute(0, this.fScheduleType.toString(), schedTypeQuark);
@@ -45,6 +46,9 @@ public class QueueModel {
 
         int txQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.EVENT_TX);
         fSs.modifyAttribute(0, this.tx, txQuark);
+
+        int nbEventsQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.NB_EVENTS);
+        fSs.modifyAttribute(0, this.nbEvtAvailable, nbEventsQuark);
     }
 
     public int getId() {
@@ -70,13 +74,48 @@ public class QueueModel {
     public void transferToPort(Integer portId, Integer flowId, long ts) {
 
         this.tx += 1;
+        this.nbEvtAvailable -= 1;
 
         int txQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.EVENT_TX);
         fSs.modifyAttribute(ts, this.tx, txQuark);
 
+        int nbEventsQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.NB_EVENTS);
+        fSs.modifyAttribute(ts, this.nbEvtAvailable, nbEventsQuark);
+
         PortStatModel portStat = fAttachedPorts.get(portId);
         if(portStat != null) {
             portStat.sendEvent(flowId, ts);
+        }
+    }
+
+
+    public void transferFromPort(long ts) {
+
+        this.rx += 1;
+        this.nbEvtAvailable += 1;
+
+        int txQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.EVENT_RX);
+        fSs.modifyAttribute(ts, this.rx, txQuark);
+
+        int nbEventsQuark = fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkEventDevModelAttributes.NB_EVENTS);
+        fSs.modifyAttribute(ts, this.nbEvtAvailable, nbEventsQuark);
+    }
+
+
+    public void mapFlowToPort(Integer portId, Integer flowId, long ts) {
+
+        PortStatModel portStat = fAttachedPorts.get(portId);
+        if(portStat != null) {
+            portStat.pinFlow(flowId, ts);
+        }
+    }
+
+
+    public void unmapFlowFromPort(Integer portId, Integer flowId, long ts) {
+
+        PortStatModel portStat = fAttachedPorts.get(portId);
+        if(portStat != null) {
+            portStat.unpinFlow(flowId, ts);
         }
     }
 }

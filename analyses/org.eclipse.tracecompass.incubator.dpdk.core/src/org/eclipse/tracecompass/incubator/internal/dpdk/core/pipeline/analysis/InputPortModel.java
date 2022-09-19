@@ -15,8 +15,6 @@ public class InputPortModel extends PortModel {
     private int fIndex;
     private long nbRx;
     private long nbDrop;
-    private long zeroPolls;
-    private long nonZeroPolls;
 
     private ITmfStateSystemBuilder fSs;
 
@@ -28,8 +26,6 @@ public class InputPortModel extends PortModel {
         this.nbDrop = 0;
         this.enabled = false;
         this.fIndex = index;
-        this.zeroPolls = 0;
-        this.nonZeroPolls = 0;
 
         int portsQuark = this.fSs.getQuarkRelativeAndAdd(parentQuark, IDpdkPipelineModelAttributes.PORTS);
         int inputPortsQuark = this.fSs.getQuarkRelativeAndAdd(portsQuark, IDpdkPipelineModelAttributes.IN_PORTS);
@@ -49,12 +45,6 @@ public class InputPortModel extends PortModel {
 
         int dropPktsQuark = this.fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkPipelineModelAttributes.NB_PKTS_DROP);
         fSs.modifyAttribute(ts, this.nbDrop, dropPktsQuark);
-
-        int zeroPollsQuark = this.fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkPipelineModelAttributes.ZERO_POLLS);
-        fSs.modifyAttribute(ts, this.zeroPolls, zeroPollsQuark);
-
-        int nonZeroPollsQuark = this.fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkPipelineModelAttributes.NON_ZERO_POLLS);
-        fSs.modifyAttribute(ts, this.nonZeroPolls, nonZeroPollsQuark);
     }
 
     public int getBurstSize() {
@@ -77,19 +67,11 @@ public class InputPortModel extends PortModel {
         return this.enabled;
     }
 
-    public void receive(int nbPkts, long zeroPollNb, long ts) {
+    public void receive(int nbPkts, long ts) {
         this.nbRx += nbPkts;
-        this.nonZeroPolls += 1;
-        this.zeroPolls = zeroPollNb;
 
         int rxPktsQuark = this.fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkPipelineModelAttributes.NB_RX);
         fSs.modifyAttribute(ts, this.nbRx, rxPktsQuark);
-
-        int zeroPollsQuark = this.fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkPipelineModelAttributes.ZERO_POLLS);
-        fSs.modifyAttribute(ts, this.zeroPolls, zeroPollsQuark);
-
-        int nonZeroPollsQuark = this.fSs.getQuarkRelativeAndAdd(this.fQuark, IDpdkPipelineModelAttributes.NON_ZERO_POLLS);
-        fSs.modifyAttribute(ts, this.nonZeroPolls, nonZeroPollsQuark);
 
     }
 

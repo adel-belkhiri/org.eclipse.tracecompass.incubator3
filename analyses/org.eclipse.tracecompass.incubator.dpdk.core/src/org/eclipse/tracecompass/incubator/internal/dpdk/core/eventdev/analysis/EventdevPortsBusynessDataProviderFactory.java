@@ -1,4 +1,4 @@
-package org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis;
+package org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -23,12 +23,12 @@ import org.eclipse.tracecompass.tmf.core.trace.TmfTraceUtils;
  *
  */
 @SuppressWarnings("restriction")
-public class PipelinePortsBusynessDataProviderFactory implements IDataProviderFactory {
+public class EventdevPortsBusynessDataProviderFactory implements IDataProviderFactory {
 
     private static final IDataProviderDescriptor DESCRIPTOR = new DataProviderDescriptor.Builder()
-            .setId(PipelinePortsBusynessDataProvider.ID)
-            .setName("Pipeline ports busyness data provider") //$NON-NLS-1$
-            .setDescription("Pipeline ports busyness data provider") //$NON-NLS-1$
+            .setId(EventdevPortsBusynessDataProvider.ID)
+            .setName("Eventdev ports busyness data provider") //$NON-NLS-1$
+            .setDescription("Eventdev ports busyness data provider") //$NON-NLS-1$
             .setProviderType(ProviderType.TREE_TIME_XY)
             .build();
 
@@ -36,14 +36,14 @@ public class PipelinePortsBusynessDataProviderFactory implements IDataProviderFa
     public @Nullable ITmfTreeDataProvider<? extends ITmfTreeDataModel> createProvider(@NonNull ITmfTrace trace) {
         Collection<ITmfTrace> traces = TmfTraceManager.getTraceSet(trace);
         if (traces.size() == 1) {
-            return PipelinePortsBusynessDataProvider.create(trace);
+            return EventdevPortsBusynessDataProvider.create(trace);
         }
-        return TmfTreeXYCompositeDataProvider.create(traces, PipelinePortsBusynessDataProvider.PROVIDER_TITLE, PipelinePortsBusynessDataProvider.ID);
+        return TmfTreeXYCompositeDataProvider.create(traces, EventdevPortsBusynessDataProvider.PROVIDER_TITLE, EventdevPortsBusynessDataProvider.ID);
     }
 
     @Override
     public Collection<IDataProviderDescriptor> getDescriptors(@NonNull ITmfTrace trace) {
-        DpdkPipelineAnalysisModule module = TmfTraceUtils.getAnalysisModuleOfClass(trace, DpdkPipelineAnalysisModule.class, DpdkPipelineAnalysisModule.ID);
+        DpdkEventDevAnalysisModule module = TmfTraceUtils.getAnalysisModuleOfClass(trace, DpdkEventDevAnalysisModule.class, DpdkEventDevAnalysisModule.ID);
         return module != null ? Collections.singletonList(DESCRIPTOR) : Collections.emptyList();
     }
 }

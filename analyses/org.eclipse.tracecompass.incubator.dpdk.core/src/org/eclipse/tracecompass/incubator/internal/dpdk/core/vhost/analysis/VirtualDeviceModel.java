@@ -196,9 +196,6 @@ public class VirtualDeviceModel {
             VirtQueueModel queue = fVirtQueues.get(vringIdx);
             if(queue != null) {
                 queue.size = vqSize;
-                //queue.callFd = vqCallFd;
-                //queue.kickFd = vqKickFd;
-
                 fEnabledVirtQueues.put(vqPointer, queue);
             }
     }

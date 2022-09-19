@@ -208,11 +208,11 @@ public class DpdkLpmObjectHitPercentageDataProvider extends AbstractTreeCommonXD
         return (ss.getAttributeName(quark));
     }
 
-    @Override
-    @Deprecated
-    protected Map<@NonNull String, @NonNull IYModel> getYModels(ITmfStateSystem ss, Map<String, Object> fetchParameters, @Nullable IProgressMonitor monitor) throws StateSystemDisposedException {
-        return Maps.uniqueIndex(getYSeriesModels(ss, fetchParameters, monitor), IYModel::getName);
-    }
+ //   @Override
+ //   @Deprecated
+ //   protected Map<@NonNull String, @NonNull IYModel> getYModels(ITmfStateSystem ss, Map<String, Object> fetchParameters, @Nullable IProgressMonitor monitor) throws StateSystemDisposedException {
+ //       return Maps.uniqueIndex(getYSeriesModels(ss, fetchParameters, monitor), IYModel::getName);
+ //   }
 
     /**
      *

@@ -55,7 +55,7 @@
       </module>
       <module
             analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.DpdkPipelineAnalysisModule"
-            automatic="true"
+            automatic="false"
             id="org.eclipse.tracecompass.incubator.dpdk.pipeline.analysis"
             name="DPDK Pipelines Analysis">
          <tracetype
@@ -65,7 +65,7 @@
       </module>
       <module
             analysis_module="org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis.DpdkEventDevAnalysisModule"
-            automatic="true"
+            automatic="false"
             id="org.eclipse.tracecompass.incubator.dpdk.eventdev.analysis"
             name="DPDK EventDev Analysis">
          <tracetype
@@ -137,8 +137,8 @@
             id="org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.ring.queue.latency.data.provider">
       </dataProviderFactory>
       <dataProviderFactory
-            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis.PipelinePortsBusynessDataProviderFactory"
-            id="org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.ports.busyness.data.provider">
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis.EventdevPortsBusynessDataProviderFactory"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.ports.busyness.data.provider">
       </dataProviderFactory>
    </extension>
 

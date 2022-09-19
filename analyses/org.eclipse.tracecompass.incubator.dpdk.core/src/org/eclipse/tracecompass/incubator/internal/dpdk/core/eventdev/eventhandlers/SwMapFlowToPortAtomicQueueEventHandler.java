@@ -13,7 +13,7 @@ import org.eclipse.tracecompass.tmf.core.event.ITmfEventField;
  * @author Adel Belkhiri
  *
  */
-public class SwSchedulePullPortLBEventHandler extends DpdkEventHandler {
+public class SwMapFlowToPortAtomicQueueEventHandler extends DpdkEventHandler {
 
     /**
      * @param layout
@@ -21,7 +21,7 @@ public class SwSchedulePullPortLBEventHandler extends DpdkEventHandler {
      * @param stateProvider
      *      Pipelinesstate provider
      */
-    public SwSchedulePullPortLBEventHandler(@NonNull DpdkEventDevAnalysisEventLayout layout, DpdkEventDevStateProvider stateProvider) {
+    public SwMapFlowToPortAtomicQueueEventHandler(@NonNull DpdkEventDevAnalysisEventLayout layout, DpdkEventDevStateProvider stateProvider) {
         super(layout, stateProvider);
     }
 
@@ -37,25 +37,21 @@ public class SwSchedulePullPortLBEventHandler extends DpdkEventHandler {
         Integer portId = content.getFieldValue(Integer.class, layout.fieldPortId());
         Integer queueId = content.getFieldValue(Integer.class, layout.fieldQidID());
 
-        //Integer iqNum = content.getFieldValue(Integer.class, layout.fieldQ);
-        //Integer allowOrder = content.getFieldValue(Integer.class, layout.fieldQ);
+        Integer flowId = content.getFieldValue(Integer.class, layout.fieldFlowID());
 
-        if (backendId == null || portId == null || queueId == null) {
-            throw new IllegalArgumentException(layout.eventSwPullPortLB() + " event does not have expected fields"); //$NON-NLS-1$ ;
+
+        if (backendId == null || portId == null || queueId == null || flowId == null) {
+            throw new IllegalArgumentException(layout.eventSwScheduleAtomicToCq() + " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
         EventDevModel device = fEventdevStateProvier.searchEventDevByBackendId(backendId);
         if(device != null) {
-        //    PortModel port = device.getPort(portId);
-        //    port.pullFromRingBufferRx(1, ts);
             QueueModel queue = device.getQueue(queueId);
 
             if(queue != null) {
-                queue.transferFromPort(ts);
+                queue.mapFlowToPort(portId, flowId, ts);
             }
         }
-
-
     }
 
 }

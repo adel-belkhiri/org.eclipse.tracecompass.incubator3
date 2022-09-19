@@ -29,10 +29,14 @@ public interface IDpdkEventDevModelAttributes {
     @Nullable String PORT_NEW_THRESHOLD = Messages.IDpdkModel_PORT_NEW_THRESHOLD;
     @Nullable String PORT_STATUS = Messages.IDpdkModel_PORT_STATUS;
     @Nullable String PORT_LOAD = Messages.IDpdkModel_PORT_LOAD;
+    @Nullable String ZERO_POLLS = Messages.IDpdkModel_ZERO_POLLS;
+    @Nullable String TOT_POLLS = Messages.IDpdkModel_TOT_POLLS;
 
     @Nullable String QUEUES = Messages.IDpdkModel_QUEUES;
     @Nullable String PRIORITY = Messages.IDpdkModel_PRIORITY;
     @Nullable String SCHEDULE_TYPE = Messages.IDpdkModel_SCHEDULE_TYPE;
+    @Nullable String COUNT_PER_FLOW = Messages.IDpdkModel_COUNT_PER_FLOW;
+    @Nullable String FLOW_STATUS = Messages.IDpdkModel_FLOW_STATUS;
 
     @Nullable String EVENT_RX = Messages.IDpdkModel_EVENT_RX;
     @Nullable String EVENT_TX = Messages.IDpdkModel_EVENT_TX;
@@ -54,4 +58,5 @@ public interface IDpdkEventDevModelAttributes {
     @Nullable String EVENTDEV_INFLIGHT_CREDIT_DATAPROVIDER_TITLE = Messages.IDpdkModel_EVENTDEV_INFLIGHT_CREDIT_DATAPROVIDER_TITLE;
     @Nullable String EVENTDEV_PORT_ENQUEUE_DEQUEUE_DATAPROVIDER_TITLE = Messages.IDpdkModel_EVENTDEV_PORT_ENQUEUE_DEQUEUE_DATAPROVIDER_TITLE;
     @Nullable String EVENTDEV_PORT_PER_STAGE_LOAD_PERCENTAGE_DATAPROVIDER_TITLE = Messages.IDpdkModel_EVENTDEV_PORT_PER_STAGE_LOAD_PERCENTAGE_DATAPROVIDER_TITLE;
+    @Nullable String EVENTDEV_PORT_BUSYNESS_PERCENTAGE_DATAPROVIDER_TITLE = Messages.IDpdkModel_EVENTDEV_PORT_BUSYNESS_PERCENTAGE_DATAPROVIDER_TITLE;
 }

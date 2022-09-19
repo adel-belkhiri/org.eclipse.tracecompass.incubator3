@@ -1,4 +1,4 @@
-package org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.analysis;
+package org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.analysis;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,18 +35,18 @@ import com.google.common.collect.Maps;
  */
 
 @SuppressWarnings("restriction")
-public class PipelinePortsBusynessDataProvider
-        extends AbstractTreeCommonXDataProvider<@NonNull DpdkPipelineAnalysisModule, @NonNull TmfTreeDataModel> {
+public class EventdevPortsBusynessDataProvider
+        extends AbstractTreeCommonXDataProvider<@NonNull DpdkEventDevAnalysisModule, @NonNull TmfTreeDataModel> {
 
     /**
      * Title used to create XY models for the {@link PipelinePortsBusynessDataProvider}.
      */
-    public static final String PROVIDER_TITLE = IDpdkPipelineModelAttributes.IDpdkModel_PER_PORT_PACKET_RATE_DATAPROVIDER_TITLE;
+    public static final String PROVIDER_TITLE = IDpdkEventDevModelAttributes.EVENTDEV_PORT_BUSYNESS_PERCENTAGE_DATAPROVIDER_TITLE;
 
     /**
      * Extension point ID.
      */
-    public static final String ID = "org.eclipse.tracecompass.incubator.internal.dpdk.core.pipeline.ports.busyness.data.provider"; //$NON-NLS-1$
+    public static final String ID = "org.eclipse.tracecompass.incubator.internal.dpdk.core.eventdev.ports.busyness.data.provider"; //$NON-NLS-1$
 
 
     /**
@@ -60,13 +60,10 @@ public class PipelinePortsBusynessDataProvider
         private final long fId;
 
         public final int fZeroPollQuark;
-        public final int fNonZeroPollQuark;
+        public final int fTotPollQuark;
 
         private final String fName;
         private final double[] fValues;
-
-        private long fPrevCountZeroPolls;
-        private long fPrevCountNonZeroPolls;
 
         /**
          * Constructor
@@ -81,10 +78,8 @@ public class PipelinePortsBusynessDataProvider
         private PipelinePortsBuilder(long id, int firstQuark, int secondQuark, String name, int length) {
             fId = id;
             fZeroPollQuark = firstQuark;
-            fNonZeroPollQuark = secondQuark;
+            fTotPollQuark = secondQuark;
             fName = name;
-            fPrevCountZeroPolls = 0;
-            fPrevCountNonZeroPolls = 0;
 
             fValues = new double[length];
         }
@@ -100,30 +95,20 @@ public class PipelinePortsBusynessDataProvider
          * @param deltaT
          *            time difference to the previous value for interpolation
          */
-        private void updateValue(int pos, long zeroPolls, long nonZeroPolls, long deltaT) {
+        private void updateValue(int pos, long zeroPolls, long totPolls, long deltaT) {
 
-            long zeroPollsValue = zeroPolls - fPrevCountZeroPolls;
-            long nonZeroPollsValue = nonZeroPolls - fPrevCountNonZeroPolls;
-
-            double sum = zeroPollsValue + nonZeroPollsValue;
-            if(sum == 0) {
+            if(totPolls == 0) {
                 fValues[pos] = 0;
             } else {
-                double value = (1 - (zeroPollsValue / sum)) * CENT ;
+                double value = ((totPolls - zeroPolls)  * CENT) / totPolls;
                 fValues[pos] = value;
             }
 
-            if((zeroPolls != fPrevCountZeroPolls) || (nonZeroPolls != fPrevCountNonZeroPolls)) {
-                fPrevCountZeroPolls = zeroPolls;
-                fPrevCountNonZeroPolls = nonZeroPolls;
-            }
+            //if((zeroPolls != fPrevCountZeroPolls) || (nonZeroPolls != fPrevCountNonZeroPolls)) {
+               // fPrevCountZeroPolls = zeroPolls;
+               // fPrevCountTotPolls = totPolls;
+            //}
         }
-
-
-        private void setPrevCount(long prevCount1, long prevCount2) {
-            fPrevCountZeroPolls = prevCount1;
-            fPrevCountNonZeroPolls = prevCount2;
-           }
 
         public IYModel build() {
            return new YModel(fId, fName, fValues);
@@ -133,7 +118,7 @@ public class PipelinePortsBusynessDataProvider
     /**
      * Constructor
      */
-    private PipelinePortsBusynessDataProvider(@NonNull ITmfTrace trace, @NonNull DpdkPipelineAnalysisModule module) {
+    private EventdevPortsBusynessDataProvider(@NonNull ITmfTrace trace, @NonNull DpdkEventDevAnalysisModule module) {
         super(trace, module);
     }
 
@@ -146,11 +131,11 @@ public class PipelinePortsBusynessDataProvider
      * @return A {@link PipelinePortsBusynessDataProvider} instance. If analysis module is not
      *         found, it returns null
      */
-    public static PipelinePortsBusynessDataProvider create(ITmfTrace trace) {
-        DpdkPipelineAnalysisModule module = TmfTraceUtils.getAnalysisModuleOfClass(trace, DpdkPipelineAnalysisModule.class, DpdkPipelineAnalysisModule.ID);
+    public static EventdevPortsBusynessDataProvider create(ITmfTrace trace) {
+        DpdkEventDevAnalysisModule module = TmfTraceUtils.getAnalysisModuleOfClass(trace, DpdkEventDevAnalysisModule.class, DpdkEventDevAnalysisModule.ID);
         if (module != null) {
             module.schedule();
-            return new PipelinePortsBusynessDataProvider(trace, module);
+            return new EventdevPortsBusynessDataProvider(trace, module);
         }
         return null;
     }
@@ -176,34 +161,21 @@ public class PipelinePortsBusynessDataProvider
         long rootId = getId(ITmfStateSystem.ROOT_ATTRIBUTE);
         nodes.add(new TmfTreeDataModel(rootId, -1, getTrace().getName()));
 
-        /* browse the list of pipelines */
-        int pipelinesQuark = ss.optQuarkAbsolute(IDpdkPipelineModelAttributes.PIPELINES);
-        for (Integer pipelineQuark : ss.getQuarks(pipelinesQuark, "*")) {
-            String pipelineName = getQuarkValue(ss, pipelineQuark);
-            long pipelineId = getId(pipelineQuark);
-            nodes.add(new TmfTreeDataModel(pipelineId, rootId, pipelineName));
+        /* browse the list of eventdev */
+        for (Integer eventdevQuark : ss.getQuarks(ITmfStateSystem.ROOT_ATTRIBUTE, "*")) {
+            String eventdevName = getQuarkValue(ss, eventdevQuark);
+            long eventdevId = getId(eventdevQuark);
+            nodes.add(new TmfTreeDataModel(eventdevId, rootId, eventdevName));
 
-            int portsQuark = ss.optQuarkRelative(pipelineQuark, IDpdkPipelineModelAttributes.PORTS);
+            int portsQuark = ss.optQuarkRelative(eventdevQuark, IDpdkEventDevModelAttributes.PORTS);
             if (portsQuark == ITmfStateSystem.INVALID_ATTRIBUTE) {
                 continue;
             }
 
-            /* browse the list of input ports */
-            int inputPortsQuark = ss.optQuarkRelative(portsQuark, IDpdkPipelineModelAttributes.IN_PORTS);
-            if (inputPortsQuark == ITmfStateSystem.INVALID_ATTRIBUTE) {
-                continue;
-            }
-
-            for(Integer inPortQuark : ss.getQuarks(inputPortsQuark, "*")) {
-                int nameQuark;
-                try {
-                    nameQuark = ss.getQuarkRelative(inPortQuark, IDpdkPipelineModelAttributes.IDpdkModel_PORT_NAME);
-                    String portName = getQuarkValue(ss, nameQuark);
-                    long portId = getId(inPortQuark);
-                    nodes.add(new TmfTreeDataModel(portId, pipelineId, portName));
-                } catch (AttributeNotFoundException e) {
-                    e.printStackTrace();
-                }
+            for(Integer portQuark : ss.getQuarks(portsQuark, "*")) {
+                String portName = "Port/" + ss.getAttributeName(portQuark);
+                long portId = getId(portQuark);
+                nodes.add(new TmfTreeDataModel(portId, eventdevId, portName));
             }
 
         }
@@ -225,11 +197,11 @@ public class PipelinePortsBusynessDataProvider
         return (ss.getAttributeName(nicQuark));
     }
 
-    @Override
-    @Deprecated
-    protected Map<String, IYModel> getYModels(ITmfStateSystem ss, Map<String, Object> fetchParameters, @Nullable IProgressMonitor monitor) throws StateSystemDisposedException {
-        return Maps.uniqueIndex(getYSeriesModels(ss, fetchParameters, monitor), IYModel::getName);
-    }
+ //   @Override
+ //   @Deprecated
+ //   protected Map<String, IYModel> getYModels(ITmfStateSystem ss, Map<String, Object> fetchParameters, @Nullable IProgressMonitor monitor) throws StateSystemDisposedException {
+ //       return Maps.uniqueIndex(getYSeriesModels(ss, fetchParameters, monitor), IYModel::getName);
+ //   }
 
     /**
      *
@@ -254,13 +226,13 @@ public class PipelinePortsBusynessDataProvider
         long prevTime = filter.getStart();
         if (prevTime >= ss.getStartTime() && prevTime <= currentEnd) {
             // reuse the results from the full query
-            List<ITmfStateInterval> states = ss.queryFullState(prevTime);
+            //List<ITmfStateInterval> states = ss.queryFullState(prevTime);
 
-            for (PipelinePortsBuilder entry : builders) {
-                long zeroPolls = extractCount(entry.fZeroPollQuark, states);
-                long nonZeroPolls = extractCount(entry.fNonZeroPollQuark, states);
-                entry.setPrevCount(zeroPolls, nonZeroPolls);
-            }
+            //for (PipelinePortsBuilder entry : builders) {
+                //long zeroPolls = extractCount(entry.fZeroPollQuark, states);
+                //long totPolls = extractCount(entry.fTotPollQuark, states);
+                //entry.setPrevCount(zeroPolls, totPolls);
+            //}
         }
 
         for (int i = 1; i < xValues.length; i++) {
@@ -278,7 +250,7 @@ public class PipelinePortsBusynessDataProvider
 
                 for (PipelinePortsBuilder entry : builders) {
                     long zeroPolls = extractCount(entry.fZeroPollQuark, states);
-                    long nonZeroPolls = extractCount(entry.fNonZeroPollQuark, states);
+                    long nonZeroPolls = extractCount(entry.fTotPollQuark, states);
 
                     long observationPeriod = time - prevTime;
                     entry.updateValue(i, zeroPolls, nonZeroPolls, observationPeriod);
@@ -313,26 +285,23 @@ public class PipelinePortsBusynessDataProvider
                 continue;
             }
 
-            String PortsListname = ss.getAttributeName(portsQuark);
-            if(PortsListname.equals(IDpdkPipelineModelAttributes.IN_PORTS)) {
-                int portNameQuark, zeroPollQuark, nonZeroPollQuark;
+            String PortsName = ss.getAttributeName(portsQuark);
+            if(PortsName.equals(IDpdkEventDevModelAttributes.PORTS)) {
+                int zeroPollQuark, totPollQuark;
 
                 try {
-                    portNameQuark = ss.getQuarkRelative(portQuark, IDpdkPipelineModelAttributes.IDpdkModel_PORT_NAME);
-                    zeroPollQuark = ss.getQuarkRelative(portQuark, IDpdkPipelineModelAttributes.ZERO_POLLS);
-                    nonZeroPollQuark = ss.getQuarkRelative(portQuark, IDpdkPipelineModelAttributes.NON_ZERO_POLLS);
+                    zeroPollQuark = ss.getQuarkRelative(portQuark, IDpdkEventDevModelAttributes.ZERO_POLLS);
+                    totPollQuark = ss.getQuarkRelative(portQuark, IDpdkEventDevModelAttributes.TOT_POLLS);
                 } catch (AttributeNotFoundException | IndexOutOfBoundsException e) {
                     continue;
                 }
 
-                String portName = getQuarkValue(ss, portNameQuark);
+                String portName = ss.getAttributeName(portQuark);
+                int eventdevQuark = ss.getParentAttributeQuark(portsQuark);
+                String eventdevName = ss.getAttributeName(eventdevQuark);
 
-                int portsListQuark = ss.getParentAttributeQuark(portsQuark);
-                int pipelineQuark = ss.getParentAttributeQuark(portsListQuark);
-                String pipelineName = ss.getAttributeName(pipelineQuark);
-
-                String name = getTrace().getName() + '/' + pipelineName + '/' + portName;
-                builders.add(new PipelinePortsBuilder(entry.getKey(), zeroPollQuark, nonZeroPollQuark, name, length));
+                String name = getTrace().getName() + '/' + eventdevName + '/' + portName;
+                builders.add(new PipelinePortsBuilder(entry.getKey(), zeroPollQuark, totPollQuark, name, length));
             }
         }
         return builders;

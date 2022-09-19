@@ -46,8 +46,6 @@ public class Messages extends NLS {
     public static @Nullable String IDpdkModel_DEFAULT_ACTION;
     public static @Nullable String IDpdkModel_CHILD_TABLE;
     public static @Nullable String IDpdkModel_FWD_CHILD_TABLE;
-    public static @Nullable String IDpdkModel_ZERO_POLLS;
-    public static @Nullable String IDpdkModel_NON_ZERO_POLLS;
 
     public static String IDpdkModel_HIT_PERCENT_METRIC_LABEL;
     public static String IDpdkModel_MISS_PERCENT_METRIC_LABEL;

@@ -41,8 +41,11 @@ public class SwEventDequeueBurstEventHandler extends DpdkEventHandler {
         Integer portInflightCredit = content.getFieldValue(Integer.class, layout.fieldPortInflightCredits());
         Integer swInflightCredit = content.getFieldValue(Integer.class, layout.fieldSwInflights());
 
+        Long nbZeroPolls = content.getFieldValue(Long.class, layout.fieldZeroPolls());
+        Long nbTotPolls = content.getFieldValue(Long.class, layout.fieldTotPolls());
+
         if (backendId == null || portId == null || nbDeqEvents == null
-                || portInflightCredit == null || swInflightCredit == null) {
+                || portInflightCredit == null || swInflightCredit == null || nbZeroPolls == null || nbTotPolls == null) {
             throw new IllegalArgumentException(layout.eventSwEventDequeueBurst() + " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
@@ -51,7 +54,7 @@ public class SwEventDequeueBurstEventHandler extends DpdkEventHandler {
             PortModel port = device.getPort(portId);
             if(port != null) {
                 device.updateInflight(swInflightCredit, portId, portInflightCredit, ts);
-                port.dequeueEvents(nbDeqEvents, ts);
+                port.dequeueEvents(nbDeqEvents, nbZeroPolls, nbTotPolls, ts);
             }
         }
     }

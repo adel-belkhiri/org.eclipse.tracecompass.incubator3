@@ -18,7 +18,6 @@ import org.eclipse.tracecompass.tmf.core.model.OutputElementStyle;
 import org.eclipse.tracecompass.tmf.core.model.StyleProperties;
 import org.eclipse.tracecompass.tmf.ui.viewers.xychart.linechart.TmfFilteredXYChartViewer;
 import org.eclipse.tracecompass.tmf.ui.viewers.xychart.linechart.TmfXYChartSettings;
-import org.eclipse.swtchart.Chart;
 
 /**
  * Network Activity viewer, shows read and write bandwidth used over time.
@@ -39,13 +38,12 @@ public class DpdkEventDevEnqueueDequeueRateViewer extends TmfFilteredXYChartView
      */
     public DpdkEventDevEnqueueDequeueRateViewer(@Nullable Composite parent, TmfXYChartSettings settings) {
         super(parent, settings, EventDevPortEnqueueDequeueRateDataProvider.ID);
-        Chart chart = getSwtChart();
-        chart.getAxisSet().getYAxis(0).getTick().setFormat(DataTransferSpeedWithUnitFormat.getInstance());
-        chart.getLegend().setPosition(SWT.LEFT);
+        getSwtChart().getAxisSet().getYAxis(0).getTick().setFormat(DataTransferSpeedWithUnitFormat.getInstance());
+        getSwtChart().getLegend().setPosition(SWT.LEFT);
     }
 
     @Override
     public OutputElementStyle getSeriesStyle(@NonNull Long seriesId) {
-        return getPresentationProvider().getSeriesStyle(seriesId, StyleProperties.SeriesType.AREA, DEFAULT_SERIES_WIDTH);
+        return getPresentationProvider().getSeriesStyle(seriesId, StyleProperties.SeriesType.LINE, DEFAULT_SERIES_WIDTH);
     }
 }

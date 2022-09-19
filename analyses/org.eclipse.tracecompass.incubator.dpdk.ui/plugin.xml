@@ -184,6 +184,14 @@
             name="%dpdk.pipeline.sw.queue.latency"
             restorable="true">
       </view>
+      <view
+            category="org.eclipse.tracecompass.incubator.internal.dpdk.ui.vhost.category.dpdk"
+            class="org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.port.busyness.DpdkEventdevPortBusynessView"
+            icon="icons/eview16/scatter.png"
+            id="org.eclipse.tracecompass.incubator.internal.dpdk.ui.eventdev.port.busyness.view"
+            name="%dpdk.eventdev.port.busyness"
+            restorable="true">
+      </view>
    </extension>
 
 </plugin>

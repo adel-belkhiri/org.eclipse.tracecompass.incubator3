@@ -42,7 +42,7 @@ public class SetVringEnabledEventHandler extends DpdkEventHandler {
             throw new IllegalArgumentException(layout.eventSetVringEnabled() + " event does not have expected fields"); //$NON-NLS-1$ ;
         }
 
-        if((vqSize > 0) && (vqCallFd > 0) && (vqKickFd > 0)) {
+        if((vqSize > 0) && ((vqCallFd > 0) || (vqKickFd > 0))) {
             VhostNetworkDeviceModel dev = fVhostStateProvier.searchDeviceByVid(vid);
             if(dev != null) {
                 VirtualDeviceModel vidObj = dev.getVid(vid);
