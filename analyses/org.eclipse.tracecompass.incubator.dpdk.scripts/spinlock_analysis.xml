@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ***************************************************************************
+ * Copyright (c) 2017 Ericsson
+ *
+ * All rights reserved. This program and the accompanying materials are
+ * made available under the terms of the Eclipse Public License 2.0 which
+ * accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *   Jean-Christian Kouame - Initial API and implementation
+ *************************************************************************** -->
+<tmfxml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="xmlDefinition.xsd">
+
+    <!--Timegraph view that show the scenario execution state in time -->
+    <timeGraphView id="xml.scenarios">
+        <head>
+            <analysis id="lttng.analysis.spinlock" />
+            <label value="scenario" />
+        </head>
+        <!-- FFA040 -->
+        <definedValue name="WAIT" value="0" color="#CCCCCC" />
+        <definedValue name="ACQUIRED" value="1" color="#00CCFF" />
+
+        <!-- Scenario view -->
+        <entry path="scenarios/*">
+            <display type="self" />
+            <name type="self" />
+            <entry path="*">
+                <display type="constant" value="state" />
+                <name type="self" />
+            </entry>
+        </entry>
+    </timeGraphView>
+
+    <pattern version="0" id="lttng.analysis.spinlock">
+        <head>
+            <traceType id="org.eclipse.linuxtools.tmf.core.experiment.generic" />
+            <label value="Spinlock Analysis"/>
+            <viewLabelPrefix value="Spinlock" />
+        </head>
+
+        <storedField id="sl" alias="sl" />
+        <storedField id="lcore_id" alias="lcore_id" />
+
+        <location id="CurrentCPU">
+            <stateAttribute type="constant" value="CPUs" />
+            <stateAttribute type="eventField" value="cpu" />
+        </location>
+        <location id="CurrentThread">
+            <stateAttribute type="location" value="CurrentCPU" />
+            <stateAttribute type="constant" value="Current_thread" />
+        </location>
+        <location id="CurrentThreadName">
+            <stateAttribute type="location" value="CurrentCPU" />
+            <stateAttribute type="constant" value="Current_thread_name" />
+        </location>
+
+        <mappingGroup id="lock/unlock">
+            <entry>
+                <stateValue type="long" value="0" />
+                <stateValue type="string" value="WAIT" />
+            </entry>
+            <entry>
+                <stateValue type="long" value="1" />
+                <stateValue type="string" value="ACQUIRED" />
+            </entry>
+	    </mappingGroup>
+
+        <patternHandler>
+            <!-- MATCHING INPUTS -->
+            <test id="test_cpu">
+                <if>
+                    <condition>
+                        <stateValue type="query">
+                            <stateAttribute type="constant" value="#CurrentScenario" />
+                            <stateAttribute type="constant" value="cpu" />
+                        </stateValue>
+                        <stateValue type="eventField" value="cpu" />
+                    </condition>
+                </if>
+            </test>
+
+            <test id="spinlock_condition">
+			<if>
+				<condition>
+					<stateValue type="query">
+						<stateAttribute type="constant" value="#CurrentScenario" />
+						<stateAttribute type="constant" value="sl" />
+					</stateValue>
+					<stateValue type="eventField" value="sl" />
+				</condition>
+			</if>
+		</test>
+
+            <test id="spinning_op">
+			<if>
+                <condition>
+                    <field name="op" />
+                    <stateValue type="long" value="0" />
+                </condition>
+			</if>
+		</test>
+
+        <test id="lock_op">
+			<if>
+                <condition>
+                    <field name="op" />
+                    <stateValue type="long" value="1" />
+                </condition>
+			</if>
+		</test>        
+
+        <test id="isTidValid">
+			<if>
+				<not>
+					<condition>
+						<stateAttribute type="location" value="CurrentThread" />
+						<stateValue type="null"/>
+					</condition>
+				</not>
+			</if>
+		</test>
+
+            <action id="set_operation">
+                <stateChange>
+                    <stateAttribute type="constant" value="#CurrentScenario" />
+                    <stateAttribute type="constant" value="sl" />
+                    <stateValue type="eventField" value="sl" />
+                </stateChange>
+            </action>
+
+            <action id="waiter_in">
+                <stateChange>
+                    <stateAttribute type="query">
+                        <stateAttribute type="constant" value="#CurrentScenario" />
+                        <stateAttribute type="constant" value="thread" />
+                    </stateAttribute>
+                    <stateValue type="int" value="1"/>
+                </stateChange>
+            </action>
+
+            <action id="waiter_out">
+                <stateChange>
+                    <stateAttribute type="query">
+                        <stateAttribute type="constant" value="#CurrentScenario" />
+                        <stateAttribute type="constant" value="thread" />
+                    </stateAttribute>
+                    <stateAttribute type="query">
+                        <stateAttribute type="constant" value="#CurrentScenario" />
+                        <stateAttribute type="constant" value="thread_name" />
+                    </stateAttribute>
+                    <stateAttribute type="query">
+                        <stateAttribute type="constant" value="#CurrentScenario" />
+                        <stateAttribute type="constant" value="cpu" />
+                    </stateAttribute>                                        
+                    <stateValue type="null" />
+                </stateChange>
+            </action>
+
+            <action id="saveContext">
+                <stateChange>
+                    <stateAttribute type="constant" value="#CurrentScenario" />
+                    <stateAttribute type="constant" value="cpu" />
+                    <stateValue type="eventField" value="cpu"/>
+                </stateChange>
+                <stateChange>
+                    <stateAttribute type="constant" value="#CurrentScenario" />
+                    <stateAttribute type="constant" value="sl" />
+                    <stateValue type="eventField" value="sl"/>
+                </stateChange> 
+                <stateChange>
+                    <stateAttribute type="constant" value="#CurrentScenario" />
+                    <stateAttribute type="constant" value="thread" />
+                    <stateValue type="query">
+                        <stateAttribute type="location" value="CurrentThread" />
+                    </stateValue>
+                </stateChange>
+                <stateChange>
+                    <stateAttribute type="constant" value="#CurrentScenario" />
+                    <stateAttribute type="constant" value="thread_name" />
+                    <stateValue type="query">
+                        <stateAttribute type="location" value="CurrentThreadName" />
+                    </stateValue>
+                </stateChange>
+            </action>
+
+            <!-- IRQ FSM ACTIONS -->
+            <action id="try_acquire_lock">
+                <stateChange>
+                    <stateAttribute type="constant" value="#CurrentScenario" />
+                    <stateAttribute type="constant" value="sl" />
+                    <stateValue type="eventField" value="sl" />
+                </stateChange>
+                <stateChange>
+                    <stateAttribute type="constant" value="#CurrentScenario" />
+                    <stateAttribute type="constant" value="lcore_id" />
+                    <stateValue type="eventField" value="lcore_id" />
+                </stateChange>
+            </action>
+
+		<action id="create_futex_segment" >
+			<segment>
+				<segType>
+					<segName>
+						<stateValue type="query" mappingGroup="lock/unlock">
+							<stateAttribute type="constant" value="#CurrentScenario" />
+							<stateAttribute type="constant" value="op" />
+						</stateValue>
+					</segName>
+				</segType>
+				<segContent>
+					<segField name="sl" type="string">
+					    <stateValue type="query">
+						<stateAttribute type="constant" value="#CurrentScenario" />
+						<stateAttribute type="constant" value="sl" />
+					    </stateValue>
+					</segField>
+					<segField name="name" type="string">
+						<stateValue type="query">
+							<stateAttribute type="constant" value="#CurrentScenario" />
+							<stateAttribute type="constant" value="thread_name" />
+						</stateValue>
+					</segField>
+					<segField name="thread" type="string">
+						<stateValue type="query">
+							<stateAttribute type="constant" value="#CurrentScenario" />
+							<stateAttribute type="constant" value="thread" />
+						</stateValue>
+					</segField>
+				</segContent>
+			</segment>
+		</action>
+
+            <!-- IRQ FSM -->
+            <fsm id="spinlock_handler"  consuming="false">
+                <precondition event="librte_spinlock:acquire_lock"/>
+                <precondition cond="spinning_op" />
+                <initialState>
+                    <transition event="librte_spinlock:acquire_lock"  target="waiting_lock" action="saveContext:set_operation"/>
+                </initialState>
+                <state id="waiting_lock">
+                    <transition event="librte_spinlock:acquire_lock" target="acquiring_lock" action="waiter_in" cond="lock_op:spinlock_condition"/>
+                </state>
+                <state id="acquiring_lock">
+                    <transition event="librte_spinlock:release_lock" target="end" action="create_futex_segment" />
+                </state>
+                <final id="end"/>
+            </fsm>
+
+            <!-- SCHED_SWITCH -->
+		<action id="update_current_thread">
+			<stateChange>
+				<stateAttribute type="location" value="CurrentThread" />
+				<stateValue type="eventField" value="next_tid" />
+			</stateChange>
+		</action>
+		<action id="update_current_thread_name">
+			<stateChange>
+				<stateAttribute type="location" value="CurrentThreadName" />
+				<stateValue type="eventField" value="next_comm" />
+			</stateChange>
+		</action>
+		<fsm id="sched_switch" multiple="false">
+			<precondition event="sched_switch"/>
+			<state id="sched_switch">
+				<transition target="sched_switch" action="update_current_thread:update_current_thread_name" />
+			</state>
+		</fsm>
+        </patternHandler>
+    </pattern>
+</tmfxml>
